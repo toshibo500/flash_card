@@ -85,7 +85,13 @@ class _FolderList extends State<FolderList> {
                 IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () async {
-                    if (await confirm(context)) {
+                    if (await confirm(
+                      context,
+                      title: const Text('Confirm'),
+                      content: const Text('Would you like to remove?'),
+                      textOK: const Text('Yes'),
+                      textCancel: const Text('No'),
+                    )) {
                       setState(() {
                         folderList.removeAt(index);
                         Fluttertoast.showToast(msg: "done!");
