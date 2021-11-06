@@ -1,19 +1,31 @@
-import 'package:flash_card/models/folder_model.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/components/input_title_dialog.dart';
+import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/folder_list_model.dart';
 
-class FolderListPage extends StatefulWidget {
+class FolderListPage extends StatelessWidget {
   const FolderListPage({Key? key, required this.title}) : super(key: key);
   final String title;
+
   @override
-  _FolderListPage createState() => _FolderListPage();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+        child: Scaffold(body: FolderListScreen(title: title)),
+        create: (context) => FolderListModel());
+  }
 }
 
-class _FolderListPage extends State<FolderListPage> {
+class FolderListScreen extends StatefulWidget {
+  const FolderListScreen({Key? key, required this.title}) : super(key: key);
+  final String title;
+  @override
+  _FolderListScreen createState() => _FolderListScreen();
+}
+
+class _FolderListScreen extends State<FolderListScreen> {
   bool _editFlag = false;
   void _switchEditMode() {
     setState(() {
@@ -35,7 +47,7 @@ class _FolderListPage extends State<FolderListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final _folderListItems = Provider.of<FolderListModel>(context);
+    final _folderListModel = Provider.of<FolderListModel>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -55,14 +67,14 @@ class _FolderListPage extends State<FolderListPage> {
             onPressed: () async {
               String title = await showInputTitleDialog(context: context);
               if (title != "") {
-                _folderListItems.add(FolderModel(title, ''));
+                _folderListModel.add(FolderModel(title, ''));
               }
             },
           ),
         ],
       ),
-      body: Consumer<FolderListModel>(builder: (context, folder, _) {
-        _folderItems = folder.items;
+      body: Consumer<FolderListModel>(builder: (context, folderList, _) {
+        _folderItems = folderList.items;
         return ReorderableListView(
           padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
           buildDefaultDragHandles: false,
@@ -77,6 +89,8 @@ class _FolderListPage extends State<FolderListPage> {
               }
               final FolderModel item = _folderItems.removeAt(oldIndex);
               _folderItems.insert(newIndex, item);
+              _folderListModel.items = _folderItems;
+              _folderListModel.setFolders();
             });
           },
         );
@@ -85,6 +99,7 @@ class _FolderListPage extends State<FolderListPage> {
   }
 
   Widget _buildListTileView(String text, int index) {
+    final _folderListModel = Provider.of<FolderListModel>(context);
     return Card(
         key: Key('$index'),
         child: Column(
@@ -110,9 +125,8 @@ class _FolderListPage extends State<FolderListPage> {
                         String title = await showInputTitleDialog(
                             context: context, title: text);
                         if (title != "") {
-                          setState(() {
-                            _folderItems[index] = FolderModel(title, '');
-                          });
+                          _folderListModel.updateAt(
+                              index, FolderModel(title, ''));
                         }
                       },
                     ),
@@ -126,10 +140,8 @@ class _FolderListPage extends State<FolderListPage> {
                           textOK: const Text('Yes'),
                           textCancel: const Text('No'),
                         )) {
-                          setState(() {
-                            _folderItems.removeAt(index);
-                            Fluttertoast.showToast(msg: "done!");
-                          });
+                          _folderListModel.removeAt(index);
+                          Fluttertoast.showToast(msg: "done!");
                         }
                       },
                     ),

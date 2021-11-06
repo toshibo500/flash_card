@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flash_card/folder_list_page.dart';
-import 'package:provider/provider.dart';
-import 'package:flash_card/models/folder_list_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,8 +28,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        child: Scaffold(body: FolderListPage(title: widget.title)),
-        create: (context) => FolderListModel());
+    return Scaffold(body: FolderListPage(title: widget.title));
   }
 }

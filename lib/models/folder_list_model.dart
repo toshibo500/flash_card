@@ -5,36 +5,52 @@ import 'dart:async';
 import 'folder_model.dart';
 
 class FolderListModel extends ChangeNotifier {
-  final List<FolderModel> _folders = <FolderModel>[
-    FolderModel('フォルダー1', 'サマリー1'),
-    FolderModel('フォルダー2', 'サマリー2'),
-    FolderModel('フォルダー3', 'サマリー3'),
-    FolderModel('フォルダー4', 'サマリー4'),
-  ];
+  List<FolderModel> _folders = <FolderModel>[];
 
   List<FolderModel> get items => _folders;
+  set items(folders) {
+    _folders = folders;
+  }
+
+  FolderListModel() {
+    getFolders();
+  }
 
   void add(FolderModel folder) {
     _folders.add(folder);
+    setFolders();
     notifyListeners();
   }
 
-  final String _key = 'FlderList';
-/*   Future getFolders() async {
+  void removeAt(int index) {
+    _folders.removeAt(index);
+    setFolders();
+    notifyListeners();
+  }
+
+  void updateAt(int index, FolderModel folder) {
+    _folders[index] = folder;
+    setFolders();
+    notifyListeners();
+  }
+
+  final String _key = 'FolderList';
+
+  Future getFolders() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey(_key)) {
       return [];
     }
     String? jsonStr = prefs.getString(_key);
     var jsonObjs = jsonDecode(jsonStr!) as List;
-    folders = jsonObjs.map((jsonObj) => FolderModel.fromJson(jsonObj)).toList();
+    _folders =
+        jsonObjs.map((jsonObj) => FolderModel.fromJson(jsonObj)).toList();
     notifyListeners();
   }
 
   Future setFolders() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    var json = jsonEncode(folders.map((e) => e.toJson()).toList());
+    var json = jsonEncode(_folders.map((e) => e.toJson()).toList());
     prefs.setString(_key, json);
-  } */
-
+  }
 }
