@@ -35,16 +35,6 @@ class _FolderListScreen extends State<FolderListScreen> {
 
   List<FolderModel> _folderItems = [];
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  // }
-
-  // @override
-  // void dispose() {
-  //   super.dispose();
-  // }
-
   @override
   Widget build(BuildContext context) {
     final _folderListModel = Provider.of<FolderListModel>(context);
@@ -67,7 +57,7 @@ class _FolderListScreen extends State<FolderListScreen> {
             onPressed: () async {
               String title = await showInputTitleDialog(context: context);
               if (title != "") {
-                _folderListModel.add(FolderModel(title, ''));
+                _folderListModel.add(title, '');
               }
             },
           ),
@@ -76,7 +66,7 @@ class _FolderListScreen extends State<FolderListScreen> {
       body: Consumer<FolderListModel>(builder: (context, folderList, _) {
         _folderItems = folderList.items;
         return ReorderableListView(
-          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
           buildDefaultDragHandles: false,
           children: <Widget>[
             for (int index = 0; index < _folderItems.length; index++)
@@ -87,7 +77,7 @@ class _FolderListScreen extends State<FolderListScreen> {
               if (oldIndex < newIndex) {
                 newIndex -= 1;
               }
-              final FolderModel item = _folderItems.removeAt(oldIndex);
+              final item = _folderItems.removeAt(oldIndex);
               _folderItems.insert(newIndex, item);
               _folderListModel.items = _folderItems;
               _folderListModel.setFolders();
@@ -108,25 +98,22 @@ class _FolderListScreen extends State<FolderListScreen> {
             ListTile(
               title: Text(text),
               subtitle: Text(index.toString()),
+              enabled: !_editFlag,
+              onTap: () {
+                Navigator.of(context).pushNamed("/folderPage",
+                    arguments: _folderItems[index].title);
+              },
               trailing: Visibility(
                 visible: _editFlag,
                 child: Wrap(
                   children: <Widget>[
-                    ReorderableDragStartListener(
-                      index: index,
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        child: const Icon(Icons.drag_handle_rounded),
-                      ),
-                    ),
                     IconButton(
                       icon: const Icon(Icons.edit),
                       onPressed: () async {
                         String title = await showInputTitleDialog(
                             context: context, title: text);
                         if (title != "") {
-                          _folderListModel.updateAt(
-                              index, FolderModel(title, ''));
+                          _folderListModel.updateAt(index, title, '');
                         }
                       },
                     ),
@@ -144,6 +131,13 @@ class _FolderListScreen extends State<FolderListScreen> {
                           Fluttertoast.showToast(msg: "done!");
                         }
                       },
+                    ),
+                    ReorderableDragStartListener(
+                      index: index,
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        child: const Icon(Icons.drag_handle_rounded),
+                      ),
                     ),
                   ],
                 ),

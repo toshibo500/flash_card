@@ -16,8 +16,9 @@ class FolderListModel extends ChangeNotifier {
     getFolders();
   }
 
-  void add(FolderModel folder) {
-    _folders.add(folder);
+  void add(String title, String summary) {
+    _folders.add(FolderModel(
+        DateTime.now().millisecondsSinceEpoch.toString(), title, summary));
     setFolders();
     notifyListeners();
   }
@@ -28,8 +29,8 @@ class FolderListModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateAt(int index, FolderModel folder) {
-    _folders[index] = folder;
+  void updateAt(int index, String title, String summary) {
+    _folders[index] = FolderModel(_folders[index].id, title, summary);
     setFolders();
     notifyListeners();
   }
