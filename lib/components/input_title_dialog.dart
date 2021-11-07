@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class InputTitleDialog extends StatefulWidget {
-  const InputTitleDialog({Key? key, this.title}) : super(key: key);
+  const InputTitleDialog({Key? key, String this.title = ''}) : super(key: key);
   final String? title;
   @override
   _InputTitleDialog createState() => _InputTitleDialog();

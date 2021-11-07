@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/components/input_title_dialog.dart';
 import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/folder_list_model.dart';
+import 'package:flash_card/components/file_list_view.dart';
+import 'package:flash_card/models/app_status.dart';
 
 class FolderListPage extends StatelessWidget {
   const FolderListPage({Key? key, required this.title}) : super(key: key);
@@ -12,9 +12,13 @@ class FolderListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        child: Scaffold(body: FolderListScreen(title: title)),
-        create: (context) => FolderListModel());
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => FolderListModel()),
+        ChangeNotifierProvider(create: (context) => AppStatusModel()),
+      ],
+      child: Scaffold(body: FolderListScreen(title: title)),
+    );
   }
 }
 
@@ -26,18 +30,12 @@ class FolderListScreen extends StatefulWidget {
 }
 
 class _FolderListScreen extends State<FolderListScreen> {
-  bool _editFlag = false;
-  void _switchEditMode() {
-    setState(() {
-      _editFlag = !_editFlag;
-    });
-  }
-
   List<FolderModel> _folderItems = [];
 
   @override
   Widget build(BuildContext context) {
     final _folderListModel = Provider.of<FolderListModel>(context);
+    final _appStatus = Provider.of<AppStatusModel>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -48,9 +46,9 @@ class _FolderListScreen extends State<FolderListScreen> {
         ),
         actions: [
           IconButton(
-              icon: Icon(_editFlag ? Icons.done : Icons.edit_rounded),
+              icon: Icon(_appStatus.editMode ? Icons.done : Icons.edit_rounded),
               onPressed: () {
-                _switchEditMode();
+                _appStatus.editMode = !_appStatus.editMode;
               }),
           IconButton(
             icon: const Icon(Icons.add),
@@ -65,85 +63,8 @@ class _FolderListScreen extends State<FolderListScreen> {
       ),
       body: Consumer<FolderListModel>(builder: (context, folderList, _) {
         _folderItems = folderList.items;
-        return ReorderableListView(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-          buildDefaultDragHandles: false,
-          children: <Widget>[
-            for (int index = 0; index < _folderItems.length; index++)
-              _buildListTileView(_folderItems[index].title, index)
-          ],
-          onReorder: (int oldIndex, int newIndex) {
-            setState(() {
-              if (oldIndex < newIndex) {
-                newIndex -= 1;
-              }
-              final item = _folderItems.removeAt(oldIndex);
-              _folderItems.insert(newIndex, item);
-              _folderListModel.items = _folderItems;
-              _folderListModel.setFolders();
-            });
-          },
-        );
+        return FileListView(model: _folderListModel, items: _folderItems);
       }),
     );
-  }
-
-  Widget _buildListTileView(String text, int index) {
-    final _folderListModel = Provider.of<FolderListModel>(context);
-    return Card(
-        key: Key('$index'),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              title: Text(text),
-              subtitle: Text(index.toString()),
-              enabled: !_editFlag,
-              onTap: () {
-                Navigator.of(context).pushNamed("/folderPage",
-                    arguments: _folderItems[index].title);
-              },
-              trailing: Visibility(
-                visible: _editFlag,
-                child: Wrap(
-                  children: <Widget>[
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () async {
-                        String title = await showInputTitleDialog(
-                            context: context, title: text);
-                        if (title != "") {
-                          _folderListModel.updateAt(index, title, '');
-                        }
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () async {
-                        if (await confirm(
-                          context,
-                          title: const Text('Confirm'),
-                          content: const Text('Would you like to remove?'),
-                          textOK: const Text('Yes'),
-                          textCancel: const Text('No'),
-                        )) {
-                          _folderListModel.removeAt(index);
-                          Fluttertoast.showToast(msg: "done!");
-                        }
-                      },
-                    ),
-                    ReorderableDragStartListener(
-                      index: index,
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        child: const Icon(Icons.drag_handle_rounded),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          ],
-        ));
   }
 }
