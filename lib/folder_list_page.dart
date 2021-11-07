@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/components/input_title_dialog.dart';
-import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/folder_list_model.dart';
 import 'package:flash_card/components/file_list_view.dart';
 import 'package:flash_card/models/app_status.dart';
@@ -17,28 +16,22 @@ class FolderListPage extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => FolderListModel()),
         ChangeNotifierProvider(create: (context) => AppStatusModel()),
       ],
-      child: Scaffold(body: FolderListScreen(title: title)),
+      child: Scaffold(body: _FolderListPage(pageTitle: title)),
     );
   }
 }
 
-class FolderListScreen extends StatefulWidget {
-  const FolderListScreen({Key? key, required this.title}) : super(key: key);
-  final String title;
-  @override
-  _FolderListScreen createState() => _FolderListScreen();
-}
-
-class _FolderListScreen extends State<FolderListScreen> {
-  List<FolderModel> _folderItems = [];
+class _FolderListPage extends StatelessWidget {
+  const _FolderListPage({Key? key, required this.pageTitle}) : super(key: key);
+  final String pageTitle;
 
   @override
   Widget build(BuildContext context) {
-    final _folderListModel = Provider.of<FolderListModel>(context);
-    final _appStatus = Provider.of<AppStatusModel>(context);
+    var _folderListModel = Provider.of<FolderListModel>(context);
+    var _appStatus = Provider.of<AppStatusModel>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(pageTitle),
         backgroundColor: Colors.green,
         leading: IconButton(
           icon: const Icon(Icons.menu),
@@ -62,8 +55,10 @@ class _FolderListScreen extends State<FolderListScreen> {
         ],
       ),
       body: Consumer<FolderListModel>(builder: (context, folderList, _) {
-        _folderItems = folderList.items;
-        return FileListView(model: _folderListModel, items: _folderItems);
+        return FileListView(
+            model: _folderListModel,
+            items: folderList.items,
+            nextPage: "/folderPage");
       }),
     );
   }

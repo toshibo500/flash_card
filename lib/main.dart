@@ -1,6 +1,7 @@
 import 'package:flash_card/folder_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/folder_list_page.dart';
+import 'package:flash_card/models/folder_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         if (settings.name == '/folderPage') {
           return MaterialPageRoute(
             builder: (context) =>
-                FolderPage(title: settings.arguments.toString()),
+                FolderPage(folder: settings.arguments as FolderModel),
           );
         }
         return null;
