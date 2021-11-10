@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/components/input_title_dialog.dart';
-import 'package:flash_card/models/folder_list_model.dart';
 import 'package:flash_card/components/file_list_view.dart';
-import 'package:flash_card/models/app_status.dart';
+import 'package:flash_card/viewmodels/folder_list_viewmodel.dart';
 
 class FolderListPage extends StatelessWidget {
   const FolderListPage({Key? key, required this.title}) : super(key: key);
@@ -11,11 +10,8 @@ class FolderListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => FolderListModel()),
-        ChangeNotifierProvider(create: (context) => AppStatusModel()),
-      ],
+    return ChangeNotifierProvider(
+      create: (context) => FolderListViewModel(),
       child: Scaffold(body: _FolderListPage(pageTitle: title)),
     );
   }
@@ -27,8 +23,7 @@ class _FolderListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _folderListModel = Provider.of<FolderListModel>(context);
-    var _appStatus = Provider.of<AppStatusModel>(context);
+    var _folderListViewModel = Provider.of<FolderListViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(pageTitle),
@@ -39,26 +34,25 @@ class _FolderListPage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-              icon: Icon(_appStatus.editMode ? Icons.done : Icons.edit_rounded),
+              icon: Icon(_folderListViewModel.editMode
+                  ? Icons.done
+                  : Icons.edit_rounded),
               onPressed: () {
-                _appStatus.editMode = !_appStatus.editMode;
+                _folderListViewModel.editMode = !_folderListViewModel.editMode;
               }),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
               String title = await showInputTitleDialog(context: context);
               if (title != "") {
-                _folderListModel.add(title, '');
+                _folderListViewModel.add(title, '');
               }
             },
           ),
         ],
       ),
-      body: Consumer<FolderListModel>(builder: (context, folderList, _) {
-        return FileListView(
-            model: _folderListModel,
-            items: folderList.items,
-            nextPage: "/folderPage");
+      body: Consumer<FolderListViewModel>(builder: (context, viewModel, _) {
+        return FileListView(viewModel: viewModel, nextPage: "/folderPage");
       }),
     );
   }

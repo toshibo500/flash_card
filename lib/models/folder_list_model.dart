@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'folder_model.dart';
 
-class FolderListModel extends ChangeNotifier {
+class FolderListModel {
   List<FolderModel> _folders = <FolderModel>[];
 
   List<FolderModel> get items => _folders;
@@ -20,33 +19,35 @@ class FolderListModel extends ChangeNotifier {
     _folders.add(FolderModel(
         DateTime.now().millisecondsSinceEpoch.toString(), title, summary));
     setFolders();
-    notifyListeners();
   }
 
-  void removeAt(int index) {
-    _folders.removeAt(index);
+  FolderModel removeAt(int index) {
+    FolderModel item = _folders.removeAt(index);
     setFolders();
-    notifyListeners();
+    return item;
   }
 
   void updateAt(int index, String title, String summary) {
     _folders[index] = FolderModel(_folders[index].id, title, summary);
     setFolders();
-    notifyListeners();
   }
 
   final String _key = 'FolderList';
 
-  Future getFolders() async {
+  Future<List> getFolders() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey(_key)) {
       return [];
     }
+
     String? jsonStr = prefs.getString(_key);
-    var jsonObjs = jsonDecode(jsonStr!) as List;
+    if (jsonStr == null) {
+      return [];
+    }
+    var jsonObjs = jsonDecode(jsonStr) as List;
     _folders =
         jsonObjs.map((jsonObj) => FolderModel.fromJson(jsonObj)).toList();
-    notifyListeners();
+    return _folders;
   }
 
   Future setFolders() async {

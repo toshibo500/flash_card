@@ -2,9 +2,8 @@ import 'package:flash_card/models/folder_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/components/input_title_dialog.dart';
-import 'package:flash_card/models/book_list_model.dart';
 import 'package:flash_card/components/file_list_view.dart';
-import 'package:flash_card/models/app_status.dart';
+import 'package:flash_card/viewmodels/folder_viewmodel.dart';
 
 class FolderPage extends StatelessWidget {
   const FolderPage({Key? key, required this.folder}) : super(key: key);
@@ -12,11 +11,8 @@ class FolderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => BookListModel()),
-        ChangeNotifierProvider(create: (context) => AppStatusModel()),
-      ],
+    return ChangeNotifierProvider(
+      create: (context) => FolderViewModel(),
       child: Scaffold(body: _FolderPage(pageTitle: folder.title)),
     );
   }
@@ -28,8 +24,7 @@ class _FolderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _bookListModel = Provider.of<BookListModel>(context);
-    var _appStatus = Provider.of<AppStatusModel>(context);
+    var _folderViweModel = Provider.of<FolderViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(pageTitle),
@@ -40,23 +35,24 @@ class _FolderPage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-              icon: Icon(_appStatus.editMode ? Icons.done : Icons.edit_rounded),
+              icon: Icon(
+                  _folderViweModel.editMode ? Icons.done : Icons.edit_rounded),
               onPressed: () {
-                _appStatus.editMode = !_appStatus.editMode;
+                _folderViweModel.editMode = !_folderViweModel.editMode;
               }),
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
               String title = await showInputTitleDialog(context: context);
               if (title != "") {
-                _bookListModel.add('', title, '');
+                _folderViweModel.add('', title, '');
               }
             },
           ),
         ],
       ),
-      body: Consumer<BookListModel>(builder: (context, folderList, _) {
-        return FileListView(model: _bookListModel, items: folderList.items);
+      body: Consumer<FolderViewModel>(builder: (context, viewModel, _) {
+        return FileListView(viewModel: viewModel, nextPage: "/");
       }),
     );
   }

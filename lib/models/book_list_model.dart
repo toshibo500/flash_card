@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'book_model.dart';
 
-class BookListModel extends ChangeNotifier {
+class BookListModel {
   List<BookModel> _books = <BookModel>[];
 
   List<BookModel> get items => _books;
@@ -20,32 +19,33 @@ class BookListModel extends ChangeNotifier {
     _books.add(BookModel(DateTime.now().millisecondsSinceEpoch.toString(),
         folderId, title, summary));
     setBooks();
-    notifyListeners();
   }
 
-  void removeAt(int index) {
-    _books.removeAt(index);
+  BookModel removeAt(int index) {
+    final item = _books.removeAt(index);
     setBooks();
-    notifyListeners();
+    return item;
   }
 
   void updateAt(int index, String folderId, String title, String summary) {
     _books[index] = BookModel(_books[index].id, folderId, title, summary);
     setBooks();
-    notifyListeners();
   }
 
   final String _key = 'BookList';
 
-  Future getBooks() async {
+  Future<List> getBooks() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey(_key)) {
       return [];
     }
     String? jsonStr = prefs.getString(_key);
-    var jsonObjs = jsonDecode(jsonStr!) as List;
+    if (jsonStr == null) {
+      return [];
+    }
+    var jsonObjs = jsonDecode(jsonStr) as List;
     _books = jsonObjs.map((jsonObj) => BookModel.fromJson(jsonObj)).toList();
-    notifyListeners();
+    return _books;
   }
 
   Future setBooks() async {
