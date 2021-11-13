@@ -1,6 +1,6 @@
 import 'package:flash_card/models/folder_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flash_card/models/folder_list_model.dart';
+import 'package:flash_card/models/repositories/folder_repository.dart';
 
 class FolderListViewModel extends ChangeNotifier {
   FolderListViewModel() {
@@ -8,10 +8,8 @@ class FolderListViewModel extends ChangeNotifier {
   }
 
   bool _editMode = false;
-  final FolderListModel _folderListModel = FolderListModel();
-
-  FolderListModel get folderListModel => _folderListModel;
-  List<FolderModel> get items => _folderListModel.items;
+  List<FolderModel> _folderList = [];
+  List<FolderModel> get items => _folderList;
 
   bool get editMode => _editMode;
   set editMode(mode) {
@@ -19,33 +17,36 @@ class FolderListViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void add(String title, String summary) {
-    _folderListModel.add(title, summary);
+  addFolder(String title, String summary) async {
+    FolderModel? item = await FolderRepository.create(title, summary);
+    if (item != null) {
+      _folderList.add(item);
+      notifyListeners();
+    }
+  }
+
+  void removeFolder(int index) async {
+    int res = await FolderRepository.delete(_folderList[index].id);
+    if (res > 0) {
+      _folderList.removeAt(index);
+      notifyListeners();
+    }
+  }
+
+  void updateFolder(int index, String title, String summary) {
     notifyListeners();
   }
 
-  void removeAt(int index) {
-    _folderListModel.removeAt(index);
+  void getFolders() async {
+    _folderList = await FolderRepository.getAll();
     notifyListeners();
   }
 
-  void updateAt(int index, String title, String summary) {
-    _folderListModel.updateAt(index, title, summary);
-    notifyListeners();
-  }
-
-  void getFolders() {
-    _folderListModel.getFolders().then((value) => {notifyListeners()});
-  }
-
-  void setFolders() {
-    _folderListModel.setFolders();
-  }
+  void setFolders() {}
 
   void reorder(int oldIndex, int newIndex) {
-    final FolderModel item = _folderListModel.removeAt(oldIndex);
-    _folderListModel.items.insert(newIndex, item);
-    _folderListModel.setFolders();
+    final FolderModel item = _folderList.removeAt(oldIndex);
+    _folderList.insert(newIndex, item);
     notifyListeners();
   }
 }

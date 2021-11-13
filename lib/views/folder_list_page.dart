@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flash_card/components/input_title_dialog.dart';
-import 'package:flash_card/components/file_list_view.dart';
+import 'package:flash_card/views/components/input_title_dialog.dart';
+import 'package:flash_card/views/components/file_list_view.dart';
 import 'package:flash_card/viewmodels/folder_list_viewmodel.dart';
 
 class FolderListPage extends StatelessWidget {
@@ -45,7 +45,7 @@ class _FolderListPage extends StatelessWidget {
             onPressed: () async {
               String title = await showInputTitleDialog(context: context);
               if (title != "") {
-                _folderListViewModel.add(title, '');
+                _folderListViewModel.addFolder(title, '');
               }
             },
           ),

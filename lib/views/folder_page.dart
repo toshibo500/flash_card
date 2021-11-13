@@ -1,8 +1,8 @@
 import 'package:flash_card/models/folder_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flash_card/components/input_title_dialog.dart';
-import 'package:flash_card/components/file_list_view.dart';
+import 'package:flash_card/views/components/input_title_dialog.dart';
+import 'package:flash_card/views/components/file_list_view.dart';
 import 'package:flash_card/viewmodels/folder_viewmodel.dart';
 
 class FolderPage extends StatelessWidget {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
-import 'package:flash_card/components/input_title_dialog.dart';
+import 'package:flash_card/views/components/input_title_dialog.dart';
 
 class FileListView extends StatefulWidget {
   const FileListView({Key? key, required this.viewModel, this.nextPage = ""})
@@ -56,7 +56,7 @@ class _FileListView extends State<FileListView> {
                         String title = await showInputTitleDialog(
                             context: context, title: text);
                         if (title != "") {
-                          widget.viewModel.updateAt(index, title, '');
+                          widget.viewModel.updateFolder(index, title, '');
                         }
                       },
                     ),
@@ -70,7 +70,7 @@ class _FileListView extends State<FileListView> {
                           textOK: const Text('Yes'),
                           textCancel: const Text('No'),
                         )) {
-                          widget.viewModel.removeAt(index);
+                          widget.viewModel.removeFolder(index);
                           Fluttertoast.showToast(msg: "done!");
                         }
                       },

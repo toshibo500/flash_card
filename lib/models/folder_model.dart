@@ -1,4 +1,9 @@
 class FolderModel {
+  static const String tableName = 'folders';
+  static const String colId = 'id';
+  static const String colTitle = 'title';
+  static const String colSummary = 'summary';
+
   final String id;
   final String title;
   final String summary;
@@ -6,8 +11,8 @@ class FolderModel {
   FolderModel(this.id, this.title, this.summary);
 
   factory FolderModel.fromJson(dynamic json) {
-    return FolderModel(json['id'] as String, json['title'] as String,
-        json['summary'] as String);
+    return FolderModel(json[colId] as String, json[colTitle] as String,
+        json[colSummary] as String);
   }
 
   @override
@@ -16,8 +21,8 @@ class FolderModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'title': title,
-        'summary': summary,
+        colId: id,
+        colTitle: title,
+        colSummary: summary,
       };
 }

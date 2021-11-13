@@ -1,6 +1,6 @@
-import 'package:flash_card/folder_page.dart';
+import 'package:flash_card/views/folder_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flash_card/folder_list_page.dart';
+import 'package:flash_card/views/folder_list_page.dart';
 import 'package:flash_card/models/folder_model.dart';
 
 void main() {

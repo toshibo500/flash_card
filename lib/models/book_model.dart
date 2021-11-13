@@ -1,4 +1,10 @@
 class BookModel {
+  static const String tableName = 'books';
+  static const String colId = 'id';
+  static const String colFolderId = 'folderId';
+  static const String colTitle = 'title';
+  static const String colSummary = 'summary';
+
   final String id;
   final String folderId;
   final String title;
@@ -7,8 +13,8 @@ class BookModel {
   BookModel(this.id, this.folderId, this.title, this.summary);
 
   factory BookModel.fromJson(dynamic json) {
-    return BookModel(json['id'] as String, json['folderId'] as String,
-        json['title'] as String, json['summary'] as String);
+    return BookModel(json[colId] as String, json[colFolderId] as String,
+        json[colTitle] as String, json[colSummary] as String);
   }
 
   @override
@@ -17,9 +23,9 @@ class BookModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'folderId': folderId,
-        'title': title,
-        'summary': summary,
+        colId: id,
+        folderId: folderId,
+        colTitle: title,
+        colSummary: summary,
       };
 }
