@@ -12,7 +12,7 @@ class FolderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => FolderViewModel(),
+      create: (context) => FolderViewModel(folder),
       child: Scaffold(body: _FolderPage(pageTitle: folder.title)),
     );
   }
@@ -45,7 +45,7 @@ class _FolderPage extends StatelessWidget {
             onPressed: () async {
               String title = await showInputTitleDialog(context: context);
               if (title != "") {
-                _folderViweModel.add('', title, '');
+                _folderViweModel.add(title, '');
               }
             },
           ),

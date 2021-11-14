@@ -45,7 +45,7 @@ class _FolderListPage extends StatelessWidget {
             onPressed: () async {
               String title = await showInputTitleDialog(context: context);
               if (title != "") {
-                _folderListViewModel.addFolder(title, '');
+                _folderListViewModel.add(title, '');
               }
             },
           ),

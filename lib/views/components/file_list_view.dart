@@ -56,7 +56,13 @@ class _FileListView extends State<FileListView> {
                         String title = await showInputTitleDialog(
                             context: context, title: text);
                         if (title != "") {
-                          widget.viewModel.updateFolder(index, title, '');
+                          int seq = widget.viewModel.items[index].sequence;
+                          widget.viewModel.update(
+                            index,
+                            title,
+                            '',
+                            seq,
+                          );
                         }
                       },
                     ),
@@ -70,7 +76,7 @@ class _FileListView extends State<FileListView> {
                           textOK: const Text('Yes'),
                           textCancel: const Text('No'),
                         )) {
-                          widget.viewModel.removeFolder(index);
+                          widget.viewModel.remove(index);
                           Fluttertoast.showToast(msg: "done!");
                         }
                       },

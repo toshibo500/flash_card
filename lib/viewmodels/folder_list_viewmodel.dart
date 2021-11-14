@@ -4,7 +4,7 @@ import 'package:flash_card/models/repositories/folder_repository.dart';
 
 class FolderListViewModel extends ChangeNotifier {
   FolderListViewModel() {
-    getFolders();
+    getAll();
   }
 
   bool _editMode = false;
@@ -17,15 +17,16 @@ class FolderListViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  addFolder(String title, String summary) async {
-    FolderModel? item = await FolderRepository.create(title, summary);
+  add(String title, String summary) async {
+    FolderModel? item =
+        await FolderRepository.create(title, summary, _folderList.length + 1);
     if (item != null) {
       _folderList.add(item);
       notifyListeners();
     }
   }
 
-  void removeFolder(int index) async {
+  void remove(int index) async {
     int res = await FolderRepository.delete(_folderList[index].id);
     if (res > 0) {
       _folderList.removeAt(index);
@@ -33,20 +34,24 @@ class FolderListViewModel extends ChangeNotifier {
     }
   }
 
-  void updateFolder(int index, String title, String summary) {
-    notifyListeners();
+  void update(int index, String title, String summary, int sequence) async {
+    String _id = _folderList[index].id;
+    int res = await FolderRepository.update(_id, title, summary, sequence);
+    if (res > 0) {
+      _folderList[index] = FolderModel(_id, title, summary, sequence);
+      notifyListeners();
+    }
   }
 
-  void getFolders() async {
+  void getAll() async {
     _folderList = await FolderRepository.getAll();
     notifyListeners();
   }
 
-  void setFolders() {}
-
-  void reorder(int oldIndex, int newIndex) {
+  void reorder(int oldIndex, int newIndex) async {
     final FolderModel item = _folderList.removeAt(oldIndex);
     _folderList.insert(newIndex, item);
+    await FolderRepository.bulkUpdate(_folderList);
     notifyListeners();
   }
 }

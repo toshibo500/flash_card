@@ -5,7 +5,7 @@ import 'package:flash_card/models/book_model.dart';
 
 class DbProvider {
   static const _dbFileName = 'flashcard.db';
-  static const _dbCurrentVersion = 1;
+  static const _dbCurrentVersion = 2;
 
   DbProvider._();
   static final DbProvider instance = DbProvider._();
@@ -16,11 +16,10 @@ class DbProvider {
 
   Future<Database> _initDb() async {
     String path = join(await getDatabasesPath(), _dbFileName);
-    return await openDatabase(
-      path,
-      version: _dbCurrentVersion,
-      onCreate: _createTable,
-    );
+    return await openDatabase(path,
+        version: _dbCurrentVersion,
+        onCreate: _createTable,
+        onUpgrade: _upgradeTable);
   }
 
   Future<void> _createTable(Database db, int version) async {
@@ -36,5 +35,22 @@ class DbProvider {
         "${BookModel.colSummary} TEXT"
         ")");
     return;
+  }
+
+  static const scripts = {
+    2: [
+      'ALTER TABLE ${FolderModel.tableName} ADD COLUMN ${FolderModel.colSequence} INTEGER;',
+      'ALTER TABLE ${BookModel.tableName} ADD COLUMN ${BookModel.colSequence} INTEGER;'
+    ],
+  };
+
+  Future<void> _upgradeTable(
+      Database db, int oldVersion, int newVersion) async {
+    for (var i = oldVersion + 1; i <= newVersion; i++) {
+      List? queries = scripts[i];
+      for (String query in queries!) {
+        await db.execute(query);
+      }
+    }
   }
 }
