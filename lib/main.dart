@@ -1,7 +1,9 @@
-import 'package:flash_card/views/folder_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/views/folder_list_page.dart';
 import 'package:flash_card/models/folder_model.dart';
+import 'package:flash_card/models/book_model.dart';
+import 'package:flash_card/views/folder_page.dart';
+import 'package:flash_card/views/book_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -24,6 +26,12 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) =>
                 FolderPage(folder: settings.arguments as FolderModel),
+          );
+        }
+        if (settings.name == '/bookPage') {
+          return MaterialPageRoute(
+            builder: (context) =>
+                BookPage(book: settings.arguments as BookModel),
           );
         }
         return null;

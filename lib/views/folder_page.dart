@@ -30,8 +30,8 @@ class _FolderPage extends StatelessWidget {
         title: Text(pageTitle),
         backgroundColor: Colors.green,
         leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () => {},
+          icon: const Icon(Icons.arrow_back_ios_new_outlined),
+          onPressed: () => {Navigator.of(context).pop()},
         ),
         actions: [
           IconButton(
@@ -52,7 +52,7 @@ class _FolderPage extends StatelessWidget {
         ],
       ),
       body: Consumer<FolderViewModel>(builder: (context, viewModel, _) {
-        return FileListView(viewModel: viewModel, nextPage: "/");
+        return FileListView(viewModel: viewModel, nextPage: "/bookPage");
       }),
     );
   }

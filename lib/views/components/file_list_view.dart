@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
@@ -58,10 +59,10 @@ class _FileListView extends State<FileListView> {
                         if (title != "") {
                           int seq = widget.viewModel.items[index].sequence;
                           widget.viewModel.update(
-                            index,
-                            title,
-                            '',
-                            seq,
+                            index: index,
+                            title: title,
+                            summary: '',
+                            sequence: seq,
                           );
                         }
                       },

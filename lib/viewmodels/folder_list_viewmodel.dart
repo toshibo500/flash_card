@@ -34,7 +34,11 @@ class FolderListViewModel extends ChangeNotifier {
     }
   }
 
-  void update(int index, String title, String summary, int sequence) async {
+  void update(
+      {required int index,
+      required String title,
+      required String summary,
+      required int sequence}) async {
     String _id = _folderList[index].id;
     int res = await FolderRepository.update(_id, title, summary, sequence);
     if (res > 0) {

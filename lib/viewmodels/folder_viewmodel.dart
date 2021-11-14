@@ -43,13 +43,18 @@ class FolderViewModel extends ChangeNotifier {
     }
   }
 
-  void update(int index, String folderId, String title, String summary,
-      int sequence) async {
+  void update(
+      {required int index,
+      String? folderId,
+      required String title,
+      required String summary,
+      required int sequence}) async {
     String _id = _bookList[index].id;
+    String _folderId = folderId ?? _bookList[index].folderId;
     int res =
-        await BookRepository.update(_id, folderId, title, summary, sequence);
+        await BookRepository.update(_id, _folderId, title, summary, sequence);
     if (res > 0) {
-      _bookList[index] = BookModel(_id, folderId, title, summary, sequence);
+      _bookList[index] = BookModel(_id, _folderId, title, summary, sequence);
       notifyListeners();
     }
   }
