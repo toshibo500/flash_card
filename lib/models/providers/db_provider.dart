@@ -2,10 +2,11 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/book_model.dart';
+import 'package:flash_card/models/card_model.dart';
 
 class DbProvider {
   static const _dbFileName = 'flashcard.db';
-  static const _dbCurrentVersion = 2;
+  static const _dbCurrentVersion = 3;
 
   DbProvider._();
   static final DbProvider instance = DbProvider._();
@@ -41,6 +42,15 @@ class DbProvider {
     2: [
       'ALTER TABLE ${FolderModel.tableName} ADD COLUMN ${FolderModel.colSequence} INTEGER;',
       'ALTER TABLE ${BookModel.tableName} ADD COLUMN ${BookModel.colSequence} INTEGER;'
+    ],
+    3: [
+      "CREATE TABLE ${CardModel.tableName} ("
+          "${CardModel.colId} TEXT PRIMARY KEY,"
+          "${CardModel.colBookId} TEXT,"
+          "${CardModel.colFront} TEXT,"
+          "${CardModel.colBack} TEXT,"
+          "${CardModel.colSequence} INTEGER"
+          ")",
     ],
   };
 

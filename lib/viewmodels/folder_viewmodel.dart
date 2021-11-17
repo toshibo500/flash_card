@@ -32,7 +32,6 @@ class FolderViewModel extends ChangeNotifier {
       _bookList.add(item);
       notifyListeners();
     }
-    notifyListeners();
   }
 
   void remove(int index) async {

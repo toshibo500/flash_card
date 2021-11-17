@@ -12,6 +12,8 @@ class CardModel {
   final String back;
   final int sequence;
 
+  String get title => front;
+
   CardModel(this.id, this.bookId, this.front, this.back, this.sequence);
 
   factory CardModel.fromJson(dynamic json) {

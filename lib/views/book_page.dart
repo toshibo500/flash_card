@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/views/components/input_title_dialog.dart';
 import 'package:flash_card/viewmodels/book_viewmodel.dart';
+import 'package:flash_card/views/components/file_list_view.dart';
 
 class BookPage extends StatelessWidget {
   const BookPage({Key? key, required this.book}) : super(key: key);
@@ -43,13 +44,15 @@ class _BookPage extends StatelessWidget {
             icon: const Icon(Icons.add),
             onPressed: () async {
               String title = await showInputTitleDialog(context: context);
-              if (title != "") {}
+              if (title != "") {
+                _bookViweModel.add(title, '');
+              }
             },
           ),
         ],
       ),
       body: Consumer<BookViewModel>(builder: (context, viewModel, _) {
-        return const Text("test", style: TextStyle(fontSize: 80));
+        return FileListView(viewModel: viewModel, nextPage: "");
       }),
     );
   }

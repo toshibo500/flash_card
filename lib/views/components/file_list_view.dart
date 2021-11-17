@@ -1,8 +1,10 @@
+import 'package:flash_card/viewmodels/book_viewmodel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:flash_card/views/components/input_title_dialog.dart';
+import 'package:flip_card/flip_card.dart';
 
 class FileListView extends StatefulWidget {
   const FileListView({Key? key, required this.viewModel, this.nextPage = ""})
@@ -20,10 +22,7 @@ class _FileListView extends State<FileListView> {
     return ReorderableListView(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
       buildDefaultDragHandles: false,
-      children: <Widget>[
-        for (int index = 0; index < widget.viewModel.items.length; index++)
-          _buildListTileView(widget.viewModel.items[index].title, index)
-      ],
+      children: _buildListTileView(),
       onReorder: (int oldIndex, int newIndex) {
         if (oldIndex < newIndex) {
           newIndex -= 1;
@@ -33,67 +32,111 @@ class _FileListView extends State<FileListView> {
     );
   }
 
-  Widget _buildListTileView(String text, int index) {
+  List<Widget> _buildListTileView() {
+    List<Widget> tiles = [];
+    for (int index = 0; index < widget.viewModel.items.length; index++) {
+      if (widget.viewModel is BookViewModel) {
+        tiles.add(_buildFlipCard(widget.viewModel.items[index].front,
+            widget.viewModel.items[index].back, index));
+      } else {
+        tiles.add(_buildCard(widget.viewModel.items[index].title, index));
+      }
+    }
+    return tiles;
+  }
+
+  Widget _buildFlipCard(String front, String back, int index) {
     return Card(
-        key: Key('$index'),
-        child: Column(
+      key: Key('$index'),
+      child: FlipCard(
+        direction: FlipDirection.VERTICAL,
+        speed: 300,
+        onFlipDone: (status) {
+          print(status);
+        },
+        front: Text(front, style: Theme.of(context).textTheme.headline5),
+        back: Text(front, style: Theme.of(context).textTheme.headline5),
+      ),
+    );
+  }
+
+  Widget _buildCard(String text, int index) {
+    return Card(
+      key: Key('$index'),
+      child: Column(
           mainAxisSize: MainAxisSize.min,
+          children: <Widget>[_buildListTile(text, index)]),
+    );
+  }
+
+  Widget _buildListTile(String text, int index) {
+    return ListTile(
+      title: Text(text),
+      subtitle: Text(index.toString()),
+      enabled: !widget.viewModel.editMode,
+      onTap: () {
+        if (widget.nextPage != "") {
+          Navigator.of(context).pushNamed(widget.nextPage,
+              arguments: widget.viewModel.items[index]);
+        }
+      },
+      trailing: Visibility(
+        visible: widget.viewModel.editMode,
+        child: Wrap(
           children: <Widget>[
-            ListTile(
-              title: Text(text),
-              subtitle: Text(index.toString()),
-              enabled: !widget.viewModel.editMode,
-              onTap: () {
-                Navigator.of(context).pushNamed(widget.nextPage,
-                    arguments: widget.viewModel.items[index]);
-              },
-              trailing: Visibility(
-                visible: widget.viewModel.editMode,
-                child: Wrap(
-                  children: <Widget>[
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      onPressed: () async {
-                        String title = await showInputTitleDialog(
-                            context: context, title: text);
-                        if (title != "") {
-                          int seq = widget.viewModel.items[index].sequence;
-                          widget.viewModel.update(
-                            index: index,
-                            title: title,
-                            summary: '',
-                            sequence: seq,
-                          );
-                        }
-                      },
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () async {
-                        if (await confirm(
-                          context,
-                          title: const Text('Confirm'),
-                          content: const Text('Would you like to remove?'),
-                          textOK: const Text('Yes'),
-                          textCancel: const Text('No'),
-                        )) {
-                          widget.viewModel.remove(index);
-                          Fluttertoast.showToast(msg: "done!");
-                        }
-                      },
-                    ),
-                    ReorderableDragStartListener(
-                      index: index,
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        child: const Icon(Icons.drag_handle_rounded),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
+            _editIconButton(text, index),
+            _deleteIconButton(index),
+            _dragIconButton(index),
           ],
-        ));
+        ),
+      ),
+    );
+  }
+
+  IconButton _editIconButton(String text, int index) {
+    return IconButton(
+      icon: const Icon(Icons.edit),
+      onPressed: () async {
+        String title =
+            await showInputTitleDialog(context: context, title: text);
+        if (title != "") {
+          int seq = widget.viewModel.items[index].sequence;
+          widget.viewModel.update(
+            index: index,
+            title: title,
+            summary: '',
+            sequence: seq,
+          );
+        }
+      },
+    );
+  }
+
+  IconButton _deleteIconButton(int index) {
+    return IconButton(
+      icon: const Icon(Icons.delete),
+      onPressed: () async {
+        if (await confirm(
+          context,
+          title: const Text('Confirm'),
+          content: const Text('Would you like to remove?'),
+          textOK: const Text('Yes'),
+          textCancel: const Text('No'),
+        )) {
+          widget.viewModel.remove(index);
+          Fluttertoast.showToast(msg: "done!");
+        }
+      },
+    );
+  }
+
+  ReorderableDragStartListener _dragIconButton(int index) {
+    return ReorderableDragStartListener(
+      index: index,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        child: const Icon(Icons.drag_handle_rounded),
+      ),
+    );
   }
 }
