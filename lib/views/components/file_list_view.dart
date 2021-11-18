@@ -52,10 +52,32 @@ class _FileListView extends State<FileListView> {
         direction: FlipDirection.VERTICAL,
         speed: 300,
         onFlipDone: (status) {
-          print(status);
+          // print(status);
         },
-        front: Text(front, style: Theme.of(context).textTheme.headline5),
-        back: Text(front, style: Theme.of(context).textTheme.headline5),
+        front: _buildFlipCardContent(front, index),
+        back: _buildFlipCardContent(back, index),
+      ),
+    );
+  }
+
+  Container _buildFlipCardContent(String text, int index) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+      ),
+      height: 80,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Text(text, style: Theme.of(context).textTheme.headline5),
+          SizedBox(
+            width: widget.viewModel.editMode ? 140 : 0,
+            child: _buildIconButtons(text, index),
+          ),
+        ],
       ),
     );
   }
@@ -80,15 +102,19 @@ class _FileListView extends State<FileListView> {
               arguments: widget.viewModel.items[index]);
         }
       },
-      trailing: Visibility(
-        visible: widget.viewModel.editMode,
-        child: Wrap(
-          children: <Widget>[
-            _editIconButton(text, index),
-            _deleteIconButton(index),
-            _dragIconButton(index),
-          ],
-        ),
+      trailing: _buildIconButtons(text, index),
+    );
+  }
+
+  Visibility _buildIconButtons(String text, int index) {
+    return Visibility(
+      visible: widget.viewModel.editMode,
+      child: Wrap(
+        children: <Widget>[
+          _editIconButton(text, index),
+          _deleteIconButton(index),
+          _dragIconButton(index),
+        ],
       ),
     );
   }
