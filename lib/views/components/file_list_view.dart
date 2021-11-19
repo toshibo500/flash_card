@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:flash_card/views/components/input_title_dialog.dart';
+import 'package:flash_card/views/components/input_card_dialog.dart';
 import 'package:flip_card/flip_card.dart';
 
 class FileListView extends StatefulWidget {
@@ -75,7 +76,7 @@ class _FileListView extends State<FileListView> {
           Text(text, style: Theme.of(context).textTheme.headline5),
           SizedBox(
             width: widget.viewModel.editMode ? 140 : 0,
-            child: _buildIconButtons(text, index),
+            child: _buildIconButtons(index),
           ),
         ],
       ),
@@ -87,31 +88,32 @@ class _FileListView extends State<FileListView> {
       key: Key('$index'),
       child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: <Widget>[_buildListTile(text, index)]),
+          children: <Widget>[_buildListTile(index)]),
     );
   }
 
-  Widget _buildListTile(String text, int index) {
+  Widget _buildListTile(int index) {
+    var item = widget.viewModel.items[index];
+    String text = item.title;
     return ListTile(
       title: Text(text),
       subtitle: Text(index.toString()),
       enabled: !widget.viewModel.editMode,
       onTap: () {
         if (widget.nextPage != "") {
-          Navigator.of(context).pushNamed(widget.nextPage,
-              arguments: widget.viewModel.items[index]);
+          Navigator.of(context).pushNamed(widget.nextPage, arguments: item);
         }
       },
-      trailing: _buildIconButtons(text, index),
+      trailing: _buildIconButtons(index),
     );
   }
 
-  Visibility _buildIconButtons(String text, int index) {
+  Visibility _buildIconButtons(int index) {
     return Visibility(
       visible: widget.viewModel.editMode,
       child: Wrap(
         children: <Widget>[
-          _editIconButton(text, index),
+          _editIconButton(index),
           _deleteIconButton(index),
           _dragIconButton(index),
         ],
@@ -119,7 +121,16 @@ class _FileListView extends State<FileListView> {
     );
   }
 
-  IconButton _editIconButton(String text, int index) {
+  IconButton _editIconButton(int index) {
+    if (widget.viewModel is BookViewModel) {
+      return _editCardIconButton(index);
+    } else {
+      return _editTitleIconButton(index);
+    }
+  }
+
+  IconButton _editTitleIconButton(int index) {
+    String text = widget.viewModel.items[index].title;
     return IconButton(
       icon: const Icon(Icons.edit),
       onPressed: () async {
@@ -131,6 +142,27 @@ class _FileListView extends State<FileListView> {
             index: index,
             title: title,
             summary: '',
+            sequence: seq,
+          );
+        }
+      },
+    );
+  }
+
+  IconButton _editCardIconButton(int index) {
+    String front = widget.viewModel.items[index].front;
+    String back = widget.viewModel.items[index].back;
+    return IconButton(
+      icon: const Icon(Icons.edit),
+      onPressed: () async {
+        List<String> values = await showInputCardDialog(
+            context: context, front: front, back: back);
+        if (values.isNotEmpty) {
+          int seq = widget.viewModel.items[index].sequence;
+          widget.viewModel.update(
+            index: index,
+            front: values[0],
+            back: values[1],
             sequence: seq,
           );
         }
