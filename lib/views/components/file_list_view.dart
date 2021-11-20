@@ -73,7 +73,10 @@ class _FileListView extends State<FileListView> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          Text(text, style: Theme.of(context).textTheme.headline5),
+          Expanded(
+              child: Text(text,
+                  style: Theme.of(context).textTheme.headline5,
+                  overflow: TextOverflow.fade)),
           SizedBox(
             width: widget.viewModel.editMode ? 140 : 0,
             child: _buildIconButtons(index),
