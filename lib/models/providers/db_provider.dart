@@ -6,7 +6,7 @@ import 'package:flash_card/models/card_model.dart';
 
 class DbProvider {
   static const _dbFileName = 'flashcard.db';
-  static const _dbCurrentVersion = 3;
+  static const _dbCurrentVersion = 1;
 
   DbProvider._();
   static final DbProvider instance = DbProvider._();
@@ -26,31 +26,33 @@ class DbProvider {
   Future<void> _createTable(Database db, int version) async {
     await db.execute("CREATE TABLE ${FolderModel.tableName} ("
         "${FolderModel.colId} TEXT PRIMARY KEY,"
+        "${FolderModel.colSequence} INTEGER,"
         "${FolderModel.colTitle} TEXT,"
         "${FolderModel.colSummary} TEXT"
         ")");
     await db.execute("CREATE TABLE ${BookModel.tableName} ("
         "${BookModel.colId} TEXT PRIMARY KEY,"
+        "${BookModel.colSequence} INTEGER,"
         "${BookModel.colFolderId} TEXT,"
         "${BookModel.colTitle} TEXT,"
         "${BookModel.colSummary} TEXT"
+        ")");
+    await db.execute("CREATE TABLE ${CardModel.tableName} ("
+        "${CardModel.colId} TEXT PRIMARY KEY,"
+        "${CardModel.colBookId} TEXT,"
+        "${CardModel.colFront} TEXT,"
+        "${CardModel.colBack} TEXT,"
+        "${CardModel.colSequence} INTEGER"
         ")");
     return;
   }
 
   static const scripts = {
     2: [
-      'ALTER TABLE ${FolderModel.tableName} ADD COLUMN ${FolderModel.colSequence} INTEGER;',
-      'ALTER TABLE ${BookModel.tableName} ADD COLUMN ${BookModel.colSequence} INTEGER;'
-    ],
-    3: [
-      "CREATE TABLE ${CardModel.tableName} ("
-          "${CardModel.colId} TEXT PRIMARY KEY,"
-          "${CardModel.colBookId} TEXT,"
-          "${CardModel.colFront} TEXT,"
-          "${CardModel.colBack} TEXT,"
-          "${CardModel.colSequence} INTEGER"
-          ")",
+      /* テーブルの更新、追加を行うサンプル
+      'ALTER TABLE ${FolderModel.tableName} ADD COLUMN updatedAt TEXT;',
+      'ALTER TABLE ${BookModel.tableName} ADD COLUMN updatedAt TEXT;'
+       */
     ],
   };
 

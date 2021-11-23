@@ -1,10 +1,10 @@
+import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/viewmodels/book_viewmodel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:flash_card/views/components/input_title_dialog.dart';
-import 'package:flash_card/views/components/input_card_dialog.dart';
 import 'package:flip_card/flip_card.dart';
 
 class FileListView extends StatefulWidget {
@@ -153,22 +153,19 @@ class _FileListView extends State<FileListView> {
   }
 
   IconButton _editCardIconButton(int index) {
-    String front = widget.viewModel.items[index].front;
-    String back = widget.viewModel.items[index].back;
+    CardModel card = widget.viewModel.items[index];
     return IconButton(
       icon: const Icon(Icons.edit),
       onPressed: () async {
-        List<String> values = await showInputCardDialog(
-            context: context, front: front, back: back);
-        if (values.isNotEmpty) {
-          int seq = widget.viewModel.items[index].sequence;
-          widget.viewModel.update(
-            index: index,
-            front: values[0],
-            back: values[1],
-            sequence: seq,
-          );
-        }
+        CardModel ret = await Navigator.of(context)
+            .pushNamed('/inputCardPage', arguments: card) as CardModel;
+        widget.viewModel.update(
+          index: index,
+          bookId: ret.bookId,
+          front: ret.front,
+          back: ret.back,
+          sequence: ret.sequence,
+        );
       },
     );
   }

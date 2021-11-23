@@ -1,7 +1,7 @@
 import 'package:flash_card/models/book_model.dart';
+import 'package:flash_card/models/card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flash_card/views/components/input_card_dialog.dart';
 import 'package:flash_card/viewmodels/book_viewmodel.dart';
 import 'package:flash_card/views/components/file_list_view.dart';
 
@@ -43,9 +43,13 @@ class _BookPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
-              List<String> values = await showInputCardDialog(context: context);
-              if (values.isNotEmpty) {
-                _bookViweModel.add(values[0], values[1]);
+              // List<String> values = await showInputCardDialog(context: context);
+              BookModel book = _bookViweModel.selectedBook;
+              CardModel card = CardModel('', book.id, '', '', 0);
+              await Navigator.of(context)
+                  .pushNamed('/inputCardPage', arguments: card) as CardModel;
+              if (card.front != '') {
+                _bookViweModel.add(card.front, card.back);
               }
             },
           ),

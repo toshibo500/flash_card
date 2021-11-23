@@ -8,8 +8,8 @@ class CardModel {
 
   final String id;
   final String bookId;
-  final String front;
-  final String back;
+  String front;
+  String back;
   final int sequence;
 
   String get title => front;
