@@ -1,4 +1,5 @@
 import 'package:flash_card/models/card_model.dart';
+import 'package:flash_card/views/components/stt_dialog.dart';
 import 'package:flutter/material.dart';
 
 class InputCardPage extends StatefulWidget {
@@ -90,17 +91,13 @@ class _InputCardPage extends State<InputCardPage> {
         width: 40,
         height: 40,
         alignment: Alignment.center,
-        child: _isListening[index]
-            ? IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.mic_rounded),
-                color: Colors.blue,
-              )
-            : IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.mic_off_rounded),
-                color: Colors.grey,
-              ));
+        child: IconButton(
+          onPressed: () async {
+            await showSttDialog(context: context, txtCtl: _textCtl[index]);
+          },
+          icon: const Icon(Icons.mic_rounded),
+          color: Colors.blue,
+        ));
   }
 
   Column _buildTextField(
