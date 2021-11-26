@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -6,8 +7,8 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 class Stt {
   bool _hasSpeech = false;
   final bool _logEvents = true;
-  double minSoundLevel = 50000;
-  double maxSoundLevel = -50000;
+  double minSoundLevel = 20;
+  double maxSoundLevel = -20;
   String _currentLocaleId = '';
   // ignore: unused_field
   List<LocaleName> localeNames = [];
@@ -18,6 +19,14 @@ class Stt {
   factory Stt() => instance;
 
   get isListening => _speech.isListening;
+  get hasSpeech => _hasSpeech;
+  get currentLocaleId => _currentLocaleId;
+  set(String currentLocaleId) => _currentLocaleId = currentLocaleId;
+  String get currentLocaleName => _hasSpeech
+      ? localeNames
+          .firstWhere((element) => element.localeId == _currentLocaleId)
+          .name
+      : '';
 
   /// This initializes SpeechToText. That only has to be done
   /// once per application, though calling it again is harmless
@@ -44,8 +53,9 @@ class Stt {
   Future<void> startListening(
       {required Function(SpeechRecognitionResult) onResult,
       Function(double)? onSoundLevelChange,
-      String localeId = ''}) async {
+      String? localeId}) async {
     _logEvent('start listening');
+    _currentLocaleId = localeId ?? _currentLocaleId;
     // Note that `listenFor` is the maximum, not the minimun, on some
     // recognition will be stopped before this value is reached.
     // Similarly `pauseFor` is a maximum not a minimum and may be ignored
@@ -55,7 +65,7 @@ class Stt {
         listenFor: const Duration(seconds: 30),
         pauseFor: const Duration(seconds: 5),
         partialResults: true,
-        localeId: localeId != '' ? localeId : _currentLocaleId,
+        localeId: _currentLocaleId,
         onSoundLevelChange: onSoundLevelChange,
         cancelOnError: true,
         listenMode: ListenMode.confirmation);

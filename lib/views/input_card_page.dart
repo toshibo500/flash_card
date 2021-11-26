@@ -14,7 +14,6 @@ class _InputCardPage extends State<InputCardPage> {
     TextEditingController(text: ''),
     TextEditingController(text: '')
   ];
-  final List<bool> _isListening = [false, false];
 
   @override
   void initState() {
@@ -93,7 +92,11 @@ class _InputCardPage extends State<InputCardPage> {
         alignment: Alignment.center,
         child: IconButton(
           onPressed: () async {
-            await showSttDialog(context: context, txtCtl: _textCtl[index]);
+            String txt = await showSttDialog(context: context);
+            // ignore: avoid_print
+            setState(() {
+              _textCtl[index].text += txt;
+            });
           },
           icon: const Icon(Icons.mic_rounded),
           color: Colors.blue,
