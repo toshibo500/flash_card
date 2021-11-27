@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flash_card/utilities/stt.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
-import 'package:blinking_text/blinking_text.dart';
 
 class SttDialog extends StatefulWidget {
   const SttDialog({Key? key}) : super(key: key);

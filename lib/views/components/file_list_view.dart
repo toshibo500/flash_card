@@ -68,15 +68,26 @@ class _FileListView extends State<FileListView> {
         border: Border.all(color: Colors.grey),
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
       ),
-      height: 80,
+      height: 100,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Expanded(
-              child: Text(text,
-                  style: Theme.of(context).textTheme.headline5,
-                  overflow: TextOverflow.fade)),
+          Flexible(
+              child: Column(
+            children: [
+              Container(
+                  alignment: Alignment.topLeft,
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  height: widget.viewModel.editMode ? 87 : 71,
+                  child: Text(text,
+                      style: Theme.of(context).textTheme.headline5,
+                      overflow: TextOverflow.clip)),
+              Visibility(
+                  visible: !widget.viewModel.editMode,
+                  child: _buildHistoryBox(index)),
+            ],
+          )),
           SizedBox(
             width: widget.viewModel.editMode ? 140 : 0,
             child: _buildIconButtons(index),
@@ -84,6 +95,35 @@ class _FileListView extends State<FileListView> {
         ],
       ),
     );
+  }
+
+  Widget _buildHistoryBox(int index) {
+    return Container(
+        padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+        alignment: Alignment.bottomLeft,
+        child: Row(
+          children: const <Widget>[
+            Icon(
+              Icons.check_circle_rounded,
+              color: Colors.green,
+              size: 16.0,
+            ),
+            SizedBox(
+              width: 20,
+              child: Text('5'),
+            ),
+            Icon(
+              Icons.not_interested_outlined,
+              color: Colors.red,
+              size: 16.0,
+            ),
+            SizedBox(
+              width: 30,
+              child: Text('13'),
+            ),
+            Text('Last ansewerd: 2021/11/26'),
+          ],
+        ));
   }
 
   Widget _buildCard(String text, int index) {

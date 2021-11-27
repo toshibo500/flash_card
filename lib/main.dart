@@ -6,6 +6,7 @@ import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/views/folder_page.dart';
 import 'package:flash_card/views/book_page.dart';
 import 'package:flash_card/views/input_card_page.dart';
+import 'package:flash_card/views/test_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -42,7 +43,12 @@ class MyApp extends StatelessWidget {
                 InputCardPage(card: settings.arguments as CardModel),
           );
         }
-
+        if (settings.name == '/TestPage') {
+          return MaterialPageRoute(
+            builder: (context) =>
+                TestPage(book: settings.arguments as BookModel),
+          );
+        }
         return null;
       },
     );

@@ -60,4 +60,15 @@ class CardRepository {
     if (rows.isEmpty) return [];
     return rows.map((json) => CardModel.fromJson(json)).toList();
   }
+
+  static Future<List<CardModel>> getListRandom(
+      [String bookId = '', int limit = 50]) async {
+    final Database db = await instance.database;
+    String where =
+        bookId != '' ? "WHERE ${CardModel.colBookId} = '$bookId'" : '';
+    final rows = await db.rawQuery(
+        'SELECT * FROM ${CardModel.tableName} $where RANDOM() LIMIT $limit');
+    if (rows.isEmpty) return [];
+    return rows.map((json) => CardModel.fromJson(json)).toList();
+  }
 }
