@@ -73,7 +73,7 @@ class _BookPage extends StatelessWidget {
                   ),
                   child: const Text('Start TEST'),
                   onPressed: () async {
-                    await Navigator.of(context).pushNamed('/TestPage',
+                    await Navigator.of(context).pushNamed('/testPage',
                         arguments: _bookViweModel.selectedBook);
                   },
                 ),

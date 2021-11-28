@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:flash_card/views/components/input_title_dialog.dart';
 import 'package:flip_card/flip_card.dart';
+import 'package:intl/intl.dart';
 
 class FileListView extends StatefulWidget {
   const FileListView({Key? key, required this.viewModel, this.nextPage = ""})
@@ -98,30 +99,33 @@ class _FileListView extends State<FileListView> {
   }
 
   Widget _buildHistoryBox(int index) {
+    CardModel card = widget.viewModel.items[index];
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd hh:mm');
     return Container(
         padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
         alignment: Alignment.bottomLeft,
         child: Row(
-          children: const <Widget>[
-            Icon(
+          children: <Widget>[
+            const Icon(
               Icons.check_circle_rounded,
               color: Colors.green,
               size: 16.0,
             ),
             SizedBox(
               width: 20,
-              child: Text('5'),
+              child: Text(card.numberOfCorrectAnswers.toString()),
             ),
-            Icon(
+            const Icon(
               Icons.not_interested_outlined,
               color: Colors.red,
               size: 16.0,
             ),
             SizedBox(
               width: 30,
-              child: Text('13'),
+              child: Text(card.numberOfWrongAnswers.toString()),
             ),
-            Text('Last ansewerd: 2021/11/26'),
+            Text(
+                'Last test: ${card.testedAt != null ? outputFormat.format(card.testedAt as DateTime) : ""}'),
           ],
         ));
   }

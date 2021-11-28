@@ -38,6 +38,8 @@ dependencies:
   flip_card: any
   speech_to_text: any
   blinking_text: ^1.0.1+2
+  expansion_widget: ^0.0.3
+  intl: ^0.17.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

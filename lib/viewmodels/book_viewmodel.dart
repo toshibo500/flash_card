@@ -50,10 +50,10 @@ class BookViewModel extends ChangeNotifier {
       required int sequence}) async {
     String _id = _cardList[index].id;
     String _folderId = bookId ?? _cardList[index].bookId;
-    int res =
-        await CardRepository.update(_id, _folderId, front, back, sequence);
+    CardModel row = CardModel(_id, _folderId, front, back, sequence);
+    int res = await CardRepository.update(row);
     if (res > 0) {
-      _cardList[index] = CardModel(_id, _folderId, front, back, sequence);
+      _cardList[index] = row;
       notifyListeners();
     }
   }

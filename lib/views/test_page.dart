@@ -1,18 +1,17 @@
 import 'package:flash_card/models/book_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flash_card/views/components/input_title_dialog.dart';
-import 'package:flash_card/views/components/file_list_view.dart';
 import 'package:flash_card/viewmodels/test_viewmodel.dart';
+import 'package:expansion_widget/expansion_widget.dart';
+import 'dart:math' as math;
 
 class TestPage extends StatelessWidget {
   const TestPage({Key? key, required this.book}) : super(key: key);
   final BookModel book;
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => TestViewModel(book),
+      create: (context) => TestViewModel(book, 10),
       child: Scaffold(body: _TestPage(pageTitle: book.title)),
     );
   }
@@ -21,9 +20,10 @@ class TestPage extends StatelessWidget {
 class _TestPage extends StatelessWidget {
   const _TestPage({Key? key, required this.pageTitle}) : super(key: key);
   final String pageTitle;
-
   @override
   Widget build(BuildContext context) {
+    bool _answerExpanded = false;
+    var _testViweModel = Provider.of<TestViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(pageTitle),
@@ -41,9 +41,10 @@ class _TestPage extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text('Question'),
-                Text('11/50'),
+              children: [
+                const Text('Question'),
+                Text(
+                    '${_testViweModel.index + 1}/${_testViweModel.items.length}'),
               ],
             ),
           ),
@@ -53,8 +54,8 @@ class _TestPage extends StatelessWidget {
               border: Border.all(color: Colors.grey),
             ),
             height: 250,
-            child: const SingleChildScrollView(
-              child: Text('texttexttexttexttexttexttexttexttexttexttexttext'),
+            child: SingleChildScrollView(
+              child: Text(_testViweModel.item.front),
             ),
           ),
           Container(
@@ -69,34 +70,59 @@ class _TestPage extends StatelessWidget {
                       shape: const StadiumBorder(),
                     ),
                     child: const Text('Wrong'),
-                    onPressed: () {},
+                    onPressed: () {
+                      _testViweModel.wrongAnswer();
+                      if (!_testViweModel.next()) {
+                        Navigator.of(context).pushNamed('/testResultPage',
+                            arguments: _testViweModel.test.id);
+                      }
+                    },
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       shape: const StadiumBorder(),
                     ),
                     child: const Text('Correct'),
-                    onPressed: () {},
+                    onPressed: () {
+                      _testViweModel.correctAnswer();
+                      if (!_testViweModel.next()) {
+                        Navigator.of(context).pushNamed('/testResultPage',
+                            arguments: _testViweModel.test.id);
+                      }
+                    },
                   ),
                 ]),
           ),
-          ExpansionTile(
-            onExpansionChanged: (bool changed) {},
-            title: const Text('Answer'),
-            children: [
-              Container(
-                alignment: Alignment.topLeft,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                ),
-                height: 100,
-                child: const SingleChildScrollView(
-                  child:
-                      Text('texttexttexttexttexttexttexttexttexttexttexttext'),
-                ),
-              ),
-            ],
-          )
+          ExpansionWidget(
+              initiallyExpanded: false,
+              onSaveState: (value) => _answerExpanded = value,
+              onRestoreState: () => _answerExpanded,
+              duration: const Duration(microseconds: 0),
+              titleBuilder:
+                  (double animationValue, _, bool isExpaned, toogleFunction) {
+                return InkWell(
+                    onTap: () => toogleFunction(animated: true),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Expanded(child: Text('Answer')),
+                          Transform.rotate(
+                            angle: math.pi * animationValue / 2,
+                            child: const Icon(Icons.arrow_right, size: 40),
+                            alignment: Alignment.center,
+                          )
+                        ],
+                      ),
+                    ));
+              },
+              content: Container(
+                width: double.infinity,
+                color: Colors.grey.shade100,
+                padding: const EdgeInsets.all(20),
+                child: Text(_testViweModel.item.back),
+              )),
         ],
       ),
     );

@@ -3,10 +3,11 @@ import 'package:path/path.dart';
 import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/card_model.dart';
+import 'package:flash_card/models/test_model.dart';
 
 class DbProvider {
   static const _dbFileName = 'flashcard.db';
-  static const _dbCurrentVersion = 1;
+  static const _dbCurrentVersion = 2;
 
   DbProvider._();
   static final DbProvider instance = DbProvider._();
@@ -42,17 +43,24 @@ class DbProvider {
         "${CardModel.colBookId} TEXT,"
         "${CardModel.colFront} TEXT,"
         "${CardModel.colBack} TEXT,"
-        "${CardModel.colSequence} INTEGER"
+        "${CardModel.colSequence} INTEGER,"
+        "${CardModel.colNumberOfCorrectAnswers} INTEGER DEFAULT 0,"
+        "${CardModel.colNumberOfWrongAnswers} INTEGER DEFAULT 0,"
+        "${CardModel.colTestedAt} TEXT"
         ")");
     return;
   }
 
   static const scripts = {
     2: [
-      /* テーブルの更新、追加を行うサンプル
-      'ALTER TABLE ${FolderModel.tableName} ADD COLUMN updatedAt TEXT;',
-      'ALTER TABLE ${BookModel.tableName} ADD COLUMN updatedAt TEXT;'
-       */
+      "CREATE TABLE ${TestModel.tableName} ("
+          "${TestModel.colId} TEXT PRIMARY KEY,"
+          "${TestModel.colBookId} TEXT,"
+          "${TestModel.colNumberOfQuestions} INTEGER DEFAULT 0,"
+          "${TestModel.colNumberOfCorrectAnswers} INTEGER DEFAULT 0,"
+          "${TestModel.colStartedAt} TEXT,"
+          "${TestModel.colEndedAt} TEXT"
+          ");",
     ],
   };
 

@@ -1,3 +1,5 @@
+import 'package:flash_card/models/repositories/test_repository.dart';
+import 'package:flash_card/models/test_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/card_model.dart';
@@ -7,14 +9,23 @@ class TestViewModel extends ChangeNotifier {
   BookModel _selectedBook = BookModel('', '', '', '', 0);
   late List<CardModel> _cardList = [];
   List<CardModel> get items => _cardList;
+
   int _index = 0;
   get index => _index;
-  late CardModel _item;
-  get item => _item;
-  get isLast => _index <= _cardList.length;
 
-  TestViewModel(BookModel selectedBook) {
+  late CardModel _item = CardModel('', '', '', '', 0);
+  CardModel get item => _item;
+  bool get isEnded => _index >= _cardList.length;
+
+  int _numberOfQuestions = 50;
+
+  late TestModel _test;
+  TestModel get test => _test;
+
+  TestViewModel(BookModel selectedBook, int numberOfQuestions) {
     this.selectedBook = selectedBook;
+    _numberOfQuestions = numberOfQuestions;
+    startTest();
   }
 
   get selectedBook => _selectedBook;
@@ -22,22 +33,47 @@ class TestViewModel extends ChangeNotifier {
     _selectedBook = book;
   }
 
-  void _getCardList(int limit) async {
-    _cardList = await CardRepository.getListRandom(_selectedBook.id, 50);
+  Future<void> _getCardList(int? limit) async {
+    _cardList = await CardRepository.getListRandom(
+        _selectedBook.id, limit ?? _numberOfQuestions);
   }
 
-  void startTest(String bookId, int numberOfQuestions) {
-    _getCardList(numberOfQuestions);
-    _index = 0;
-    _item = _cardList[_index];
-    notifyListeners();
+  void startTest() {
+    TestRepository.create(_selectedBook.id, DateTime.now()).then((value) {
+      _test = value!;
+    });
+    _getCardList(_numberOfQuestions).then((value) {
+      _index = 0;
+      if (_cardList.isNotEmpty) {
+        _item = _cardList[_index];
+        notifyListeners();
+      }
+    });
   }
 
-  void next() {
+  bool next() {
     _index++;
-    if (_index < _cardList.length) {
+    if (isEnded) {
+      return false;
+    } else {
+      _test.numberOfQuestions++;
+      TestRepository.update(_test);
       _item = _cardList[_index];
       notifyListeners();
-    } else {}
+      return true;
+    }
+  }
+
+  void correctAnswer() async {
+    _test.numberOfCorrectAnswers++;
+    _item.numberOfCorrectAnswers++;
+    _item.testedAt = DateTime.now();
+    await CardRepository.update(_item);
+  }
+
+  void wrongAnswer() async {
+    _item.numberOfWrongAnswers++;
+    _item.testedAt = DateTime.now();
+    await CardRepository.update(_item);
   }
 }

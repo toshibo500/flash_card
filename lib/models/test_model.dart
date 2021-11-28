@@ -10,19 +10,23 @@ class TestModel {
   final String id;
   final String bookId;
   DateTime startedAt;
-  DateTime endedAt;
-  final int numberOfQuestions;
-  final int numberOfCorrectAnswers;
+  DateTime? endedAt;
+  late int numberOfQuestions;
+  late int numberOfCorrectAnswers;
 
-  TestModel(this.id, this.bookId, this.startedAt, this.endedAt,
-      this.numberOfQuestions, this.numberOfCorrectAnswers);
+  TestModel(this.id, this.bookId, this.startedAt,
+      [this.endedAt,
+      this.numberOfQuestions = 0,
+      this.numberOfCorrectAnswers = 0]);
 
   factory TestModel.fromJson(dynamic json) {
     return TestModel(
       json[colId] as String,
       json[colBookId] as String,
       DateTime.parse(json[colStartedAt]).toLocal(),
-      DateTime.parse(json[colEndedAt]).toLocal(),
+      json[colEndedAt] != null
+          ? DateTime.parse(json[colEndedAt]).toLocal()
+          : null,
       json[colNumberOfQuestions] as int,
       json[colNumberOfCorrectAnswers] as int,
     );
@@ -37,7 +41,7 @@ class TestModel {
         colId: id,
         colBookId: bookId,
         colStartedAt: startedAt.toUtc().toIso8601String(),
-        colEndedAt: endedAt.toUtc().toIso8601String(),
+        colEndedAt: endedAt?.toUtc().toIso8601String(),
         colNumberOfQuestions: numberOfQuestions,
         colNumberOfCorrectAnswers: numberOfCorrectAnswers,
       };

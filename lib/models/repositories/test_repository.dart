@@ -5,48 +5,41 @@ import 'package:flash_card/models/test_model.dart';
 class TestRepository {
   static DbProvider instance = DbProvider.instance;
 
-  static Future<TestModel?> create(
-      String bookId,
-      DateTime startedAt,
-      DateTime endedAt,
-      int numberOfQuestions,
-      int numberOfCorrectAnswers) async {
-    final row = TestModel(DateTime.now().millisecondsSinceEpoch.toString(),
-        bookId, startedAt, endedAt, numberOfQuestions, numberOfCorrectAnswers);
+  static Future<TestModel?> create(String bookId, DateTime startedAt,
+      [DateTime? endedAt,
+      int? numberOfQuestions,
+      int? numberOfCorrectAnswers]) async {
+    final row = TestModel(
+        DateTime.now().millisecondsSinceEpoch.toString(),
+        bookId,
+        startedAt,
+        endedAt,
+        numberOfQuestions ?? 0,
+        numberOfCorrectAnswers ?? 0);
     final db = await instance.database;
     final int res = await db.insert(TestModel.tableName, row.toJson());
     return res > 0 ? row : null;
   }
 
-  static Future<int> update(
-      String id,
-      String bookId,
-      DateTime startedAt,
-      DateTime endedAt,
-      int numberOfQuestions,
-      int numberOfCorrectAnswers) async {
+  static Future<int> update(TestModel row) async {
     final db = await instance.database;
-    return await db.rawUpdate(
-        'UPDATE ${TestModel.tableName} SET '
-        '${TestModel.colBookId} = ?,'
-        '${TestModel.colStartedAt} = ?,'
-        '${TestModel.colEndedAt} = ?,'
-        '${TestModel.colNumberOfQuestions} = ?, '
-        '${TestModel.colNumberOfCorrectAnswers} = ? '
-        'WHERE id = ?',
-        [
-          bookId,
-          startedAt.toUtc().toIso8601String(),
-          endedAt.toUtc().toIso8601String(),
-          numberOfQuestions,
-          numberOfCorrectAnswers
-        ]);
+    return await db.update(TestModel.tableName, row.toJson(),
+        where: "id = ?", whereArgs: [row.id]);
   }
 
   static Future<int> delete(String id) async {
     final db = await instance.database;
     return await db
         .rawDelete('DELETE FROM ${TestModel.tableName} WHERE id = ?', [id]);
+  }
+
+  static Future<TestModel?> get(String id) async {
+    final Database db = await instance.database;
+    String where = "WHERE ${TestModel.colId} = '$id'";
+    final row =
+        await db.rawQuery('SELECT * FROM ${TestModel.tableName} $where');
+    if (row.isEmpty) return null;
+    return TestModel.fromJson(row);
   }
 
   static Future<List<TestModel>> getAll([String bookId = '']) async {

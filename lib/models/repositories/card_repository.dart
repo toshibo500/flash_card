@@ -6,25 +6,28 @@ class CardRepository {
   static DbProvider instance = DbProvider.instance;
 
   static Future<CardModel?> create(
-      String bookId, String front, String back, int sequence) async {
-    final row = CardModel(DateTime.now().millisecondsSinceEpoch.toString(),
-        bookId, front, back, sequence);
+      String bookId, String front, String back, int sequence,
+      [int? numberOfQuestions,
+      int? numberOfCorrectAnswers,
+      DateTime? testedAt]) async {
+    final row = CardModel(
+        DateTime.now().millisecondsSinceEpoch.toString(),
+        bookId,
+        front,
+        back,
+        sequence,
+        numberOfQuestions ?? 0,
+        numberOfCorrectAnswers ?? 0,
+        testedAt!);
     final db = await instance.database;
     final int res = await db.insert(CardModel.tableName, row.toJson());
     return res > 0 ? row : null;
   }
 
-  static Future<int> update(
-      String id, String bookId, String front, String back, int sequence) async {
+  static Future<int> update(CardModel row) async {
     final db = await instance.database;
-    return await db.rawUpdate(
-        'UPDATE ${CardModel.tableName} SET '
-        '${CardModel.colBookId} = ?,'
-        '${CardModel.colFront} = ?,'
-        '${CardModel.colBack} = ?,'
-        '${CardModel.colSequence} = ? '
-        'WHERE id = ?',
-        [bookId, front, back, sequence, id]);
+    return await db.update(CardModel.tableName, row.toJson(),
+        where: "id = ?", whereArgs: [row.id]);
   }
 
   static Future<int> bulkUpdate(List<CardModel> rows) async {
@@ -67,7 +70,7 @@ class CardRepository {
     String where =
         bookId != '' ? "WHERE ${CardModel.colBookId} = '$bookId'" : '';
     final rows = await db.rawQuery(
-        'SELECT * FROM ${CardModel.tableName} $where RANDOM() LIMIT $limit');
+        'SELECT * FROM ${CardModel.tableName} $where ORDER BY RANDOM() LIMIT $limit');
     if (rows.isEmpty) return [];
     return rows.map((json) => CardModel.fromJson(json)).toList();
   }
