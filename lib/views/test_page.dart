@@ -5,28 +5,38 @@ import 'package:flash_card/viewmodels/test_viewmodel.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'dart:math' as math;
 
+class TestPageParameters {
+  TestPageParameters(
+      {required this.book,
+      required this.numberOfQuestions,
+      required this.isDictationMode});
+  BookModel book;
+  int numberOfQuestions;
+  bool isDictationMode;
+}
+
 class TestPage extends StatelessWidget {
-  const TestPage({Key? key, required this.book}) : super(key: key);
-  final BookModel book;
+  const TestPage({Key? key, required this.param}) : super(key: key);
+  final TestPageParameters param;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => TestViewModel(book, 10),
-      child: Scaffold(body: _TestPage(pageTitle: book.title)),
+      create: (context) => TestViewModel(param.book, param.numberOfQuestions),
+      child: Scaffold(body: _TestPage(param: param)),
     );
   }
 }
 
 class _TestPage extends StatelessWidget {
-  const _TestPage({Key? key, required this.pageTitle}) : super(key: key);
-  final String pageTitle;
+  const _TestPage({Key? key, required this.param}) : super(key: key);
+  final TestPageParameters param;
   @override
   Widget build(BuildContext context) {
     bool _answerExpanded = false;
     var _testViweModel = Provider.of<TestViewModel>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(pageTitle),
+        title: Text(param.book.title),
         backgroundColor: Colors.green,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
@@ -53,46 +63,23 @@ class _TestPage extends StatelessWidget {
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey),
             ),
-            height: 250,
+            height: 200,
             child: SingleChildScrollView(
               child: Text(_testViweModel.item.front),
             ),
           ),
           Container(
-            alignment: Alignment.center,
-            height: 80,
+            alignment: Alignment.topLeft,
+            padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
             child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.red,
-                      shape: const StadiumBorder(),
-                    ),
-                    child: const Text('Wrong'),
-                    onPressed: () {
-                      _testViweModel.wrongAnswer();
-                      if (!_testViweModel.next()) {
-                        Navigator.of(context).pushNamed('/testResultPage',
-                            arguments: _testViweModel.test.id);
-                      }
-                    },
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
-                    ),
-                    child: const Text('Correct'),
-                    onPressed: () {
-                      _testViweModel.correctAnswer();
-                      if (!_testViweModel.next()) {
-                        Navigator.of(context).pushNamed('/testResultPage',
-                            arguments: _testViweModel.test.id);
-                      }
-                    },
-                  ),
-                ]),
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text('Dictation'),
+              ],
+            ),
           ),
+          _buildDictaion(),
+          _buildButtons(context, _testViweModel, param.isDictationMode),
           ExpansionWidget(
               initiallyExpanded: false,
               onSaveState: (value) => _answerExpanded = value,
@@ -125,6 +112,76 @@ class _TestPage extends StatelessWidget {
               )),
         ],
       ),
+    );
+  }
+
+  Container _buildDictaion() {
+    return Container(
+      alignment: Alignment.topLeft,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+      ),
+      height: 200,
+      child: const SingleChildScrollView(
+        child: Expanded(
+            child: TextField(
+          maxLines: 100,
+        )),
+      ),
+    );
+  }
+
+  Container _buildButtons(
+      BuildContext context, TestViewModel viewmodel, bool isDictationMode) {
+    List<ElevatedButton> selfMode = [];
+    selfMode.add(ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        primary: Colors.red,
+        shape: const StadiumBorder(),
+      ),
+      child: const Text('Wrong'),
+      onPressed: () {
+        viewmodel.wrongAnswer();
+        if (!viewmodel.next()) {
+          Navigator.of(context)
+              .pushNamed('/testResultPage', arguments: viewmodel.test.id);
+        }
+      },
+    ));
+    selfMode.add(ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        shape: const StadiumBorder(),
+      ),
+      child: const Text('Correct'),
+      onPressed: () {
+        viewmodel.correctAnswer();
+        if (!viewmodel.next()) {
+          Navigator.of(context)
+              .pushNamed('/testResultPage', arguments: viewmodel.test.id);
+        }
+      },
+    ));
+    List<ElevatedButton> dictationMode = [];
+    dictationMode.add(ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        shape: const StadiumBorder(),
+      ),
+      child: const Text('Next'),
+      onPressed: () {
+        viewmodel.correctAnswer();
+        if (!viewmodel.next()) {
+          Navigator.of(context)
+              .pushNamed('/testResultPage', arguments: viewmodel.test.id);
+        }
+      },
+    ));
+
+    return Container(
+      alignment: Alignment.center,
+      height: 80,
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: isDictationMode ? dictationMode : selfMode),
     );
   }
 }

@@ -36,10 +36,12 @@ class TestRepository {
   static Future<TestModel?> get(String id) async {
     final Database db = await instance.database;
     String where = "WHERE ${TestModel.colId} = '$id'";
-    final row =
+    final rows =
         await db.rawQuery('SELECT * FROM ${TestModel.tableName} $where');
-    if (row.isEmpty) return null;
-    return TestModel.fromJson(row);
+    if (rows.isEmpty) return null;
+    List<TestModel> list =
+        rows.map((json) => TestModel.fromJson(json)).toList();
+    return list[0];
   }
 
   static Future<List<TestModel>> getAll([String bookId = '']) async {

@@ -22,7 +22,7 @@ class _TestResultPage extends StatelessWidget {
     var _testResultViweModel = Provider.of<TestResultViewModel>(context);
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Result'),
+          title: Text(_testResultViweModel.book.title),
           backgroundColor: Colors.green,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
@@ -32,9 +32,19 @@ class _TestResultPage extends StatelessWidget {
           ),
         ),
         body: Column(
-          children: const [
-            Expanded(child: Text('aaa')),
+          children: [
+            Text(
+                'Number of questions: ${_testResultViweModel.test.numberOfQuestions}'),
+            Text(
+                'Number of correct answers: ${_testResultViweModel.test.numberOfCorrectAnswers}'),
+            Text('Time: ${_getTestingTime(_testResultViweModel)} sec'),
           ],
         ));
+  }
+
+  String _getTestingTime(TestResultViewModel model) {
+    DateTime from = model.test.startedAt;
+    DateTime? to = model.test.endedAt;
+    return to != null ? '${to.difference(from).inSeconds}' : '';
   }
 }

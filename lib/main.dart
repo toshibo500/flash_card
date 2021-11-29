@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
         if (settings.name == '/testPage') {
           return MaterialPageRoute(
             builder: (context) =>
-                TestPage(book: settings.arguments as BookModel),
+                TestPage(param: settings.arguments as TestPageParameters),
           );
         }
         if (settings.name == '/testResultPage') {

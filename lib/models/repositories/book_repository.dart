@@ -51,6 +51,17 @@ class BookRepository {
         .rawDelete('DELETE FROM ${BookModel.tableName} WHERE id = ?', [id]);
   }
 
+  static Future<BookModel?> get([String id = '']) async {
+    final Database db = await instance.database;
+    String where = "WHERE ${BookModel.colId} = '$id'";
+    final rows =
+        await db.rawQuery('SELECT * FROM ${BookModel.tableName} $where');
+    if (rows.isEmpty) return null;
+    List<BookModel> list =
+        rows.map((json) => BookModel.fromJson(json)).toList();
+    return list[0];
+  }
+
   static Future<List<BookModel>> getAll([String foldeId = '']) async {
     final Database db = await instance.database;
     String where =

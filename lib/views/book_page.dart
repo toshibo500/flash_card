@@ -1,5 +1,6 @@
 import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/card_model.dart';
+import 'package:flash_card/views/test_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/viewmodels/book_viewmodel.dart';
@@ -74,7 +75,10 @@ class _BookPage extends StatelessWidget {
                   child: const Text('Start TEST'),
                   onPressed: () async {
                     await Navigator.of(context).pushNamed('/testPage',
-                        arguments: _bookViweModel.selectedBook);
+                        arguments: TestPageParameters(
+                            book: _bookViweModel.selectedBook,
+                            numberOfQuestions: 10,
+                            isDictationMode: true));
                   },
                 ),
               ),

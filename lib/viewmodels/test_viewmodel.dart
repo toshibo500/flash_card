@@ -52,12 +52,14 @@ class TestViewModel extends ChangeNotifier {
   }
 
   bool next() {
+    _test.numberOfQuestions++;
+    _test.endedAt = DateTime.now();
+    TestRepository.update(_test);
+
     _index++;
     if (isEnded) {
       return false;
     } else {
-      _test.numberOfQuestions++;
-      TestRepository.update(_test);
       _item = _cardList[_index];
       notifyListeners();
       return true;
