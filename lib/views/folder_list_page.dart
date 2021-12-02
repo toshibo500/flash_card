@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flash_card/views/components/input_title_dialog.dart';
 import 'package:flash_card/views/components/file_list_view.dart';
 import 'package:flash_card/viewmodels/folder_list_viewmodel.dart';
+import 'package:flash_card/views/components/drawer_menu.dart';
 
 class FolderListPage extends StatelessWidget {
   const FolderListPage({Key? key, required this.title}) : super(key: key);
@@ -28,10 +29,6 @@ class _FolderListPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(pageTitle),
         backgroundColor: Colors.green,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () => {},
-        ),
         actions: [
           IconButton(
               icon: Icon(_folderListViewModel.editMode
@@ -51,6 +48,7 @@ class _FolderListPage extends StatelessWidget {
           ),
         ],
       ),
+      drawer: SideDrawer(),
       body: Consumer<FolderListViewModel>(builder: (context, viewModel, _) {
         return FileListView(viewModel: viewModel, nextPage: "/folderPage");
       }),
