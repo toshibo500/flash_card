@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flash_card/models/preference_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/utilities/stt.dart';
@@ -18,10 +19,23 @@ class SideDrawer extends StatelessWidget {
 
 class _SideDrawer extends StatelessWidget {
   final Stt _stt = Stt();
-  final List<DropdownMenuItem<String>> _items = [];
+  final List<DropdownMenuItem<String>> _langItems = [];
+  final List<DropdownMenuItem<int>> _qAorderItems = [];
+
+  static const Map<int, String> _qAOrder = {0: 'Front->Back', 1: 'Back->Front'};
 
   _SideDrawer({Key? key}) : super(key: key) {
     initSpeech();
+    setItems();
+    _qAOrder.forEach((key, value) {
+      _qAorderItems.add(DropdownMenuItem(
+        child: Text(
+          value,
+          style: const TextStyle(fontSize: 16.0),
+        ),
+        value: key,
+      ));
+    });
   }
 
   void initSpeech() async {
@@ -30,9 +44,7 @@ class _SideDrawer extends StatelessWidget {
 
   void setItems() {
     for (var element in _stt.localeNames) {
-      // ignore: avoid_print
-      print(element.localeId);
-      _items.add(DropdownMenuItem(
+      _langItems.add(DropdownMenuItem(
         child: Text(
           element.name,
           style: const TextStyle(fontSize: 16.0),
@@ -71,7 +83,7 @@ class _SideDrawer extends StatelessWidget {
                 title: const Text('Front side lang'),
                 subtitle: DropdownButton<String>(
                   value: _drawerMenuViewModel.preference.frontSideLang,
-                  items: _items,
+                  items: _langItems,
                   onChanged: (value) {
                     _drawerMenuViewModel.preference.frontSideLang = value!;
                     _drawerMenuViewModel
@@ -86,9 +98,24 @@ class _SideDrawer extends StatelessWidget {
                 title: const Text('Back side lang'),
                 subtitle: DropdownButton<String>(
                   value: _drawerMenuViewModel.preference.backSideLang,
-                  items: _items,
+                  items: _langItems,
                   onChanged: (value) {
                     _drawerMenuViewModel.preference.backSideLang = value!;
+                    _drawerMenuViewModel
+                        .update(_drawerMenuViewModel.preference);
+                  },
+                ),
+              ),
+              ListTile(
+                leading: const Icon(
+                  Icons.book_rounded,
+                ),
+                title: const Text('Question'),
+                subtitle: DropdownButton<int>(
+                  value: _drawerMenuViewModel.preference.qAorder,
+                  items: _qAorderItems,
+                  onChanged: (value) {
+                    _drawerMenuViewModel.preference.qAorder = value!;
                     _drawerMenuViewModel
                         .update(_drawerMenuViewModel.preference);
                   },

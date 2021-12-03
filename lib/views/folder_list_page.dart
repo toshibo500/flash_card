@@ -48,7 +48,7 @@ class _FolderListPage extends StatelessWidget {
           ),
         ],
       ),
-      drawer: SideDrawer(),
+      drawer: const SideDrawer(),
       body: Consumer<FolderListViewModel>(builder: (context, viewModel, _) {
         return FileListView(viewModel: viewModel, nextPage: "/folderPage");
       }),

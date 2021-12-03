@@ -1,5 +1,6 @@
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/viewmodels/book_viewmodel.dart';
+import 'package:flash_card/viewmodels/folder_viewmodel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -132,6 +133,10 @@ class _FileListView extends State<FileListView> {
 
   Widget _buildCard(String text, int index) {
     return Card(
+      shape: RoundedRectangleBorder(
+        side: const BorderSide(color: Colors.grey, width: 1),
+        borderRadius: BorderRadius.circular(8),
+      ),
       key: Key('$index'),
       child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -141,8 +146,14 @@ class _FileListView extends State<FileListView> {
 
   Widget _buildListTile(int index) {
     var item = widget.viewModel.items[index];
+    IconData icon = widget.viewModel is FolderViewModel
+        ? Icons.book_rounded
+        : Icons.folder_rounded;
     String text = item.title;
     return ListTile(
+      leading: Icon(
+        icon,
+      ),
       title: Text(text),
       subtitle: Text(index.toString()),
       enabled: !widget.viewModel.editMode,
