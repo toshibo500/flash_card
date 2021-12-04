@@ -1,3 +1,5 @@
+import 'package:flash_card/models/book_model.dart';
+
 class FolderModel {
   static const String tableName = 'folders';
   static const String colId = 'id';
@@ -9,6 +11,7 @@ class FolderModel {
   final String title;
   final String summary;
   final int sequence;
+  List<BookModel>? books = [];
 
   FolderModel(this.id, this.title, this.summary, this.sequence);
 

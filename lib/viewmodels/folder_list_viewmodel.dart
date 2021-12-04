@@ -1,6 +1,7 @@
-import 'package:flash_card/models/folder_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/repositories/folder_repository.dart';
+import 'package:flash_card/models/repositories/book_repository.dart';
 
 class FolderListViewModel extends ChangeNotifier {
   FolderListViewModel() {
@@ -49,6 +50,9 @@ class FolderListViewModel extends ChangeNotifier {
 
   void getAll() async {
     _folderList = await FolderRepository.getAll();
+    for (var folder in _folderList) {
+      folder.books = await BookRepository.getAll(folder.id);
+    }
     notifyListeners();
   }
 

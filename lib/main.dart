@@ -8,6 +8,7 @@ import 'package:flash_card/views/book_page.dart';
 import 'package:flash_card/views/input_card_page.dart';
 import 'package:flash_card/views/test_page.dart';
 import 'package:flash_card/views/test_result_page.dart';
+import 'package:flash_card/views/web_view_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -54,6 +55,11 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(
               builder: (context) =>
                   TestResultPage(id: settings.arguments as String));
+        }
+        if (settings.name == '/webViewPage') {
+          return MaterialPageRoute(
+              builder: (context) => WebViewPage(
+                  params: settings.arguments as WevViewPageParameters));
         }
         return null;
       },

@@ -1,6 +1,7 @@
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/viewmodels/book_viewmodel.dart';
 import 'package:flash_card/viewmodels/folder_viewmodel.dart';
+import 'package:flash_card/viewmodels/folder_list_viewmodel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -146,16 +147,36 @@ class _FileListView extends State<FileListView> {
 
   Widget _buildListTile(int index) {
     var item = widget.viewModel.items[index];
-    IconData icon = widget.viewModel is FolderViewModel
-        ? Icons.book_rounded
-        : Icons.folder_rounded;
     String text = item.title;
+    IconData icon = Icons.folder_rounded;
+    List<Widget> subContents = [];
+    if (widget.viewModel is FolderListViewModel) {
+      icon = Icons.folder_rounded;
+      subContents.add(_buildSubContentIcons(
+        Icons.auto_stories_rounded,
+        item.books.length,
+      ));
+    } else if (widget.viewModel is FolderViewModel) {
+      icon = Icons.auto_stories_rounded;
+      subContents.add(_buildSubContentIcons(
+        Icons.style_rounded,
+        item.cards.length,
+      ));
+    }
+
     return ListTile(
       leading: Icon(
         icon,
       ),
-      title: Text(text),
-      subtitle: Text(index.toString()),
+      title: Container(
+          height: 40, alignment: Alignment.centerLeft, child: Text(text)),
+      subtitle: Container(
+          height: 20,
+          alignment: Alignment.bottomLeft,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: subContents,
+          )),
       enabled: !widget.viewModel.editMode,
       onTap: () {
         if (widget.nextPage != "") {
@@ -164,6 +185,28 @@ class _FileListView extends State<FileListView> {
       },
       trailing: _buildIconButtons(index),
     );
+  }
+
+  Widget _buildSubContentIcons(IconData icon, int num) {
+    var subContents = Container(
+      padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+      width: 40,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Icon(
+            icon,
+            size: 16,
+            color: Colors.black54,
+          ),
+          Text(
+            num.toString(),
+          ),
+        ],
+      ),
+    );
+
+    return subContents;
   }
 
   Visibility _buildIconButtons(int index) {

@@ -1,7 +1,8 @@
-import 'package:flash_card/models/book_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/repositories/book_repository.dart';
 import 'package:flash_card/models/folder_model.dart';
+import 'package:flash_card/models/repositories/card_repository.dart';
 
 class FolderViewModel extends ChangeNotifier {
   bool _editMode = false;
@@ -60,6 +61,9 @@ class FolderViewModel extends ChangeNotifier {
 
   void getAll(String folderId) async {
     _bookList = await BookRepository.getAll(folderId);
+    for (var item in _bookList) {
+      item.cards = await CardRepository.getAll(item.id);
+    }
     notifyListeners();
   }
 

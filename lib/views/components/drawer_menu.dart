@@ -1,9 +1,9 @@
 import 'dart:ui';
-import 'package:flash_card/models/preference_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/utilities/stt.dart';
 import 'package:flash_card/viewmodels/drawer_menu_viewmodel.dart';
+import 'package:flash_card/views/web_view_page.dart';
 
 class SideDrawer extends StatelessWidget {
   const SideDrawer({Key? key}) : super(key: key);
@@ -26,7 +26,6 @@ class _SideDrawer extends StatelessWidget {
 
   _SideDrawer({Key? key}) : super(key: key) {
     initSpeech();
-    setItems();
     _qAOrder.forEach((key, value) {
       _qAorderItems.add(DropdownMenuItem(
         child: Text(
@@ -78,7 +77,7 @@ class _SideDrawer extends StatelessWidget {
                   )),
               ListTile(
                 leading: const Icon(
-                  Icons.language_rounded,
+                  Icons.settings_rounded,
                 ),
                 title: const Text('Front side lang'),
                 subtitle: DropdownButton<String>(
@@ -124,12 +123,22 @@ class _SideDrawer extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.privacy_tip_rounded),
                 title: const Text('Privacy Policy'),
-                onTap: () => {Navigator.of(context).pop()},
+                onTap: () {
+                  Navigator.of(context).pushNamed('/webViewPage',
+                      arguments: WevViewPageParameters(
+                          title: 'Privacy Policy',
+                          url: 'https://www.google.com'));
+                },
               ),
               ListTile(
                 leading: const Icon(Icons.support_outlined),
-                title: const Text('Law'),
-                onTap: () => {Navigator.of(context).pop()},
+                title: const Text('About this app'),
+                onTap: () {
+                  Navigator.of(context).pushNamed('/webViewPage',
+                      arguments: WevViewPageParameters(
+                          title: 'About this app',
+                          url: 'http://news.google.com'));
+                },
               ),
             ],
           ),

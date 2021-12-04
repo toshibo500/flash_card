@@ -1,3 +1,5 @@
+import 'package:flash_card/models/card_model.dart';
+
 class BookModel {
   static const String tableName = 'books';
   static const String colId = 'id';
@@ -11,6 +13,7 @@ class BookModel {
   final String title;
   final String summary;
   final int sequence;
+  List<CardModel> cards = [];
 
   BookModel(this.id, this.folderId, this.title, this.summary, this.sequence);
 
