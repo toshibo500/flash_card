@@ -1,4 +1,5 @@
 import 'package:flash_card/models/book_model.dart';
+import 'package:flash_card/models/preference_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/viewmodels/test_viewmodel.dart';
@@ -10,10 +11,10 @@ class TestPageParameters {
   TestPageParameters(
       {required this.book,
       required this.numberOfQuestions,
-      required this.isDictationMode});
+      required this.testMode});
   BookModel book;
   int numberOfQuestions;
-  bool isDictationMode;
+  int testMode;
 }
 
 class TestPage extends StatelessWidget {
@@ -85,7 +86,7 @@ class _TestPage extends StatelessWidget {
                 ),
               ),
               _buildDictaion(context, _testViweModel),
-              _buildButtons(context, _testViweModel, param.isDictationMode),
+              _buildButtons(context, _testViweModel, param.testMode),
               ExpansionWidget(
                   initiallyExpanded: false,
                   onSaveState: (value) => _answerExpanded = value,
@@ -148,7 +149,7 @@ class _TestPage extends StatelessWidget {
   }
 
   Container _buildButtons(
-      BuildContext context, TestViewModel viewmodel, bool isDictationMode) {
+      BuildContext context, TestViewModel viewmodel, int testMode) {
     List<ElevatedButton> selfMode = [
       ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -199,7 +200,9 @@ class _TestPage extends StatelessWidget {
       height: 80,
       child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: isDictationMode ? dictationMode : selfMode),
+          children: testMode == PreferenceModel.testModeSelfMode
+              ? dictationMode
+              : selfMode),
     );
   }
 }

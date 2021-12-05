@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flash_card/models/preference_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/utilities/stt.dart';
@@ -20,19 +21,34 @@ class SideDrawer extends StatelessWidget {
 class _SideDrawer extends StatelessWidget {
   final Stt _stt = Stt();
   final List<DropdownMenuItem<String>> _langItems = [];
-  final List<DropdownMenuItem<int>> _qAorderItems = [];
-
-  static const Map<int, String> _qAOrder = {0: 'Front->Back', 1: 'Back->Front'};
+  final List<DropdownMenuItem<int>> _questionItems = [];
+  final List<DropdownMenuItem<int>> _testModeItems = [];
+  final List<DropdownMenuItem<int>> _numOfTest = [];
 
   _SideDrawer({Key? key}) : super(key: key) {
     initSpeech();
-    _qAOrder.forEach((key, value) {
-      _qAorderItems.add(DropdownMenuItem(
+    PreferenceModel.frontAndBackItems.forEach((key, value) {
+      _questionItems.add(DropdownMenuItem(
         child: Text(
           value,
           style: const TextStyle(fontSize: 16.0),
         ),
         value: key,
+      ));
+    });
+    PreferenceModel.testModeItems.forEach((key, value) {
+      _testModeItems.add(DropdownMenuItem(
+        child: Text(
+          value,
+          style: const TextStyle(fontSize: 16.0),
+        ),
+        value: key,
+      ));
+    });
+    List.generate(100, (index) {
+      _numOfTest.add(DropdownMenuItem(
+        child: Text(index.toString()),
+        value: index,
       ));
     });
   }
@@ -75,11 +91,20 @@ class _SideDrawer extends StatelessWidget {
                       color: Colors.green,
                     ),
                   )),
+              Container(
+                height: 30,
+                alignment: Alignment.bottomLeft,
+                padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                child: const Text(
+                  'Voice Input',
+                  style: TextStyle(color: Colors.black45),
+                ),
+              ),
               ListTile(
                 leading: const Icon(
-                  Icons.settings_rounded,
+                  Icons.language_rounded,
                 ),
-                title: const Text('Front side lang'),
+                title: const Text('Front'),
                 subtitle: DropdownButton<String>(
                   value: _drawerMenuViewModel.preference.frontSideLang,
                   items: _langItems,
@@ -94,7 +119,7 @@ class _SideDrawer extends StatelessWidget {
                 leading: const Icon(
                   Icons.language_rounded,
                 ),
-                title: const Text('Back side lang'),
+                title: const Text('Back'),
                 subtitle: DropdownButton<String>(
                   value: _drawerMenuViewModel.preference.backSideLang,
                   items: _langItems,
@@ -105,19 +130,77 @@ class _SideDrawer extends StatelessWidget {
                   },
                 ),
               ),
+              Container(
+                height: 30,
+                alignment: Alignment.bottomLeft,
+                padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                child: const Text(
+                  'Test',
+                  style: TextStyle(color: Colors.black45),
+                ),
+              ),
               ListTile(
                 leading: const Icon(
-                  Icons.book_rounded,
+                  Icons.style_rounded,
                 ),
-                title: const Text('Question'),
-                subtitle: DropdownButton<int>(
-                  value: _drawerMenuViewModel.preference.qAorder,
-                  items: _qAorderItems,
-                  onChanged: (value) {
-                    _drawerMenuViewModel.preference.qAorder = value!;
-                    _drawerMenuViewModel
-                        .update(_drawerMenuViewModel.preference);
-                  },
+                title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text('Question'),
+                      DropdownButton<int>(
+                        value: _drawerMenuViewModel.preference.question,
+                        items: _questionItems,
+                        onChanged: (value) {
+                          _drawerMenuViewModel.preference.question = value!;
+                          _drawerMenuViewModel
+                              .update(_drawerMenuViewModel.preference);
+                        },
+                      )
+                    ]),
+              ),
+              ListTile(
+                  leading: const Icon(
+                    Icons.mode_rounded,
+                  ),
+                  title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Mode'),
+                        DropdownButton<int>(
+                          value: _drawerMenuViewModel.preference.testMode,
+                          items: _testModeItems,
+                          onChanged: (value) {
+                            _drawerMenuViewModel.preference.testMode = value!;
+                            _drawerMenuViewModel
+                                .update(_drawerMenuViewModel.preference);
+                          },
+                        )
+                      ])),
+              ListTile(
+                  leading: const Icon(
+                    Icons.format_list_numbered_rounded,
+                  ),
+                  title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text('Number of questions'),
+                        DropdownButton<int>(
+                          value: _drawerMenuViewModel.preference.numOfTest,
+                          items: _numOfTest,
+                          onChanged: (value) {
+                            _drawerMenuViewModel.preference.numOfTest = value!;
+                            _drawerMenuViewModel
+                                .update(_drawerMenuViewModel.preference);
+                          },
+                        ),
+                      ])),
+              Container(
+                height: 30,
+                alignment: Alignment.bottomLeft,
+                padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
+                child: const Text(
+                  'Misc',
+                  style: TextStyle(color: Colors.black45),
                 ),
               ),
               ListTile(

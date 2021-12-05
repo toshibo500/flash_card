@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/repositories/card_repository.dart';
+import 'package:flash_card/models/preference_model.dart';
+import 'package:flash_card/models/repositories/preference_repository.dart';
 
 class BookViewModel extends ChangeNotifier {
   bool _editMode = false;
@@ -9,9 +11,15 @@ class BookViewModel extends ChangeNotifier {
   List<CardModel> _cardList = [];
   List<CardModel> get items => _cardList;
 
+  PreferenceModel _preference = PreferenceModel();
+  PreferenceModel get preference => _preference;
+
   BookViewModel(BookModel selectedBook) {
     this.selectedBook = selectedBook;
     getAll(_selectedBook.id);
+    PreferenceRepository.get().then((value) {
+      _preference = value!;
+    });
   }
 
   bool get editMode => _editMode;

@@ -77,8 +77,9 @@ class _BookPage extends StatelessWidget {
                     await Navigator.of(context).pushNamed('/testPage',
                         arguments: TestPageParameters(
                             book: _bookViweModel.selectedBook,
-                            numberOfQuestions: 10,
-                            isDictationMode: true));
+                            numberOfQuestions:
+                                _bookViweModel.preference.numOfTest!,
+                            testMode: _bookViweModel.preference.testMode!));
                   },
                 ),
               ),
