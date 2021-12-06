@@ -83,9 +83,10 @@ class _FileListView extends State<FileListView> {
                   alignment: Alignment.topLeft,
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                   height: widget.viewModel.editMode ? 87 : 71,
-                  child: Text(text,
-                      style: Theme.of(context).textTheme.headline5,
-                      overflow: TextOverflow.clip)),
+                  child: SingleChildScrollView(
+                      child: Text(text,
+                          style: Theme.of(context).textTheme.headline5,
+                          overflow: TextOverflow.clip))),
               Visibility(
                   visible: !widget.viewModel.editMode,
                   child: _buildHistoryBox(index)),
