@@ -34,6 +34,27 @@ class _TestPage extends StatelessWidget {
   final TestPageParameters param;
   final TextEditingController _textCtr = TextEditingController(text: "");
 
+  static const TextStyle titleTextStyle = TextStyle(
+    color: Colors.black54,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Roboto',
+    letterSpacing: 1,
+    fontSize: 18.0,
+  );
+  static const TextStyle contentTextStyle = TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Roboto',
+    letterSpacing: 1,
+    fontSize: 24.0,
+  );
+  static const TextStyle buttonTextStyle = TextStyle(
+    color: Colors.white,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Roboto',
+    letterSpacing: 1,
+    fontSize: 24.0,
+  );
   @override
   Widget build(BuildContext context) {
     bool _answerExpanded = false;
@@ -59,9 +80,14 @@ class _TestPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Question'),
+                    const Text(
+                      'Question',
+                      style: titleTextStyle,
+                    ),
                     Text(
-                        '${_testViweModel.index + 1}/${_testViweModel.items.length}'),
+                      '${_testViweModel.index + 1}/${_testViweModel.items.length}',
+                      style: titleTextStyle,
+                    ),
                   ],
                 ),
               ),
@@ -72,21 +98,13 @@ class _TestPage extends StatelessWidget {
                 ),
                 height: 200,
                 child: SingleChildScrollView(
-                  child: Text(_testViweModel.item.front),
+                  child: Text(
+                    _testViweModel.item.front,
+                    style: contentTextStyle,
+                  ),
                 ),
               ),
-              Container(
-                alignment: Alignment.topLeft,
-                padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: const [
-                    Text('Dictation'),
-                  ],
-                ),
-              ),
-              _buildDictaion(context, _testViweModel),
-              _buildButtons(context, _testViweModel, param.testMode),
+              _buildAnswerArea(context, _testViweModel, param.testMode),
               ExpansionWidget(
                   initiallyExpanded: false,
                   onSaveState: (value) => _answerExpanded = value,
@@ -101,7 +119,11 @@ class _TestPage extends StatelessWidget {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Expanded(child: Text('Answer')),
+                              const Expanded(
+                                  child: Text(
+                                'Answer',
+                                style: titleTextStyle,
+                              )),
                               Transform.rotate(
                                 angle: math.pi * animationValue / 2,
                                 child: const Icon(Icons.arrow_right, size: 40),
@@ -115,94 +137,137 @@ class _TestPage extends StatelessWidget {
                     width: double.infinity,
                     color: Colors.grey.shade100,
                     padding: const EdgeInsets.all(20),
-                    child: Text(_testViweModel.item.back),
+                    child: Text(
+                      _testViweModel.item.back,
+                      style: contentTextStyle,
+                    ),
                   )),
             ],
           ),
         ));
   }
 
-  Container _buildDictaion(BuildContext context, TestViewModel viewmodel) {
-    return Container(
-      alignment: Alignment.topLeft,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
+  Widget _buildAnswerArea(
+      BuildContext context, TestViewModel viewmodel, int testMode) {
+    return testMode == PreferenceModel.testModeSelfMode
+        ? _buildDictaion(context, viewmodel)
+        : _buildSelfMode(context, viewmodel);
+  }
+
+  Column _buildDictaion(BuildContext context, TestViewModel viewmodel) {
+    return Column(children: [
+      Container(
+        alignment: Alignment.topLeft,
+        padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: const [
+            Text(
+              'Dictation',
+              style: titleTextStyle,
+            ),
+          ],
+        ),
       ),
-      height: 200,
-      child: SingleChildScrollView(
-        child: TextField(
-          maxLines: 100,
-          controller: _textCtr,
-          onChanged: (text) {
-            if (text.compareTo(viewmodel.item.back) == 0) {
-              Fluttertoast.showToast(msg: "Correct!");
-              viewmodel.correctAnswer();
+      Container(
+        alignment: Alignment.topLeft,
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey),
+        ),
+        height: 200,
+        child: SingleChildScrollView(
+          child: TextField(
+            style: contentTextStyle,
+            maxLines: 100,
+            controller: _textCtr,
+            onChanged: (text) {
+              if (text.compareTo(viewmodel.item.back) == 0) {
+                Fluttertoast.showToast(msg: "Correct!");
+                viewmodel.correctAnswer();
+                if (!viewmodel.next()) {
+                  Navigator.of(context).pushNamed('/testResultPage',
+                      arguments: viewmodel.test.id);
+                }
+              }
+            },
+          ),
+        ),
+      ),
+      Container(
+        alignment: Alignment.center,
+        height: 80,
+        child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.lightBlue,
+              onPrimary: Colors.black,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: const Text(
+              'Skip',
+              style: buttonTextStyle,
+            ),
+            onPressed: () {
+              viewmodel.wrongAnswer();
               if (!viewmodel.next()) {
                 Navigator.of(context)
                     .pushNamed('/testResultPage', arguments: viewmodel.test.id);
               }
-            }
-          },
-        ),
-      ),
-    );
+            },
+          )
+        ]),
+      )
+    ]);
   }
 
-  Container _buildButtons(
-      BuildContext context, TestViewModel viewmodel, int testMode) {
-    List<ElevatedButton> selfMode = [
-      ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          primary: Colors.red,
-          shape: const StadiumBorder(),
-        ),
-        child: const Text('Wrong'),
-        onPressed: () {
-          viewmodel.wrongAnswer();
-          if (!viewmodel.next()) {
-            Navigator.of(context)
-                .pushNamed('/testResultPage', arguments: viewmodel.test.id);
-          }
-        },
-      ),
-      ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shape: const StadiumBorder(),
-        ),
-        child: const Text('Correct'),
-        onPressed: () {
-          viewmodel.correctAnswer();
-          if (!viewmodel.next()) {
-            Navigator.of(context)
-                .pushNamed('/testResultPage', arguments: viewmodel.test.id);
-          }
-        },
-      )
-    ];
-    List<ElevatedButton> dictationMode = [
-      ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shape: const StadiumBorder(),
-        ),
-        child: const Text('Skip'),
-        onPressed: () {
-          viewmodel.wrongAnswer();
-          if (!viewmodel.next()) {
-            Navigator.of(context)
-                .pushNamed('/testResultPage', arguments: viewmodel.test.id);
-          }
-        },
-      )
-    ];
-
+  Container _buildSelfMode(BuildContext context, TestViewModel viewmodel) {
     return Container(
       alignment: Alignment.center,
       height: 80,
-      child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: testMode == PreferenceModel.testModeSelfMode
-              ? dictationMode
-              : selfMode),
+      child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Colors.red,
+            onPrimary: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          child: const Text(
+            'Wrong',
+            style: buttonTextStyle,
+          ),
+          onPressed: () {
+            viewmodel.wrongAnswer();
+            if (!viewmodel.next()) {
+              Navigator.of(context)
+                  .pushNamed('/testResultPage', arguments: viewmodel.test.id);
+            }
+          },
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: Colors.lightBlue,
+            onPrimary: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          child: const Text(
+            'Correct',
+            style: buttonTextStyle,
+          ),
+          onPressed: () {
+            viewmodel.correctAnswer();
+            if (!viewmodel.next()) {
+              Navigator.of(context)
+                  .pushNamed('/testResultPage', arguments: viewmodel.test.id);
+            }
+          },
+        )
+      ]),
     );
   }
 }
