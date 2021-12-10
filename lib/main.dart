@@ -9,6 +9,7 @@ import 'package:flash_card/views/input_card_page.dart';
 import 'package:flash_card/views/test_page.dart';
 import 'package:flash_card/views/test_result_page.dart';
 import 'package:flash_card/views/web_view_page.dart';
+import 'package:flash_card/views/settings_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -60,6 +61,9 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(
               builder: (context) => WebViewPage(
                   params: settings.arguments as WevViewPageParameters));
+        }
+        if (settings.name == '/settingsPage') {
+          return MaterialPageRoute(builder: (context) => const SettingsPage());
         }
         return null;
       },
