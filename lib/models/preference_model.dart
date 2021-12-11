@@ -19,7 +19,12 @@ class PreferenceModel {
       this.testMode,
       this.numOfTest]);
 
-  static const Map<int, String> frontAndBackItems = {0: 'Front', 1: 'Back'};
+  static const int frontKey = 0;
+  static const int backKey = 1;
+  static const Map<int, String> frontAndBackItems = {
+    frontKey: 'Front',
+    backKey: 'Back'
+  };
   static const Map<int, String> testModeItems = {
     0: 'Self mode',
     1: 'Dictation'

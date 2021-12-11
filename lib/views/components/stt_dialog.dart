@@ -4,7 +4,8 @@ import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 
 class SttDialog extends StatefulWidget {
-  const SttDialog({Key? key}) : super(key: key);
+  const SttDialog({Key? key, this.localeId}) : super(key: key);
+  final String? localeId;
   @override
   _SttDialog createState() => _SttDialog();
 }
@@ -28,12 +29,12 @@ class _SttDialog extends State<SttDialog> {
 
   void onSttError(SpeechRecognitionError error) {
     // ignore: avoid_print
-    print('Received listener status: $error, listening: ${_stt.isListening}');
+    // print('Received listener status: $error, listening: ${_stt.isListening}');
   }
 
   void onSttStatus(String status) {
     // ignore: avoid_print
-    print('Received listener status: $status, listening: ${_stt.isListening}');
+    // print('Received listener status: $status, listening: ${_stt.isListening}');
     setState(() {
       if (status == 'done') {
         _level = 0.0;
@@ -46,8 +47,8 @@ class _SttDialog extends State<SttDialog> {
 
   void resultListener(SpeechRecognitionResult result) {
     // ignore: avoid_print
-    print(
-        'Result listener final: ${result.finalResult}, words: ${result.recognizedWords}');
+    // print(
+    // 'Result listener final: ${result.finalResult}, words: ${result.recognizedWords}');
     if (mounted) {
       setState(() {
         _lastwords = result.recognizedWords;
@@ -59,7 +60,9 @@ class _SttDialog extends State<SttDialog> {
     await _stt.initSpeechState(onError: onSttError, onStatus: onSttStatus);
     if (_stt.hasSpeech) {
       await _stt.startListening(
-          onResult: resultListener, onSoundLevelChange: soundLevelListener);
+          onResult: resultListener,
+          onSoundLevelChange: soundLevelListener,
+          localeId: widget.localeId!);
       setState(() {
         _lastwords = '';
       });
@@ -72,7 +75,7 @@ class _SttDialog extends State<SttDialog> {
       _level = level;
     });
     // ignore: avoid_print
-    print('sound level $_level');
+    // print('sound level $_level');
   }
 
   void stopListening() {
@@ -148,8 +151,10 @@ class _SttDialog extends State<SttDialog> {
 }
 
 Future showSttDialog(
-    {required BuildContext context, TransitionBuilder? builder}) {
-  Widget dialog = const SttDialog();
+    {required BuildContext context,
+    TransitionBuilder? builder,
+    String? localeId}) {
+  Widget dialog = SttDialog(localeId: localeId!);
   return showDialog(
     context: context,
     builder: (BuildContext context) {

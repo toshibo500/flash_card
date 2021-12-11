@@ -1,7 +1,6 @@
 import 'package:flash_card/models/preference_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flash_card/utilities/stt.dart';
 import 'package:flash_card/viewmodels/settings_viewmodel.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:flash_card/views/components/select_bottom_sheet.dart';
@@ -19,16 +18,12 @@ class SettingsPage extends StatelessWidget {
 }
 
 class _SettingsPage extends StatelessWidget {
-  final Stt _stt = Stt();
 //  final Map<String, String> _langItems = {};
-  final List<DropdownMenuItem<String>> _langItems = [];
-  final Map<String, String> _langItems2 = {};
   final List<DropdownMenuItem<int>> _questionItems = [];
   final List<DropdownMenuItem<int>> _testModeItems = [];
   final List<DropdownMenuItem<int>> _numOfTest = [];
 
   _SettingsPage({Key? key}) : super(key: key) {
-    initSpeech();
     PreferenceModel.frontAndBackItems.forEach((key, value) {
       _questionItems.add(DropdownMenuItem(
         child: Text(
@@ -55,35 +50,10 @@ class _SettingsPage extends StatelessWidget {
     });
   }
 
-  void initSpeech() async {
-    await _stt.initSpeechState().then((value) {
-      setItems();
-      setItems2();
-    });
-  }
-
-  void setItems2() {
-    // _stt.localeNames.map((e) => _langItems[e.localeId] = e.name);
-    for (var e in _stt.localeNames) {
-      _langItems2[e.localeId] = e.name;
-    }
-  }
-
-  void setItems() {
-    for (var element in _stt.localeNames) {
-      _langItems.add(DropdownMenuItem(
-        child: Text(
-          element.name,
-          style: const TextStyle(fontSize: 16.0),
-        ),
-        value: element.localeId,
-      ));
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     var _drawerMenuViewModel = Provider.of<SettingsViewModel>(context);
+    final Map<String, String> _langItems = _drawerMenuViewModel.langItems;
     return Scaffold(
         backgroundColor: Colors.black12,
         appBar: AppBar(
@@ -220,12 +190,12 @@ class _SettingsPage extends StatelessWidget {
                   title: 'Front',
                   leading: const Icon(Icons.language_rounded),
                   trailing: SizedBox(
-                      child: Text(_langItems2[
+                      child: Text(_langItems[
                               _drawerMenuViewModel.preference.frontSideLang] ??
                           '')),
                   onPressed: (context) async {
                     String? key = await showSelectBottomSheet(
-                        context: context, items: _langItems2);
+                        context: context, items: _langItems);
                     if (key != null) {
                       _drawerMenuViewModel.preference.frontSideLang = key;
                       _drawerMenuViewModel
@@ -237,12 +207,12 @@ class _SettingsPage extends StatelessWidget {
                   title: 'Back',
                   leading: const Icon(Icons.language_rounded),
                   trailing: SizedBox(
-                      child: Text(_langItems2[
+                      child: Text(_langItems[
                               _drawerMenuViewModel.preference.backSideLang] ??
                           '')),
                   onPressed: (context) async {
                     String? key = await showSelectBottomSheet(
-                        context: context, items: _langItems2);
+                        context: context, items: _langItems);
                     if (key != null) {
                       _drawerMenuViewModel.preference.backSideLang = key;
                       _drawerMenuViewModel

@@ -100,7 +100,7 @@ class _TestPage extends StatelessWidget {
                 height: 200,
                 child: SingleChildScrollView(
                   child: Text(
-                    _testViweModel.item.front,
+                    _testViweModel.question,
                     style: contentTextStyle,
                   ),
                 ),
@@ -139,7 +139,7 @@ class _TestPage extends StatelessWidget {
                     color: Colors.grey.shade100,
                     padding: const EdgeInsets.all(20),
                     child: Text(
-                      _testViweModel.item.back,
+                      _testViweModel.answer,
                       style: contentTextStyle,
                     ),
                   )),
@@ -181,15 +181,9 @@ class _TestPage extends StatelessWidget {
             style: contentTextStyle,
             maxLines: 100,
             controller: _textCtr,
+            autofocus: true,
             onChanged: (text) {
-              if (text.compareTo(viewmodel.item.back) == 0) {
-                Fluttertoast.showToast(msg: "Correct!");
-                viewmodel.correctAnswer();
-                if (!viewmodel.next()) {
-                  Navigator.of(context).pushNamed('/testResultPage',
-                      arguments: viewmodel.test.id);
-                }
-              }
+              mark(context, viewmodel, text);
             },
           ),
         ),
@@ -199,12 +193,17 @@ class _TestPage extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: IconButton(
             onPressed: () async {
-              String txt = await showSttDialog(context: context);
-              // ignore: avoid_print
-/*             setState(() {
-              _textCtl[index].text += txt;
-            });
- */
+              int p = _textCtr.selection.start;
+              String txt = await showSttDialog(
+                  context: context, localeId: viewmodel.localeId);
+              if (p >= 0) {
+                _textCtr.text = _textCtr.text.substring(0, p) +
+                    txt +
+                    _textCtr.text.substring(p);
+              } else {
+                _textCtr.text += txt;
+              }
+              mark(context, viewmodel, _textCtr.text);
             },
             icon: const Icon(Icons.mic_rounded),
             color: Colors.blue,
@@ -236,6 +235,17 @@ class _TestPage extends StatelessWidget {
         ]),
       )
     ]);
+  }
+
+  void mark(BuildContext context, TestViewModel viewmodel, String text) {
+    if (text.compareTo(viewmodel.answer.trim()) == 0) {
+      Fluttertoast.showToast(msg: "Correct!");
+      viewmodel.correctAnswer();
+      if (!viewmodel.next()) {
+        Navigator.of(context)
+            .pushNamed('/testResultPage', arguments: viewmodel.test.id);
+      }
+    }
   }
 
   Container _buildSelfMode(BuildContext context, TestViewModel viewmodel) {

@@ -4,33 +4,59 @@ import 'package:flutter/material.dart';
 import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/repositories/card_repository.dart';
+import 'package:flash_card/models/preference_model.dart';
+import 'package:flash_card/models/repositories/preference_repository.dart';
 
 class TestViewModel extends ChangeNotifier {
   BookModel _selectedBook = BookModel('', '', '', '', 0);
   late List<CardModel> _cardList = [];
-  List<CardModel> get items => _cardList;
-
   int _index = 0;
-  get index => _index;
-
   late CardModel _item = CardModel('', '', '', '', 0);
-  CardModel get item => _item;
-  bool get isEnded => _index >= _cardList.length;
-
   int _numberOfQuestions = 50;
-
   late TestModel _test;
-  TestModel get test => _test;
+  PreferenceModel _preference = PreferenceModel();
 
   TestViewModel(BookModel selectedBook, int numberOfQuestions) {
     this.selectedBook = selectedBook;
     _numberOfQuestions = numberOfQuestions;
+    getPreference();
     startTest();
+  }
+
+  List<CardModel> get items => _cardList;
+  get index => _index;
+  CardModel get item => _item;
+  bool get isEnded => _index >= _cardList.length;
+  TestModel get test => _test;
+
+  PreferenceModel get preference => _preference;
+  void getPreference() async {
+    await PreferenceRepository.get().then((value) {
+      _preference = value!;
+    });
   }
 
   get selectedBook => _selectedBook;
   set selectedBook(book) {
     _selectedBook = book;
+  }
+
+  String get question {
+    return _preference.question == PreferenceModel.frontKey
+        ? _item.front
+        : _item.back;
+  }
+
+  String get answer {
+    return _preference.question == PreferenceModel.frontKey
+        ? _item.back
+        : _item.front;
+  }
+
+  String get localeId {
+    return _preference.question == PreferenceModel.frontKey
+        ? _preference.backSideLang!
+        : _preference.frontSideLang!;
   }
 
   Future<void> _getCardList(int? limit) async {
