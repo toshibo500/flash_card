@@ -6,6 +6,7 @@ import 'package:flash_card/viewmodels/test_viewmodel.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'dart:math' as math;
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flash_card/views/components/stt_dialog.dart';
 
 class TestPageParameters {
   TestPageParameters(
@@ -193,6 +194,21 @@ class _TestPage extends StatelessWidget {
           ),
         ),
       ),
+      Container(
+          height: 40,
+          alignment: Alignment.centerRight,
+          child: IconButton(
+            onPressed: () async {
+              String txt = await showSttDialog(context: context);
+              // ignore: avoid_print
+/*             setState(() {
+              _textCtl[index].text += txt;
+            });
+ */
+            },
+            icon: const Icon(Icons.mic_rounded),
+            color: Colors.blue,
+          )),
       Container(
         alignment: Alignment.center,
         height: 80,

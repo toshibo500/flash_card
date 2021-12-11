@@ -48,16 +48,6 @@ class _FolderListPage extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          String title = await showInputTitleDialog(context: context);
-          if (title != "") {
-            _folderListViewModel.add(title, '');
-          }
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma ma
       drawer: const SideDrawer(),
       body: Consumer<FolderListViewModel>(builder: (context, viewModel, _) {
         return FileListView(viewModel: viewModel, nextPage: "/folderPage");

@@ -27,64 +27,98 @@ class _BookPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var _bookViweModel = Provider.of<BookViewModel>(context);
     return Scaffold(
-        appBar: AppBar(
-          title: Text(pageTitle),
-          backgroundColor: Colors.green,
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new_outlined),
-            onPressed: () => {Navigator.of(context).pop()},
-          ),
-          actions: [
-            IconButton(
-                icon: Icon(
-                    _bookViweModel.editMode ? Icons.done : Icons.edit_rounded),
-                onPressed: () {
-                  _bookViweModel.editMode = !_bookViweModel.editMode;
-                }),
-            IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () async {
-                // List<String> values = await showInputCardDialog(context: context);
-                BookModel book = _bookViweModel.selectedBook;
-                CardModel card = CardModel('', book.id, '', '', 0);
-                await Navigator.of(context)
-                    .pushNamed('/inputCardPage', arguments: card) as CardModel;
-                if (card.front != '') {
-                  _bookViweModel.add(card.front, card.back);
-                }
-              },
-            ),
-          ],
+      appBar: AppBar(
+        title: Text(pageTitle),
+        backgroundColor: Colors.green,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_outlined),
+          onPressed: () => {Navigator.of(context).pop()},
         ),
-        body: Column(
-          children: [
-            Expanded(child:
-                Consumer<BookViewModel>(builder: (context, viewModel, _) {
-              return FileListView(viewModel: viewModel, nextPage: "");
-            })),
-            Container(
-              height: 80,
-              alignment: Alignment.topCenter,
-              padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-              color: Theme.of(context).backgroundColor,
-              child: Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: const StadiumBorder(),
+        actions: [
+          IconButton(
+              icon: Icon(
+                  _bookViweModel.editMode ? Icons.done : Icons.edit_rounded),
+              onPressed: () {
+                _bookViweModel.editMode = !_bookViweModel.editMode;
+              }),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () async {
+              // List<String> values = await showInputCardDialog(context: context);
+              BookModel book = _bookViweModel.selectedBook;
+              CardModel card = CardModel('', book.id, '', '', 0);
+              await Navigator.of(context)
+                  .pushNamed('/inputCardPage', arguments: card) as CardModel;
+              if (card.front != '') {
+                _bookViweModel.add(card.front, card.back);
+              }
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+              child: Consumer<BookViewModel>(builder: (context, viewModel, _) {
+            return FileListView(viewModel: viewModel, nextPage: "");
+          })),
+          Container(
+            height: 80,
+            alignment: Alignment.topCenter,
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+            color: Theme.of(context).backgroundColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Container(
+                  width: 100,
+                  alignment: Alignment.centerLeft,
+                  child: IconButton(
+                    color: Colors.lightBlue,
+                    icon: const Icon(Icons.settings_rounded),
+                    onPressed: () async {
+                      await Navigator.of(context).pushNamed('/settingsPage');
+                      _bookViweModel.getPreference();
+                    },
                   ),
-                  child: const Text('Start TEST'),
-                  onPressed: () async {
-                    await Navigator.of(context).pushNamed('/testPage',
-                        arguments: TestPageParameters(
-                            book: _bookViweModel.selectedBook,
-                            numberOfQuestions:
-                                _bookViweModel.preference.numOfTest!,
-                            testMode: _bookViweModel.preference.testMode!));
-                  },
                 ),
-              ),
-            )
-          ],
-        ));
+                Center(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: const StadiumBorder(),
+                    ),
+                    child: const Text('Start TEST'),
+                    onPressed: () async {
+                      await Navigator.of(context).pushNamed('/testPage',
+                          arguments: TestPageParameters(
+                              book: _bookViweModel.selectedBook,
+                              numberOfQuestions:
+                                  _bookViweModel.preference.numOfTest!,
+                              testMode: _bookViweModel.preference.testMode!));
+                    },
+                  ),
+                ),
+                Container(
+                  width: 100,
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+/*       floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          await Navigator.of(context).pushNamed('/testPage',
+              arguments: TestPageParameters(
+                  book: _bookViweModel.selectedBook,
+                  numberOfQuestions: _bookViweModel.preference.numOfTest!,
+                  testMode: _bookViweModel.preference.testMode!));
+        },
+        tooltip: 'Increment',
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [Icon(Icons.text_snippet_rounded), Text('TEST')]),
+      ), // This trailing comma ma */
+    );
   }
 }

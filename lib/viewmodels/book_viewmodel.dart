@@ -17,9 +17,7 @@ class BookViewModel extends ChangeNotifier {
   BookViewModel(BookModel selectedBook) {
     this.selectedBook = selectedBook;
     getAll(_selectedBook.id);
-    PreferenceRepository.get().then((value) {
-      _preference = value!;
-    });
+    getPreference();
   }
 
   bool get editMode => _editMode;
@@ -75,6 +73,13 @@ class BookViewModel extends ChangeNotifier {
     final CardModel item = _cardList.removeAt(oldIndex);
     _cardList.insert(newIndex, item);
     await CardRepository.bulkUpdate(_cardList);
+    notifyListeners();
+  }
+
+  void getPreference() {
+    PreferenceRepository.get().then((value) {
+      _preference = value!;
+    });
     notifyListeners();
   }
 }
