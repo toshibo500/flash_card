@@ -47,13 +47,14 @@ class _InputCardPage extends State<InputCardPage> {
     letterSpacing: 1,
     fontSize: 18.0,
   );
-  static const TextStyle contentTextStyle = TextStyle(
+/*   static const TextStyle contentTextStyle = TextStyle(
     color: Colors.black,
     fontWeight: FontWeight.w400,
     fontFamily: 'Roboto',
     letterSpacing: 1,
     fontSize: 24.0,
   );
+ */
   static const TextStyle buttonTextStyle = TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w500,

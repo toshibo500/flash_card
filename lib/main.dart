@@ -10,7 +10,7 @@ import 'package:flash_card/views/test_page.dart';
 import 'package:flash_card/views/test_result_page.dart';
 import 'package:flash_card/views/web_view_page.dart';
 import 'package:flash_card/views/settings_page.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,19 +23,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: [
-        const Locale('jp', ''), //日本語
-        const Locale('en', ''), //英語
-      ],
+      localizationsDelegates: L10n.localizationsDelegates,
+      supportedLocales: L10n.supportedLocales,
       routes: {
-        "/": (BuildContext context) => const FolderListPage(
-              title: 'Folder List',
-            ),
+        "/": (BuildContext context) => const FolderListPage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/folderPage') {
@@ -92,6 +83,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: FolderListPage(title: widget.title));
+    return const Scaffold(body: FolderListPage());
   }
 }

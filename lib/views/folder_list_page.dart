@@ -4,16 +4,17 @@ import 'package:flash_card/views/components/input_title_dialog.dart';
 import 'package:flash_card/views/components/file_list_view.dart';
 import 'package:flash_card/viewmodels/folder_list_viewmodel.dart';
 import 'package:flash_card/views/components/drawer_menu.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FolderListPage extends StatelessWidget {
-  const FolderListPage({Key? key, required this.title}) : super(key: key);
-  final String title;
+  const FolderListPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => FolderListViewModel(),
-      child: Scaffold(body: _FolderListPage(pageTitle: title)),
+      child: Scaffold(
+          body: _FolderListPage(pageTitle: L10n.of(context)!.appTitle)),
     );
   }
 }
