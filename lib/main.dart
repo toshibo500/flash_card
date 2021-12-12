@@ -10,6 +10,7 @@ import 'package:flash_card/views/test_page.dart';
 import 'package:flash_card/views/test_result_page.dart';
 import 'package:flash_card/views/web_view_page.dart';
 import 'package:flash_card/views/settings_page.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,6 +23,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('jp', ''), //日本語
+        const Locale('en', ''), //英語
+      ],
       routes: {
         "/": (BuildContext context) => const FolderListPage(
               title: 'Folder List',

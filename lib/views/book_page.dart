@@ -46,11 +46,14 @@ class _BookPage extends StatelessWidget {
             onPressed: () async {
               // List<String> values = await showInputCardDialog(context: context);
               BookModel book = _bookViweModel.selectedBook;
-              CardModel card = CardModel('', book.id, '', '', 0);
-              await Navigator.of(context)
-                  .pushNamed('/inputCardPage', arguments: card) as CardModel;
-              if (card.front != '') {
-                _bookViweModel.add(card.front, card.back);
+              bool next = true;
+              while (next) {
+                CardModel card = CardModel('', book.id, '', '', 0);
+                next = await Navigator.of(context)
+                    .pushNamed('/inputCardPage', arguments: card) as bool;
+                if (card.front != '') {
+                  _bookViweModel.add(card.front, card.back);
+                }
               }
             },
           ),

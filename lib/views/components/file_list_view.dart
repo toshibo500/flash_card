@@ -256,14 +256,14 @@ class _FileListView extends State<FileListView> {
     return IconButton(
       icon: const Icon(Icons.edit),
       onPressed: () async {
-        CardModel ret = await Navigator.of(context)
-            .pushNamed('/inputCardPage', arguments: card) as CardModel;
+        await Navigator.of(context).pushNamed('/inputCardPage', arguments: card)
+            as bool;
         widget.viewModel.update(
           index: index,
-          bookId: ret.bookId,
-          front: ret.front,
-          back: ret.back,
-          sequence: ret.sequence,
+          bookId: card.bookId,
+          front: card.front,
+          back: card.back,
+          sequence: card.sequence,
         );
       },
     );
