@@ -7,6 +7,7 @@ import 'package:expansion_widget/expansion_widget.dart';
 import 'dart:math' as math;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flash_card/views/components/stt_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TestPageParameters {
   TestPageParameters(
@@ -54,7 +55,7 @@ class _TestPage extends StatelessWidget {
     fontWeight: FontWeight.w700,
     fontFamily: 'Roboto',
     letterSpacing: 1,
-    fontSize: 24.0,
+    fontSize: 18.0,
   );
   @override
   Widget build(BuildContext context) {
@@ -81,8 +82,8 @@ class _TestPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Question',
+                    Text(
+                      L10n.of(context)!.question,
                       style: titleTextStyle,
                     ),
                     Text(
@@ -120,9 +121,9 @@ class _TestPage extends StatelessWidget {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Expanded(
+                              Expanded(
                                   child: Text(
-                                'Answer',
+                                L10n.of(context)!.answer,
                                 style: titleTextStyle,
                               )),
                               Transform.rotate(
@@ -220,8 +221,8 @@ class _TestPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: const Text(
-              'Skip',
+            child: Text(
+              L10n.of(context)!.skip,
               style: buttonTextStyle,
             ),
             onPressed: () {
@@ -239,7 +240,7 @@ class _TestPage extends StatelessWidget {
 
   void mark(BuildContext context, TestViewModel viewmodel, String text) {
     if (text.compareTo(viewmodel.answer.trim()) == 0) {
-      Fluttertoast.showToast(msg: "Correct!");
+      Fluttertoast.showToast(msg: L10n.of(context)!.correct);
       viewmodel.correctAnswer();
       if (!viewmodel.next()) {
         Navigator.of(context)
@@ -253,46 +254,50 @@ class _TestPage extends StatelessWidget {
       alignment: Alignment.center,
       height: 80,
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.red,
-            onPrimary: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          child: const Text(
-            'Wrong',
-            style: buttonTextStyle,
-          ),
-          onPressed: () {
-            viewmodel.wrongAnswer();
-            if (!viewmodel.next()) {
-              Navigator.of(context)
-                  .pushNamed('/testResultPage', arguments: viewmodel.test.id);
-            }
-          },
-        ),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.lightBlue,
-            onPrimary: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-          ),
-          child: const Text(
-            'Correct',
-            style: buttonTextStyle,
-          ),
-          onPressed: () {
-            viewmodel.correctAnswer();
-            if (!viewmodel.next()) {
-              Navigator.of(context)
-                  .pushNamed('/testResultPage', arguments: viewmodel.test.id);
-            }
-          },
-        )
+        SizedBox(
+            width: 130,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.red,
+                onPrimary: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Text(
+                L10n.of(context)!.incorrect,
+                style: buttonTextStyle,
+              ),
+              onPressed: () {
+                viewmodel.wrongAnswer();
+                if (!viewmodel.next()) {
+                  Navigator.of(context).pushNamed('/testResultPage',
+                      arguments: viewmodel.test.id);
+                }
+              },
+            )),
+        SizedBox(
+            width: 130,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.lightBlue,
+                onPrimary: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Text(
+                L10n.of(context)!.correct,
+                style: buttonTextStyle,
+              ),
+              onPressed: () {
+                viewmodel.correctAnswer();
+                if (!viewmodel.next()) {
+                  Navigator.of(context).pushNamed('/testResultPage',
+                      arguments: viewmodel.test.id);
+                }
+              },
+            ))
       ]),
     );
   }

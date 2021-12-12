@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flash_card/utilities/stt.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SttDialog extends StatefulWidget {
   const SttDialog({Key? key, this.localeId}) : super(key: key);
@@ -103,18 +104,18 @@ class _SttDialog extends State<SttDialog> {
         ]),
         actions: [
           TextButton(
-            child: const Text("Retry"),
+            child: Text(L10n.of(context)!.retry),
             onPressed: () => startListening(),
           ),
           TextButton(
-            child: const Text("Cancel"),
+            child: Text(L10n.of(context)!.cancel),
             onPressed: () {
               stopListening();
               Navigator.pop<String>(context, '');
             },
           ),
           TextButton(
-              child: const Text("OK"),
+              child: Text(L10n.of(context)!.ok),
               onPressed: () {
                 stopListening();
                 Navigator.pop<String>(context, _lastwords);

@@ -1,6 +1,25 @@
 {
     "@@locale": "ja",  
-
     "appTitle": "単語帳アプリ",
-    "hello": "こんにちは"
+    "drawer": "Choco Banana",
+    "settings": "設定",
+    "voiceInput": "音声入力",
+    "cardFront": "表面",
+    "cardBack": "裏面",  
+    "test": "テスト",
+    "privacyPolcy": "Privacy Policy",
+    "aboutApp": "このアプリについて",
+    "question": "問題",
+    "answer": "解答",
+    "testMode": "モード",
+    "numberOfQuestion": "問題数",
+    "folderName": "フォルダ名",
+    "bookName": "単語帳名",
+    "ok": "保存",
+    "cancel": "キャンセル",
+    "next": "保存&新規",
+    "retry": "再施行",
+    "correct": "わかる",
+    "incorrect": "わからない",
+    "skip": "スキップ"
 }

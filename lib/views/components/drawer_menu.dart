@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/viewmodels/drawer_menu_viewmodel.dart';
 import 'package:flash_card/views/web_view_page.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SideDrawer extends StatelessWidget {
   const SideDrawer({Key? key}) : super(key: key);
@@ -24,30 +25,31 @@ class _SideDrawer extends StatelessWidget {
         child: Drawer(
           child: Column(
             children: <Widget>[
-              const SizedBox(
+              SizedBox(
                   height: 150,
                   child: DrawerHeader(
                     child: Center(
                       child: Text(
-                        'menu',
+                        L10n.of(context)!.drawer,
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white, fontSize: 25),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 25),
                       ),
                     ),
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.green,
                     ),
                   )),
               ListTile(
                 leading: const Icon(Icons.settings_rounded),
-                title: const Text('Settings'),
+                title: Text(L10n.of(context)!.settings),
                 onTap: () {
                   Navigator.of(context).pushNamed('/settingsPage');
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.privacy_tip_rounded),
-                title: const Text('Privacy Policy'),
+                title: Text(L10n.of(context)!.privacyPolcy),
                 onTap: () {
                   Navigator.of(context).pushNamed('/webViewPage',
                       arguments: WevViewPageParameters(
@@ -57,7 +59,7 @@ class _SideDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: const Icon(Icons.support_outlined),
-                title: const Text('About this app'),
+                title: Text(L10n.of(context)!.aboutApp),
                 onTap: () {
                   Navigator.of(context).pushNamed('/webViewPage',
                       arguments: WevViewPageParameters(

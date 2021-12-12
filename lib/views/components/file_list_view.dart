@@ -9,6 +9,7 @@ import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:flash_card/views/components/input_title_dialog.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FileListView extends StatefulWidget {
   const FileListView({Key? key, required this.viewModel, this.nextPage = ""})
@@ -82,7 +83,7 @@ class _FileListView extends State<FileListView> {
               Container(
                   alignment: Alignment.topLeft,
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  height: widget.viewModel.editMode ? 87 : 71,
+                  height: widget.viewModel.editMode ? 80 : 70,
                   child: SingleChildScrollView(
                       child: Text(text,
                           style: Theme.of(context).textTheme.headline5,
@@ -170,14 +171,19 @@ class _FileListView extends State<FileListView> {
         icon,
       ),
       title: Container(
-          height: 40, alignment: Alignment.centerLeft, child: Text(text)),
-      subtitle: Container(
-          height: 20,
-          alignment: Alignment.bottomLeft,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: subContents,
-          )),
+          height: widget.viewModel.editMode ? 60 : 40,
+          alignment: Alignment.centerLeft,
+          child: Text(text)),
+      subtitle: Visibility(
+        visible: !widget.viewModel.editMode,
+        child: Container(
+            height: 20,
+            alignment: Alignment.bottomLeft,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: subContents,
+            )),
+      ),
       enabled: !widget.viewModel.editMode,
       onTap: () {
         if (widget.nextPage != "") {
@@ -236,8 +242,10 @@ class _FileListView extends State<FileListView> {
     return IconButton(
       icon: const Icon(Icons.edit),
       onPressed: () async {
-        String title =
-            await showInputTitleDialog(context: context, title: text);
+        String title = await showInputTitleDialog(
+            context: context,
+            dialogTitle: L10n.of(context)!.folderName,
+            title: text);
         if (title != "") {
           int seq = widget.viewModel.items[index].sequence;
           widget.viewModel.update(

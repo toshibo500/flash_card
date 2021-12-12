@@ -2,6 +2,7 @@ import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/views/components/stt_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InputCardPage extends StatefulWidget {
   const InputCardPage({Key? key, required this.card}) : super(key: key);
@@ -79,17 +80,17 @@ class _InputCardPage extends State<InputCardPage> {
         backgroundColor: Colors.green,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
-          onPressed: () => Navigator.pop<CardModel>(context, widget.card),
+          onPressed: () => Navigator.pop<bool>(context, false),
         ),
         actions: const [],
       ),
       body: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        _buildTextField(_textCtl[0], 'Front',
-            'Input word or phrase for front side of the card'),
+        _buildTextField(_textCtl[0], L10n.of(context)!.cardFront, ''),
+//            'Input word or phrase for front side of the card'),
         Container(alignment: Alignment.centerRight, child: _buildMicIcon(0)),
-        _buildTextField(_textCtl[1], 'Back',
-            'Input word or phrase for back side of the card'),
+        _buildTextField(_textCtl[1], L10n.of(context)!.cardBack, ''),
+//            'Input word or phrase for back side of the card'),
         Container(alignment: Alignment.centerRight, child: _buildMicIcon(1)),
         Container(
             padding: const EdgeInsets.only(top: 20), child: _buildButtons()),
@@ -99,9 +100,9 @@ class _InputCardPage extends State<InputCardPage> {
 
   Row _buildButtons() {
     Widget nextButton = Expanded(
-        flex: 2,
+        flex: 3,
         child: Container(
-            padding: const EdgeInsets.only(left: 5),
+            padding: const EdgeInsets.only(left: 0),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -111,8 +112,8 @@ class _InputCardPage extends State<InputCardPage> {
                       widget.card.back = _textCtl[1].text;
                       Navigator.pop<bool>(context, true);
                     },
-                    child: const Text(
-                      ' Next ',
+                    child: Text(
+                      L10n.of(context)!.next,
                       style: buttonTextStyle,
                     ),
                     style: buttonStyle,
@@ -120,7 +121,7 @@ class _InputCardPage extends State<InputCardPage> {
                   Container()
                 ])));
     Widget cancelAndSavebuttons = Expanded(
-        flex: 3,
+        flex: 5,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -128,10 +129,11 @@ class _InputCardPage extends State<InputCardPage> {
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop<bool>(context, false),
-                  child: const Text('Cancel', style: buttonTextStyle),
+                  child: Text(L10n.of(context)!.cancel, style: buttonTextStyle),
                   style: buttonStyle,
                 )),
             Container(
+                width: 110,
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
                   style: buttonStyle,
@@ -140,8 +142,8 @@ class _InputCardPage extends State<InputCardPage> {
                     widget.card.back = _textCtl[1].text;
                     Navigator.pop<bool>(context, false);
                   },
-                  child: const Text(
-                    ' Save ',
+                  child: Text(
+                    L10n.of(context)!.ok,
                     style: buttonTextStyle,
                   ),
                 ))

@@ -41,7 +41,8 @@ class _FolderListPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
-              String title = await showInputTitleDialog(context: context);
+              String title = await showInputTitleDialog(
+                  context: context, dialogTitle: L10n.of(context)!.folderName);
               if (title != "") {
                 _folderListViewModel.add(title, '');
               }

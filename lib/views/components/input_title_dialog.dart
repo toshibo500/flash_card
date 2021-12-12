@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InputTitleDialog extends StatefulWidget {
-  const InputTitleDialog({Key? key, String this.title = ''}) : super(key: key);
+  const InputTitleDialog(
+      {Key? key, required this.dialogTitle, String this.title = ''})
+      : super(key: key);
+  final String dialogTitle;
   final String? title;
   @override
   _InputTitleDialog createState() => _InputTitleDialog();
@@ -15,19 +19,19 @@ class _InputTitleDialog extends State<InputTitleDialog> {
   Widget build(BuildContext context) {
     _textFieldController.text = widget.title ?? "";
     return AlertDialog(
-        title: const Text("This is the title"),
+        title: Text(widget.dialogTitle),
         content: TextField(
           controller: _textFieldController,
-          decoration: const InputDecoration(hintText: 'input folder name'),
+//          decoration: const InputDecoration(hintText: 'input folder name'),
           autofocus: true,
         ),
         actions: [
           TextButton(
-            child: const Text("Cancel"),
+            child: Text(L10n.of(context)!.cancel),
             onPressed: () => Navigator.pop<String>(context, ""),
           ),
           TextButton(
-              child: const Text("OK"),
+              child: Text(L10n.of(context)!.ok),
               onPressed: () {
                 Navigator.pop<String>(context, _textFieldController.text);
               }),
@@ -44,8 +48,9 @@ class _InputTitleDialog extends State<InputTitleDialog> {
 Future showInputTitleDialog(
     {required BuildContext context,
     TransitionBuilder? builder,
+    required String dialogTitle,
     String title = ""}) {
-  Widget dialog = InputTitleDialog(title: title);
+  Widget dialog = InputTitleDialog(dialogTitle: dialogTitle, title: title);
   return showDialog(
     context: context,
     builder: (BuildContext context) {

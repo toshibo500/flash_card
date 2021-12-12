@@ -1,6 +1,25 @@
 {
   "@@locale": "en",
-
   "appTitle": "Flap Cards App",
-  "hello": "Hello!"
+  "drawer": "Choco Banana",
+  "settings": "Settings",
+  "voiceInput": "Voice Input",
+  "cardFront": "Front",
+  "cardBack": "Back",
+  "test": "Test",
+  "privacyPolcy": "Privacy Policy",
+  "aboutApp": "About App",
+  "question": "Question",
+  "answer": "Answer",
+  "testMode": "Mode",
+  "numberOfQuestion": "Number Of Question",
+  "folderName": "Folder Name",
+  "bookName": "Book Name",
+  "ok": "Save",
+  "cancel": "Cancel",
+  "next": "Save&Next",
+  "retry": "Retry",
+  "correct": "I Know",
+  "incorrect": "I Don't Know",
+  "skip": "Skip"
 }

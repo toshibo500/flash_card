@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flash_card/viewmodels/settings_viewmodel.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:flash_card/views/components/select_bottom_sheet.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -57,7 +58,7 @@ class _SettingsPage extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.black12,
         appBar: AppBar(
-          title: const Text('Settings'),
+          title: Text(L10n.of(context)!.settings),
           backgroundColor: Colors.green,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
@@ -184,10 +185,10 @@ class _SettingsPage extends StatelessWidget {
             SettingsList(
           sections: [
             SettingsSection(
-              title: 'Voice input',
+              title: L10n.of(context)!.voiceInput,
               tiles: [
                 SettingsTile(
-                  title: 'Front',
+                  title: L10n.of(context)!.cardFront,
                   leading: const Icon(Icons.language_rounded),
                   trailing: SizedBox(
                       child: Text(_langItems[
@@ -204,7 +205,7 @@ class _SettingsPage extends StatelessWidget {
                   },
                 ),
                 SettingsTile(
-                  title: 'Back',
+                  title: L10n.of(context)!.cardBack,
                   leading: const Icon(Icons.language_rounded),
                   trailing: SizedBox(
                       child: Text(_langItems[
@@ -223,11 +224,11 @@ class _SettingsPage extends StatelessWidget {
               ],
             ),
             SettingsSection(
-              title: 'Test',
+              title: L10n.of(context)!.test,
               tiles: [
                 SettingsTile(
                   leading: const Icon(Icons.style_rounded),
-                  title: 'Question',
+                  title: L10n.of(context)!.question,
                   trailing: DropdownButton<int>(
                     underline: DropdownButtonHideUnderline(child: Container()),
                     value: _drawerMenuViewModel.preference.question,
@@ -241,7 +242,7 @@ class _SettingsPage extends StatelessWidget {
                 ),
                 SettingsTile(
                   leading: const Icon(Icons.mode_rounded),
-                  title: 'Mode',
+                  title: L10n.of(context)!.testMode,
                   trailing: DropdownButton<int>(
                     value: _drawerMenuViewModel.preference.testMode,
                     underline: DropdownButtonHideUnderline(child: Container()),
@@ -255,7 +256,7 @@ class _SettingsPage extends StatelessWidget {
                 ),
                 SettingsTile(
                   leading: const Icon(Icons.format_list_numbered_rounded),
-                  title: 'Number of questions',
+                  title: L10n.of(context)!.numberOfQuestion,
                   trailing: DropdownButton<int>(
                     value: _drawerMenuViewModel.preference.numOfTest,
                     underline: DropdownButtonHideUnderline(child: Container()),

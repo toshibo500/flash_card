@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/viewmodels/book_viewmodel.dart';
 import 'package:flash_card/views/components/file_list_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BookPage extends StatelessWidget {
   const BookPage({Key? key, required this.book}) : super(key: key);
@@ -90,7 +91,7 @@ class _BookPage extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       shape: const StadiumBorder(),
                     ),
-                    child: const Text('Start TEST'),
+                    child: Text(L10n.of(context)!.test),
                     onPressed: () async {
                       await Navigator.of(context).pushNamed('/testPage',
                           arguments: TestPageParameters(

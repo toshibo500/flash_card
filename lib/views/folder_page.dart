@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:flash_card/views/components/input_title_dialog.dart';
 import 'package:flash_card/views/components/file_list_view.dart';
 import 'package:flash_card/viewmodels/folder_viewmodel.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FolderPage extends StatelessWidget {
   const FolderPage({Key? key, required this.folder}) : super(key: key);
@@ -43,7 +44,8 @@ class _FolderPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.add),
             onPressed: () async {
-              String title = await showInputTitleDialog(context: context);
+              String title = await showInputTitleDialog(
+                  context: context, dialogTitle: L10n.of(context)!.bookName);
               if (title != "") {
                 _folderViweModel.add(title, '');
               }
