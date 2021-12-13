@@ -45,6 +45,7 @@ dependencies:
   bottom_sheet: ^1.0.5
   flutter_localizations: # 多言語パッケージの本体
     sdk: flutter
+  charts_flutter: ^0.12.0
   
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

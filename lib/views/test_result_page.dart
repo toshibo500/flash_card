@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/viewmodels/test_result_viewmodel.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 
 class TestResultPage extends StatelessWidget {
   const TestResultPage({Key? key, required this.id}) : super(key: key);
@@ -17,6 +19,21 @@ class TestResultPage extends StatelessWidget {
 class _TestResultPage extends StatelessWidget {
   const _TestResultPage({Key? key}) : super(key: key);
 
+  static const TextStyle scoreLTextStyle = TextStyle(
+    color: Colors.indigoAccent,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Roboto',
+    letterSpacing: 1,
+    fontSize: 32.0,
+  );
+  static const TextStyle scoreSTextStyle = TextStyle(
+    color: Colors.indigoAccent,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Roboto',
+    letterSpacing: 1,
+    fontSize: 13.0,
+  );
+
   @override
   Widget build(BuildContext context) {
     var _testResultViweModel = Provider.of<TestResultViewModel>(context);
@@ -32,12 +49,74 @@ class _TestResultPage extends StatelessWidget {
           ),
         ),
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(
-                'Number of questions: ${_testResultViweModel.test.numberOfQuestions}'),
-            Text(
-                'Number of correct answers: ${_testResultViweModel.test.numberOfCorrectAnswers}'),
-            Text('Time: ${_getTestingTime(_testResultViweModel)} sec'),
+            Text(L10n.of(context)!.score),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Column(
+                  children: [
+                    Text(
+                      '${_testResultViweModel.test.numberOfCorrectAnswers}/${_testResultViweModel.test.numberOfQuestions}',
+                      style: scoreLTextStyle,
+                    ),
+                    Text(
+                      L10n.of(context)!.numberOfCorrect +
+                          '/' +
+                          L10n.of(context)!.numberOfQuestion,
+                      style: scoreSTextStyle,
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          (_testResultViweModel.test.numberOfCorrectAnswers /
+                                  _testResultViweModel.test.numberOfQuestions *
+                                  100)
+                              .round()
+                              .toString(),
+                          style: scoreLTextStyle,
+                        ),
+                        const Text(
+                          '%',
+                          style: scoreSTextStyle,
+                        )
+                      ],
+                    ),
+                    Text(
+                      L10n.of(context)!.accuracyRate,
+                      style: scoreSTextStyle,
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          _getTestingTime(_testResultViweModel),
+                          style: scoreLTextStyle,
+                        ),
+                        Text(
+                          L10n.of(context)!.sec,
+                          style: scoreSTextStyle,
+                        )
+                      ],
+                    ),
+                    Text(
+                      L10n.of(context)!.duration,
+                      style: scoreSTextStyle,
+                    ),
+                  ],
+                )
+              ],
+            ),
           ],
         ));
   }

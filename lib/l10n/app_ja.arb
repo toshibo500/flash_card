@@ -13,6 +13,7 @@
     "answer": "解答",
     "testMode": "モード",
     "numberOfQuestion": "問題数",
+    "numberOfCorrect": "正解数",
     "folderName": "フォルダ名",
     "bookName": "単語帳名",
     "ok": "保存",
@@ -21,5 +22,9 @@
     "retry": "再施行",
     "correct": "わかる",
     "incorrect": "わからない",
-    "skip": "スキップ"
+    "skip": "スキップ",
+    "duration": "経過時間",
+    "score": "スコア",
+    "accuracyRate": "正解率",
+    "sec": "秒"
 }

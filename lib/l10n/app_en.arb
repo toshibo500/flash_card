@@ -13,6 +13,7 @@
   "answer": "Answer",
   "testMode": "Mode",
   "numberOfQuestion": "Number Of Question",
+  "numberOfCorrect": "Number Of Correct Answers",
   "folderName": "Folder Name",
   "bookName": "Book Name",
   "ok": "Save",
@@ -21,5 +22,9 @@
   "retry": "Retry",
   "correct": "I Know",
   "incorrect": "I Don't Know",
-  "skip": "Skip"
+  "skip": "Skip",
+  "duration": "Duration",
+  "score": "Score",
+  "accuracyRate": "Accuracy Rate",
+  "sec": "sec"
 }
