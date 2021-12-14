@@ -91,7 +91,7 @@ class _BookPage extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       shape: const StadiumBorder(),
                     ),
-                    child: Text(L10n.of(context)!.test),
+                    child: Text(L10n.of(context)!.testStart),
                     onPressed: () async {
                       await Navigator.of(context).pushNamed('/testPage',
                           arguments: TestPageParameters(

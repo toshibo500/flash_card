@@ -7,6 +7,7 @@
   "cardFront": "Front",
   "cardBack": "Back",
   "test": "Test",
+  "testStart": "Start TEST",
   "privacyPolcy": "Privacy Policy",
   "aboutApp": "About App",
   "question": "Question",
@@ -24,7 +25,8 @@
   "incorrect": "I Don't Know",
   "skip": "Skip",
   "duration": "Duration",
-  "score": "Score",
+  "result": "Result",
+  "resultList": "Result List",
   "accuracyRate": "Accuracy Rate",
   "sec": "sec"
 }
