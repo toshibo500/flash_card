@@ -13,8 +13,8 @@
     "question": "問題",
     "answer": "解答",
     "testMode": "モード",
-    "numberOfQuestion": "問題数",
-    "numberOfCorrect": "正解数",
+    "numberOfQuestion": "問題",
+    "numberOfCorrect": "正解",
     "folderName": "フォルダ名",
     "bookName": "単語帳名",
     "ok": "保存",
@@ -28,5 +28,6 @@
     "result": "テスト結果",
     "resultList": "テスト結果一覧",
     "accuracyRate": "正解率",
-    "sec": "秒"
+    "sec": "秒",
+    "dateTime": "日時"
 }

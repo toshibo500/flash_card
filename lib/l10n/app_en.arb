@@ -13,8 +13,8 @@
   "question": "Question",
   "answer": "Answer",
   "testMode": "Mode",
-  "numberOfQuestion": "Number Of Question",
-  "numberOfCorrect": "Number Of Correct Answers",
+  "numberOfQuestion": "No Of Question",
+  "numberOfCorrect": "No Of Correct Answers",
   "folderName": "Folder Name",
   "bookName": "Book Name",
   "ok": "Save",
@@ -28,5 +28,6 @@
   "result": "Result",
   "resultList": "Result List",
   "accuracyRate": "Accuracy Rate",
-  "sec": "sec"
+  "sec": "sec",
+  "dateTime": "Date Time"
 }
