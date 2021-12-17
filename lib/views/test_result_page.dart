@@ -3,7 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/viewmodels/test_result_viewmodel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-// import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flash_card/views/components/accuracy_rate_chart.dart';
+import 'package:flash_card/views/components/answer_time_chart.dart';
 
 class TestResultPage extends StatelessWidget {
   const TestResultPage({Key? key, required this.id}) : super(key: key);
@@ -53,6 +54,7 @@ class _TestResultPage extends StatelessWidget {
 
     String _getSccuracyRate(int noOfCorrect, int noOfQuestion,
         [bool addUnit = true]) {
+      if (noOfQuestion == 0) return '';
       String rate = '${(noOfCorrect / noOfQuestion * 100).round()}';
       return rate + (addUnit ? '%' : '');
     }
@@ -196,6 +198,27 @@ class _TestResultPage extends StatelessWidget {
       children: [Text(L10n.of(context)!.resultList), _resultTable],
     );
 
+    // 正解率グラフ
+    final List<AccuracyRate> accRateData = [];
+    for (var item in _testResultViweModel.testList) {
+      String startAt = DateFormat('M/d HH:mm').format(item.startedAt);
+      String accuracyRate = _getSccuracyRate(
+          item.numberOfCorrectAnswers, item.numberOfQuestions, false);
+      accRateData.add(AccuracyRate(startAt, int.parse(accuracyRate)));
+    }
+    Widget accRateChart = SizedBox(
+        height: 150, width: 180, child: AccuracyRateChart.show(accRateData));
+
+    // 解答時間グラフ
+    final List<AnswerTime> ansTimeData = [];
+    for (var item in _testResultViweModel.testList) {
+      String startAt = DateFormat('M/d HH:mm').format(item.startedAt);
+      int ansTime = item.endedAt!.difference(item.startedAt).inSeconds;
+      ansTimeData.add(AnswerTime(startAt, ansTime));
+    }
+    Widget ansTimeChart = SizedBox(
+        height: 150, width: 180, child: AnswerTimeChart.show(ansTimeData));
+
     // Scaffold
     return Scaffold(
         appBar: AppBar(
@@ -208,6 +231,12 @@ class _TestResultPage extends StatelessWidget {
             }, // 一旦rootに戻す。bookPageに戻す場合はrooting方法を再検討。単純に/bookPageとすると真っ黒画面。参考:https://blog.dalt.me/2616
           ),
         ),
-        body: Column(children: [_result, _resultList]));
+        body: Column(children: [
+          _result,
+          Row(children: [accRateChart, ansTimeChart]),
+          _resultList,
+        ])
+//      body: Center(child: SimpleBarChart.withSampleData()),
+        );
   }
 }
