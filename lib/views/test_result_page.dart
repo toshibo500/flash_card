@@ -26,7 +26,7 @@ class _TestResultPage extends StatelessWidget {
     fontWeight: FontWeight.w400,
     fontFamily: 'Roboto',
     letterSpacing: 1,
-    fontSize: 32.0,
+    fontSize: 42.0,
   );
   static const TextStyle scoreSTextStyle = TextStyle(
     color: Colors.indigoAccent,
@@ -35,6 +35,23 @@ class _TestResultPage extends StatelessWidget {
     letterSpacing: 1,
     fontSize: 13.0,
   );
+  static const TextStyle titleTextStyle = TextStyle(
+    color: Colors.black54,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Roboto',
+    letterSpacing: 1,
+    fontSize: 18.0,
+  );
+  static const TextStyle titleTextStyleS = TextStyle(
+    color: Colors.black54,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Roboto',
+    letterSpacing: 1,
+    fontSize: 12.0,
+  );
+
+  static const TextStyle _dataTableColumnStyle = TextStyle(
+      color: Colors.black54, fontStyle: FontStyle.italic, fontSize: 12);
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +80,12 @@ class _TestResultPage extends StatelessWidget {
     Widget _result = Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text(L10n.of(context)!.result),
+        Container(
+            margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+            child: Text(
+              L10n.of(context)!.result,
+              style: titleTextStyle,
+            )),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
@@ -144,7 +166,7 @@ class _TestResultPage extends StatelessWidget {
       String startAt = DateFormat('M/d HH:mm').format(item.startedAt);
       String accuracyRate =
           _getSccuracyRate(item.numberOfCorrectAnswers, item.numberOfQuestions);
-      String duration = _getDifferenceInSec(item.startedAt, item.endedAt!);
+      String duration = _getDifferenceInSec(item.startedAt, item.endedAt);
       _resultRows.add(DataRow(cells: <DataCell>[
         _getDataCell(startAt),
         _getDataCell(title, Alignment.center),
@@ -152,8 +174,7 @@ class _TestResultPage extends StatelessWidget {
         _getDataCell(duration),
       ]));
     }
-    TextStyle _dataTableColumnStyle =
-        const TextStyle(fontStyle: FontStyle.italic, fontSize: 12);
+
     // 結果一覧テーブル
     Widget _resultTable = DataTable(
       horizontalMargin: 10,
@@ -193,31 +214,45 @@ class _TestResultPage extends StatelessWidget {
     );
 
     // 検索結果一覧
-    Widget _resultList = Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [Text(L10n.of(context)!.resultList), _resultTable],
-    );
+    Widget _resultList = SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [_resultTable],
+        ));
 
     // 正解率グラフ
     final List<AccuracyRate> accRateData = [];
     for (var item in _testResultViweModel.testList) {
-      String startAt = DateFormat('M/d HH:mm').format(item.startedAt);
+      String startAt = DateFormat('M/d\nHH:mm').format(item.startedAt);
       String accuracyRate = _getSccuracyRate(
           item.numberOfCorrectAnswers, item.numberOfQuestions, false);
       accRateData.add(AccuracyRate(startAt, int.parse(accuracyRate)));
     }
-    Widget accRateChart = SizedBox(
-        height: 150, width: 180, child: AccuracyRateChart.show(accRateData));
+    Widget accRateChart = Column(children: [
+      Text(
+        L10n.of(context)!.accuracyRateChart,
+        style: titleTextStyleS,
+      ),
+      SizedBox(
+          height: 150, width: 190, child: AccuracyRateChart.show(accRateData))
+    ]);
 
     // 解答時間グラフ
     final List<AnswerTime> ansTimeData = [];
     for (var item in _testResultViweModel.testList) {
-      String startAt = DateFormat('M/d HH:mm').format(item.startedAt);
+      String startAt = DateFormat('M/d\nHH:mm').format(item.startedAt);
       int ansTime = item.endedAt!.difference(item.startedAt).inSeconds;
       ansTimeData.add(AnswerTime(startAt, ansTime));
     }
-    Widget ansTimeChart = SizedBox(
-        height: 150, width: 180, child: AnswerTimeChart.show(ansTimeData));
+    Widget ansTimeChart = Column(children: [
+      Text(
+        L10n.of(context)!.answerTimeChart,
+        style: titleTextStyleS,
+      ),
+      SizedBox(
+          height: 150, width: 190, child: AnswerTimeChart.show(ansTimeData))
+    ]);
 
     // Scaffold
     return Scaffold(
@@ -232,9 +267,32 @@ class _TestResultPage extends StatelessWidget {
           ),
         ),
         body: Column(children: [
-          _result,
-          Row(children: [accRateChart, ansTimeChart]),
-          _resultList,
+          Card(
+              margin: const EdgeInsets.fromLTRB(0, 1, 0, 0),
+              child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+                  child: _result)),
+          Card(
+              margin: const EdgeInsets.fromLTRB(0, 1, 0, 0),
+              child: Column(children: [
+                Container(
+                  margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  child: Text(
+                    L10n.of(context)!.resultList,
+                    style: titleTextStyle,
+                  ),
+                ),
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [accRateChart, ansTimeChart]))
+              ])),
+          Card(
+              margin: const EdgeInsets.fromLTRB(0, 1, 0, 0),
+              child: Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+                  child: _resultList)),
         ])
 //      body: Center(child: SimpleBarChart.withSampleData()),
         );

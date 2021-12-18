@@ -2,12 +2,12 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
-class AccuracyRateChart extends StatelessWidget {
-  final List<charts.Series<AccuracyRate, String>> seriesList;
+class BarChart extends StatelessWidget {
+  final List<charts.Series<dynamic, String>> seriesList;
   final bool animate;
   final int fontSize;
 
-  const AccuracyRateChart(
+  const BarChart(
       {Key? key,
       required this.seriesList,
       required this.animate,
@@ -15,9 +15,9 @@ class AccuracyRateChart extends StatelessWidget {
       : super(key: key);
 
   /// Creates a [BarChart] with sample data and no transition.
-  factory AccuracyRateChart.show(List<AccuracyRate> data,
+  factory BarChart.show(List<dynamic> data,
       [int fontSize = 9, bool animate = false]) {
-    return AccuracyRateChart(
+    return BarChart(
       seriesList: _createData(data),
       animate: animate,
       fontSize: fontSize,
@@ -45,14 +45,13 @@ class AccuracyRateChart extends StatelessWidget {
   }
 
   /// Create one series with sample hard coded data.
-  static List<charts.Series<AccuracyRate, String>> _createData(
-      List<AccuracyRate> data) {
+  static List<charts.Series<dynamic, String>> _createData(List<dynamic> data) {
     return [
-      charts.Series<AccuracyRate, String>(
-        id: 'AccuracyRate',
+      charts.Series<dynamic, String>(
+        id: 'SampleData',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (AccuracyRate list, _) => list.date,
-        measureFn: (AccuracyRate list, _) => list.rate,
+        domainFn: (dynamic list, _) => list.date,
+        measureFn: (dynamic list, _) => list.time,
         data: data,
       )
     ];
@@ -60,9 +59,9 @@ class AccuracyRateChart extends StatelessWidget {
 }
 
 /// Sample ordinal data type.
-class AccuracyRate {
+class SampleData {
   final String date;
-  final int rate;
+  final int time;
 
-  AccuracyRate(this.date, this.rate);
+  SampleData(this.date, this.time);
 }

@@ -51,8 +51,8 @@ class TestRepository {
   static Future<List<TestModel>> getList(
       [String bookId = '', int rowCount = -1]) async {
     final Database db = await instance.database;
-    String where =
-        bookId != '' ? "WHERE ${TestModel.colBookId} = '$bookId'" : '';
+    String where = "WHERE ${TestModel.colNumberOfQuestions} != 0";
+    where += bookId != '' ? " AND ${TestModel.colBookId} = '$bookId'" : '';
 
     String limit = rowCount >= 0 ? "LIMIT $rowCount" : '';
 

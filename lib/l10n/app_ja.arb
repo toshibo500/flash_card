@@ -26,8 +26,10 @@
     "skip": "スキップ",
     "duration": "経過時間",
     "result": "テスト結果",
-    "resultList": "テスト結果一覧",
+    "resultList": "テスト履歴",
     "accuracyRate": "正解率",
     "sec": "秒",
-    "dateTime": "日時"
+    "dateTime": "日時",
+    "accuracyRateChart": "正解率",
+    "answerTimeChart": "解答時間(1問あたり)"  
 }

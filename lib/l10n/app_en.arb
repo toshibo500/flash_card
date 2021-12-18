@@ -29,5 +29,7 @@
   "resultList": "Result List",
   "accuracyRate": "Accuracy Rate",
   "sec": "sec",
-  "dateTime": "Date Time"
+  "dateTime": "Date Time", 
+  "accuracyRateChart": "Accuracy Rate",
+  "answerTimeChart": "Answer Time"
 }

@@ -23,6 +23,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.light(), // ライト用テーマ
+      darkTheme: ThemeData.dark(), // ダーク用テーマ
+      themeMode: ThemeMode.system, // モードをシステム設定にする
       localizationsDelegates: L10n.localizationsDelegates,
       supportedLocales: L10n.supportedLocales,
       routes: {
