@@ -91,9 +91,18 @@ class _TestResultPage extends StatelessWidget {
           children: [
             Column(
               children: [
-                Text(
-                  '${_testResultViweModel.test.numberOfCorrectAnswers}/${_testResultViweModel.test.numberOfQuestions}',
-                  style: scoreLTextStyle,
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      '${_testResultViweModel.test.numberOfCorrectAnswers}',
+                      style: scoreLTextStyle,
+                    ),
+                    Text(
+                      '/${_testResultViweModel.test.numberOfQuestions}',
+                      style: scoreSTextStyle,
+                    )
+                  ],
                 ),
                 Text(
                   L10n.of(context)!.numberOfCorrect +
@@ -235,7 +244,7 @@ class _TestResultPage extends StatelessWidget {
         style: titleTextStyleS,
       ),
       SizedBox(
-          height: 150, width: 190, child: AccuracyRateChart.show(accRateData))
+          height: 150, width: 180, child: AccuracyRateChart.show(accRateData))
     ]);
 
     // 解答時間グラフ
@@ -251,7 +260,7 @@ class _TestResultPage extends StatelessWidget {
         style: titleTextStyleS,
       ),
       SizedBox(
-          height: 150, width: 190, child: AnswerTimeChart.show(ansTimeData))
+          height: 150, width: 180, child: AnswerTimeChart.show(ansTimeData))
     ]);
 
     // Scaffold

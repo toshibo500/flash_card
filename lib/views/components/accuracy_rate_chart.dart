@@ -1,4 +1,6 @@
 /// Bar chart example
+import 'dart:async';
+
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 
@@ -14,7 +16,6 @@ class AccuracyRateChart extends StatelessWidget {
       required this.fontSize})
       : super(key: key);
 
-  /// Creates a [BarChart] with sample data and no transition.
   factory AccuracyRateChart.show(List<AccuracyRate> data,
       [int fontSize = 9, bool animate = false]) {
     return AccuracyRateChart(
@@ -32,7 +33,7 @@ class AccuracyRateChart extends StatelessWidget {
       domainAxis: charts.OrdinalAxisSpec(
           renderSpec: charts.SmallTickRendererSpec(
         labelStyle: charts.TextStyleSpec(
-          fontSize: fontSize, // size in Pts.
+          fontSize: fontSize, //size in Pts.
         ),
       )),
       primaryMeasureAxis: charts.NumericAxisSpec(

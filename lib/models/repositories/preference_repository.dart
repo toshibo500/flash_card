@@ -13,7 +13,8 @@ class PreferenceRepository {
   static Future<PreferenceModel?> get() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey(PreferenceModel.tableName)) {
-      return PreferenceModel();
+      // デフォルト値を返す
+      return PreferenceModel.fromJson({});
     }
     String? jsonStr = prefs.getString(PreferenceModel.tableName);
     var jsonObj = jsonDecode(jsonStr!);

@@ -22,8 +22,8 @@ class PreferenceModel {
   static const int frontKey = 0;
   static const int backKey = 1;
   static const Map<int, String> frontAndBackItems = {
-    frontKey: 'Front',
-    backKey: 'Back'
+    frontKey: '表面',
+    backKey: '裏面'
   };
   static const Map<int, String> testModeItems = {
     0: 'Self mode',

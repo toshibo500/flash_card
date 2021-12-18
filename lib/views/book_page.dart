@@ -104,6 +104,19 @@ class _BookPage extends StatelessWidget {
                 ),
                 Container(
                   width: 100,
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    color: Colors.lightBlue,
+                    icon: const Icon(
+                      Icons.list_rounded,
+                      size: 38,
+                    ),
+                    onPressed: () async {
+                      await Navigator.of(context).pushNamed(
+                          '/testResultListPage',
+                          arguments: _bookViweModel.selectedBook.id);
+                    },
+                  ),
                 ),
               ],
             ),

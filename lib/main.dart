@@ -8,6 +8,7 @@ import 'package:flash_card/views/book_page.dart';
 import 'package:flash_card/views/input_card_page.dart';
 import 'package:flash_card/views/test_page.dart';
 import 'package:flash_card/views/test_result_page.dart';
+import 'package:flash_card/views/test_result_list_page.dart';
 import 'package:flash_card/views/web_view_page.dart';
 import 'package:flash_card/views/settings_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -60,6 +61,11 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(
               builder: (context) =>
                   TestResultPage(id: settings.arguments as String));
+        }
+        if (settings.name == '/testResultListPage') {
+          return MaterialPageRoute(
+              builder: (context) =>
+                  TestResultListPage(bookId: settings.arguments as String));
         }
         if (settings.name == '/webViewPage') {
           return MaterialPageRoute(
