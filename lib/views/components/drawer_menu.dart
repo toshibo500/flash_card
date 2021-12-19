@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flash_card/viewmodels/drawer_menu_viewmodel.dart';
 import 'package:flash_card/views/web_view_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flash_card/globals.dart';
 
 class SideDrawer extends StatelessWidget {
   const SideDrawer({Key? key}) : super(key: key);
@@ -36,18 +37,22 @@ class _SideDrawer extends StatelessWidget {
                       ),
                     ),
                     decoration: const BoxDecoration(
-                      color: Colors.green,
+                      color: Globals.backgroundColor,
                     ),
                   )),
               ListTile(
-                leading: const Icon(Icons.settings_rounded),
+                leading: const Icon(
+                  Icons.settings_rounded,
+                  color: Colors.lightGreen,
+                ),
                 title: Text(L10n.of(context)!.settings),
                 onTap: () {
                   Navigator.of(context).pushNamed('/settingsPage');
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.privacy_tip_rounded),
+                leading: const Icon(Icons.privacy_tip_rounded,
+                    color: Colors.lightBlue),
                 title: Text(L10n.of(context)!.privacyPolcy),
                 onTap: () {
                   Navigator.of(context).pushNamed('/webViewPage',
@@ -57,7 +62,10 @@ class _SideDrawer extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.support_outlined),
+                leading: Icon(
+                  Icons.support_outlined,
+                  color: Colors.brown[200],
+                ),
                 title: Text(L10n.of(context)!.aboutApp),
                 onTap: () {
                   Navigator.of(context).pushNamed('/webViewPage',

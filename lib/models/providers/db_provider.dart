@@ -48,6 +48,7 @@ class DbProvider {
         "${CardModel.colNumberOfWrongAnswers} INTEGER DEFAULT 0,"
         "${CardModel.colTestedAt} TEXT"
         ")");
+    _upgradeTable(db, 1, version);
     return;
   }
 

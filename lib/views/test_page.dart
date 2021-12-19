@@ -1,5 +1,4 @@
 import 'package:flash_card/models/book_model.dart';
-import 'package:flash_card/models/preference_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/viewmodels/test_viewmodel.dart';
@@ -8,6 +7,7 @@ import 'dart:math' as math;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flash_card/views/components/stt_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flash_card/globals.dart';
 
 class TestPageParameters {
   TestPageParameters(
@@ -36,27 +36,6 @@ class _TestPage extends StatelessWidget {
   final TestPageParameters param;
   final TextEditingController _textCtr = TextEditingController(text: "");
 
-  static const TextStyle titleTextStyle = TextStyle(
-    color: Colors.black54,
-    fontWeight: FontWeight.w500,
-    fontFamily: 'Roboto',
-    letterSpacing: 1,
-    fontSize: 18.0,
-  );
-  static const TextStyle contentTextStyle = TextStyle(
-    color: Colors.black,
-    fontWeight: FontWeight.w400,
-    fontFamily: 'Roboto',
-    letterSpacing: 1,
-    fontSize: 24.0,
-  );
-  static const TextStyle buttonTextStyle = TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.w700,
-    fontFamily: 'Roboto',
-    letterSpacing: 1,
-    fontSize: 18.0,
-  );
   @override
   Widget build(BuildContext context) {
     bool _answerExpanded = false;
@@ -66,7 +45,7 @@ class _TestPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text(param.book.title),
-          backgroundColor: Colors.green,
+          backgroundColor: Globals.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
             onPressed: () => {Navigator.of(context).pop()},
@@ -84,11 +63,11 @@ class _TestPage extends StatelessWidget {
                   children: [
                     Text(
                       L10n.of(context)!.question,
-                      style: titleTextStyle,
+                      style: Globals.titleTextStyle,
                     ),
                     Text(
                       '${_testViweModel.index + 1}/${_testViweModel.items.length}',
-                      style: titleTextStyle,
+                      style: Globals.titleTextStyle,
                     ),
                   ],
                 ),
@@ -102,7 +81,7 @@ class _TestPage extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Text(
                     _testViweModel.question,
-                    style: contentTextStyle,
+                    style: Globals.contentTextStyle,
                   ),
                 ),
               ),
@@ -124,7 +103,7 @@ class _TestPage extends StatelessWidget {
                               Expanded(
                                   child: Text(
                                 L10n.of(context)!.answer,
-                                style: titleTextStyle,
+                                style: Globals.titleTextStyle,
                               )),
                               Transform.rotate(
                                 angle: math.pi * animationValue / 2,
@@ -141,7 +120,7 @@ class _TestPage extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     child: Text(
                       _testViweModel.answer,
-                      style: contentTextStyle,
+                      style: Globals.contentTextStyle,
                     ),
                   )),
             ],
@@ -151,7 +130,7 @@ class _TestPage extends StatelessWidget {
 
   Widget _buildAnswerArea(
       BuildContext context, TestViewModel viewmodel, int testMode) {
-    return testMode == PreferenceModel.testModeSelfMode
+    return testMode == Globals.testModeSelfMode
         ? _buildDictaion(context, viewmodel)
         : _buildSelfMode(context, viewmodel);
   }
@@ -163,10 +142,10 @@ class _TestPage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
+          children: [
             Text(
-              'Dictation',
-              style: titleTextStyle,
+              L10n.of(context)!.testModeDictation,
+              style: Globals.titleTextStyle,
             ),
           ],
         ),
@@ -179,7 +158,7 @@ class _TestPage extends StatelessWidget {
         height: 200,
         child: SingleChildScrollView(
           child: TextField(
-            style: contentTextStyle,
+            style: Globals.contentTextStyle,
             maxLines: 100,
             controller: _textCtr,
             autofocus: true,
@@ -215,7 +194,7 @@ class _TestPage extends StatelessWidget {
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Colors.lightBlue,
+              primary: Colors.lightBlue[200],
               onPrimary: Colors.black,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -223,7 +202,7 @@ class _TestPage extends StatelessWidget {
             ),
             child: Text(
               L10n.of(context)!.skip,
-              style: buttonTextStyle,
+              style: Globals.buttonTextStyle,
             ),
             onPressed: () {
               viewmodel.wrongAnswer();
@@ -239,7 +218,8 @@ class _TestPage extends StatelessWidget {
   }
 
   void mark(BuildContext context, TestViewModel viewmodel, String text) {
-    if (text.compareTo(viewmodel.answer.trim()) == 0) {
+    text = text.toLowerCase().trim();
+    if (text.compareTo(viewmodel.answer.toLowerCase().trim()) == 0) {
       Fluttertoast.showToast(msg: L10n.of(context)!.correct);
       viewmodel.correctAnswer();
       if (!viewmodel.next()) {
@@ -258,7 +238,7 @@ class _TestPage extends StatelessWidget {
             width: 130,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.red,
+                primary: Colors.red[200],
                 onPrimary: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -266,7 +246,7 @@ class _TestPage extends StatelessWidget {
               ),
               child: Text(
                 L10n.of(context)!.incorrect,
-                style: buttonTextStyle,
+                style: Globals.buttonTextStyle,
               ),
               onPressed: () {
                 viewmodel.wrongAnswer();
@@ -280,7 +260,7 @@ class _TestPage extends StatelessWidget {
             width: 130,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.lightBlue,
+                primary: Colors.lightBlue[200],
                 onPrimary: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -288,7 +268,7 @@ class _TestPage extends StatelessWidget {
               ),
               child: Text(
                 L10n.of(context)!.correct,
-                style: buttonTextStyle,
+                style: Globals.buttonTextStyle,
               ),
               onPressed: () {
                 viewmodel.correctAnswer();

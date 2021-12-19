@@ -51,6 +51,13 @@ class BookRepository {
         .rawDelete('DELETE FROM ${BookModel.tableName} WHERE id = ?', [id]);
   }
 
+  static Future<int> deleteByFolderId(String folderId) async {
+    final db = await instance.database;
+    return await db.rawDelete(
+        'DELETE FROM ${BookModel.tableName} WHERE ${BookModel.colFolderId} = ?',
+        [folderId]);
+  }
+
   static Future<BookModel?> get([String id = '']) async {
     final Database db = await instance.database;
     String where = "WHERE ${BookModel.colId} = '$id'";

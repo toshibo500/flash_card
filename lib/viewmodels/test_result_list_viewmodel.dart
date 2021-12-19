@@ -23,9 +23,10 @@ class TestResultListViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteByBook() {
+  void deleteByBook() async {
     if (_bookId != '') {
-      TestRepository.deleteByBook(_bookId).then((value) => _getResult());
+      TestRepository.deleteByBook(_bookId);
+      _getResult();
     }
   }
 }

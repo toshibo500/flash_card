@@ -1,3 +1,4 @@
+import 'package:flash_card/globals.dart';
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/views/components/stt_dialog.dart';
 import 'package:flutter/material.dart';
@@ -48,14 +49,7 @@ class _InputCardPage extends State<InputCardPage> {
     letterSpacing: 1,
     fontSize: 18.0,
   );
-/*   static const TextStyle contentTextStyle = TextStyle(
-    color: Colors.black,
-    fontWeight: FontWeight.w400,
-    fontFamily: 'Roboto',
-    letterSpacing: 1,
-    fontSize: 24.0,
-  );
- */
+
   static const TextStyle buttonTextStyle = TextStyle(
     color: Colors.white,
     fontWeight: FontWeight.w500,
@@ -76,8 +70,8 @@ class _InputCardPage extends State<InputCardPage> {
     _isNew = widget.card.id == '' ? true : false;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create a frip card'),
-        backgroundColor: Colors.green,
+        title: Text(L10n.of(context)!.createCardPageTitle),
+        backgroundColor: Globals.backgroundColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
           onPressed: () => Navigator.pop<bool>(context, false),
@@ -143,7 +137,7 @@ class _InputCardPage extends State<InputCardPage> {
                     Navigator.pop<bool>(context, false);
                   },
                   child: Text(
-                    L10n.of(context)!.ok,
+                    L10n.of(context)!.save,
                     style: buttonTextStyle,
                   ),
                 ))

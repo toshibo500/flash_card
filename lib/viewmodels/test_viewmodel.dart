@@ -6,6 +6,7 @@ import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/repositories/card_repository.dart';
 import 'package:flash_card/models/preference_model.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
+import 'package:flash_card/globals.dart';
 
 class TestViewModel extends ChangeNotifier {
   BookModel _selectedBook = BookModel('', '', '', '', 0);
@@ -42,19 +43,19 @@ class TestViewModel extends ChangeNotifier {
   }
 
   String get question {
-    return _preference.question == PreferenceModel.frontKey
+    return _preference.question == Globals.cardFrontKey
         ? _item.front
         : _item.back;
   }
 
   String get answer {
-    return _preference.question == PreferenceModel.frontKey
+    return _preference.question == Globals.cardFrontKey
         ? _item.back
         : _item.front;
   }
 
   String get localeId {
-    return _preference.question == PreferenceModel.frontKey
+    return _preference.question == Globals.cardFrontKey
         ? _preference.backSideLang!
         : _preference.frontSideLang!;
   }

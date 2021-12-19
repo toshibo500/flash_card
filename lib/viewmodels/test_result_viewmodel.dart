@@ -22,7 +22,9 @@ class TestResultViewModel extends ChangeNotifier {
   void _getResult() async {
     _test = (await TestRepository.get(_id))!;
     _book = (await BookRepository.get(_test.bookId))!;
-    _testList = await TestRepository.getList(_test.bookId, 5);
+    _testList = await TestRepository.getList(_test.bookId, 5, 'DESC');
+    // 最新5件を取得し、古いものから表示したいので反転
+    _testList = _testList.reversed.toList();
     notifyListeners();
   }
 }

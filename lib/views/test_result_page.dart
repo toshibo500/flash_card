@@ -42,13 +42,6 @@ class _TestResultPage extends StatelessWidget {
     letterSpacing: 1,
     fontSize: 18.0,
   );
-  static const TextStyle titleTextStyleS = TextStyle(
-    color: Colors.black54,
-    fontWeight: FontWeight.w500,
-    fontFamily: 'Roboto',
-    letterSpacing: 1,
-    fontSize: 12.0,
-  );
 
   static const TextStyle _dataTableColumnStyle = TextStyle(
       color: Colors.black54, fontStyle: FontStyle.italic, fontSize: 12);
@@ -105,9 +98,7 @@ class _TestResultPage extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  L10n.of(context)!.numberOfCorrect +
-                      '/' +
-                      L10n.of(context)!.numberOfQuestion,
+                  L10n.of(context)!.numberOfCorrect,
                   style: scoreSTextStyle,
                 ),
               ],
@@ -170,27 +161,35 @@ class _TestResultPage extends StatelessWidget {
 
     // 結果表示リスト
     List<DataRow> _resultRows = [];
-    for (var item in _testResultViweModel.testList) {
+    _testResultViweModel.testList.asMap().forEach((int key, var item) {
       String title = '${item.numberOfCorrectAnswers}/${item.numberOfQuestions}';
       String startAt = DateFormat('M/d HH:mm').format(item.startedAt);
       String accuracyRate =
           _getSccuracyRate(item.numberOfCorrectAnswers, item.numberOfQuestions);
       String duration = _getDifferenceInSec(item.startedAt, item.endedAt);
       _resultRows.add(DataRow(cells: <DataCell>[
+        _getDataCell((key + 1).toString()),
         _getDataCell(startAt),
         _getDataCell(title, Alignment.center),
         _getDataCell(accuracyRate),
         _getDataCell(duration),
       ]));
-    }
+    });
 
     // 結果一覧テーブル
     Widget _resultTable = DataTable(
       horizontalMargin: 10,
-      columnSpacing: 35,
+      columnSpacing: 25,
       headingRowHeight: 30,
       dataRowHeight: 45,
       columns: [
+        const DataColumn(
+          label: Text(
+            'No',
+            style: _dataTableColumnStyle,
+            textAlign: TextAlign.center,
+          ),
+        ),
         DataColumn(
           label: Text(
             L10n.of(context)!.dateTime,
@@ -200,9 +199,7 @@ class _TestResultPage extends StatelessWidget {
         ),
         DataColumn(
           label: Text(
-            L10n.of(context)!.numberOfCorrect +
-                '/' +
-                L10n.of(context)!.numberOfQuestion,
+            L10n.of(context)!.numberOfCorrect,
             style: _dataTableColumnStyle,
           ),
         ),
@@ -222,45 +219,62 @@ class _TestResultPage extends StatelessWidget {
       rows: _resultRows,
     );
 
+    // 結果一覧ボタン
+    Widget _resultListBtn = Container(
+      alignment: Alignment.bottomRight,
+      padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
+      child: TextButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed('/testResultListPage',
+              arguments: _testResultViweModel.book.id);
+        },
+        child: Text(L10n.of(context)!.seeMore),
+      ),
+    );
+
     // 検索結果一覧
     Widget _resultList = SizedBox(
         width: double.infinity,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: [_resultTable],
+          children: [_resultTable, _resultListBtn],
         ));
 
     // 正解率グラフ
     final List<AccuracyRate> accRateData = [];
-    for (var item in _testResultViweModel.testList) {
-      String startAt = DateFormat('M/d\nHH:mm').format(item.startedAt);
+    _testResultViweModel.testList.asMap().forEach((int key, var item) {
+      // String startAt = DateFormat('M/d\nHH:mm').format(item.startedAt);
+      String startAt = (key + 1).toString();
       String accuracyRate = _getSccuracyRate(
           item.numberOfCorrectAnswers, item.numberOfQuestions, false);
       accRateData.add(AccuracyRate(startAt, int.parse(accuracyRate)));
-    }
+    });
     Widget accRateChart = Column(children: [
-      Text(
-        L10n.of(context)!.accuracyRateChart,
-        style: titleTextStyleS,
-      ),
       SizedBox(
-          height: 150, width: 180, child: AccuracyRateChart.show(accRateData))
+          height: 170,
+          width: 180,
+          child: AccuracyRateChart.show(
+            data: accRateData,
+            title: L10n.of(context)!.accuracyRateChart,
+          ))
     ]);
 
     // 解答時間グラフ
     final List<AnswerTime> ansTimeData = [];
-    for (var item in _testResultViweModel.testList) {
-      String startAt = DateFormat('M/d\nHH:mm').format(item.startedAt);
+    _testResultViweModel.testList.asMap().forEach((int key, var item) {
+      // String startAt = DateFormat('M/d\nHH:mm').format(item.startedAt);
+      String startAt = (key + 1).toString();
       int ansTime = item.endedAt!.difference(item.startedAt).inSeconds;
       ansTimeData.add(AnswerTime(startAt, ansTime));
-    }
+    });
     Widget ansTimeChart = Column(children: [
-      Text(
-        L10n.of(context)!.answerTimeChart,
-        style: titleTextStyleS,
-      ),
       SizedBox(
-          height: 150, width: 180, child: AnswerTimeChart.show(ansTimeData))
+          height: 170,
+          width: 180,
+          child: AnswerTimeChart.show(
+            data: ansTimeData,
+            title: L10n.of(context)!.answerTimeChart,
+          ))
     ]);
 
     // Scaffold

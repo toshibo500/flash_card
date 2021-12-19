@@ -36,7 +36,8 @@ class TestRepository {
   static Future<int> deleteByBook(String bookId) async {
     final db = await instance.database;
     return await db.rawDelete(
-        'DELETE FROM ${TestModel.tableName} WHERE bookId = ?', [bookId]);
+        'DELETE FROM ${TestModel.tableName} WHERE ${TestModel.colBookId} = ?',
+        [bookId]);
   }
 
   static Future<TestModel?> get(String id) async {
@@ -55,7 +56,7 @@ class TestRepository {
   }
 
   static Future<List<TestModel>> getList(
-      [String bookId = '', int rowCount = -1]) async {
+      [String bookId = '', int rowCount = -1, String orderBy = 'ASC']) async {
     final Database db = await instance.database;
     String where = "WHERE ${TestModel.colNumberOfQuestions} != 0";
     where += bookId != '' ? " AND ${TestModel.colBookId} = '$bookId'" : '';
@@ -63,7 +64,7 @@ class TestRepository {
     String limit = rowCount >= 0 ? "LIMIT $rowCount" : '';
 
     final rows = await db.rawQuery(
-        'SELECT * FROM ${TestModel.tableName} $where ORDER BY ${TestModel.colStartedAt} DESC $limit');
+        'SELECT * FROM ${TestModel.tableName} $where ORDER BY ${TestModel.colStartedAt} $orderBy $limit');
     if (rows.isEmpty) return [];
     return rows.map((json) => TestModel.fromJson(json)).toList();
   }

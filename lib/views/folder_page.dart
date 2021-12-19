@@ -5,6 +5,7 @@ import 'package:flash_card/views/components/input_title_dialog.dart';
 import 'package:flash_card/views/components/file_list_view.dart';
 import 'package:flash_card/viewmodels/folder_viewmodel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flash_card/globals.dart';
 
 class FolderPage extends StatelessWidget {
   const FolderPage({Key? key, required this.folder}) : super(key: key);
@@ -29,7 +30,7 @@ class _FolderPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(pageTitle),
-        backgroundColor: Colors.green,
+        backgroundColor: Globals.backgroundColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
           onPressed: () => {Navigator.of(context).pop()},

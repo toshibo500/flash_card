@@ -1,10 +1,10 @@
-import 'package:flash_card/models/preference_model.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/viewmodels/settings_viewmodel.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:flash_card/views/components/select_bottom_sheet.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flash_card/globals.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -25,7 +25,8 @@ class _SettingsPage extends StatelessWidget {
   final List<DropdownMenuItem<int>> _numOfTest = [];
 
   _SettingsPage({Key? key}) : super(key: key) {
-    PreferenceModel.frontAndBackItems.forEach((key, value) {
+    Globals().frontAndBackItems.forEach((key, value) {
+      // PreferenceModel.frontAndBackItems.forEach((key, value) {
       _questionItems.add(DropdownMenuItem(
         child: Text(
           value,
@@ -34,7 +35,8 @@ class _SettingsPage extends StatelessWidget {
         value: key,
       ));
     });
-    PreferenceModel.testModeItems.forEach((key, value) {
+    Globals().testModeItems.forEach((key, value) {
+      // PreferenceModel.testModeItems.forEach((key, value) {
       _testModeItems.add(DropdownMenuItem(
         child: Text(
           value,

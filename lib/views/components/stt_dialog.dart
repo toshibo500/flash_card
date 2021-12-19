@@ -64,10 +64,10 @@ class _SttDialog extends State<SttDialog> {
           onResult: resultListener,
           onSoundLevelChange: soundLevelListener,
           localeId: widget.localeId!);
-      setState(() {
-        _lastwords = '';
-      });
     }
+    setState(() {
+      _lastwords = '';
+    });
   }
 
   void soundLevelListener(double level) {

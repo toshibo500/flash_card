@@ -1,3 +1,4 @@
+import 'package:flash_card/globals.dart';
 import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/views/test_page.dart';
@@ -27,115 +28,134 @@ class _BookPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var _bookViweModel = Provider.of<BookViewModel>(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(pageTitle),
-        backgroundColor: Colors.green,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_outlined),
-          onPressed: () => {Navigator.of(context).pop()},
-        ),
-        actions: [
-          IconButton(
-              icon: Icon(
-                  _bookViweModel.editMode ? Icons.done : Icons.edit_rounded),
-              onPressed: () {
-                _bookViweModel.editMode = !_bookViweModel.editMode;
-              }),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () async {
-              // List<String> values = await showInputCardDialog(context: context);
-              BookModel book = _bookViweModel.selectedBook;
-              bool next = true;
-              while (next) {
-                CardModel card = CardModel('', book.id, '', '', 0);
-                next = await Navigator.of(context)
-                    .pushNamed('/inputCardPage', arguments: card) as bool;
-                if (card.front != '') {
-                  _bookViweModel.add(card.front, card.back);
-                }
-              }
-            },
+
+    // テスト開始パネル
+    Widget _bottomPanel = Container(
+      height: 100,
+      alignment: Alignment.topCenter,
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+      color: Theme.of(context).backgroundColor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Container(
+            width: 100,
+            alignment: Alignment.centerLeft,
+            child: IconButton(
+              color: Colors.lightBlue,
+              icon: const Icon(Icons.settings_rounded),
+              onPressed: () async {
+                await Navigator.of(context).pushNamed('/settingsPage');
+                _bookViweModel.getPreference();
+              },
+            ),
+          ),
+          Center(
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: const StadiumBorder(),
+              ),
+              child: Text(L10n.of(context)!.testStart),
+              onPressed: () async {
+                await Navigator.of(context).pushNamed('/testPage',
+                    arguments: TestPageParameters(
+                        book: _bookViweModel.selectedBook,
+                        numberOfQuestions: _bookViweModel.preference.numOfTest!,
+                        testMode: _bookViweModel.preference.testMode!));
+              },
+            ),
+          ),
+          Container(
+            width: 120,
+            alignment: Alignment.centerRight,
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              IconButton(
+                color: Colors.lightBlue,
+                icon: const Icon(
+                  Icons.list_rounded,
+                  size: 45,
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushNamed('/testResultListPage',
+                      arguments: _bookViweModel.selectedBook.id);
+                },
+              ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                child: Text(
+                  L10n.of(context)!.resultList,
+                  style: const TextStyle(color: Colors.lightBlue, fontSize: 10),
+                ),
+              )
+            ]),
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-              child: Consumer<BookViewModel>(builder: (context, viewModel, _) {
-            return FileListView(viewModel: viewModel, nextPage: "");
-          })),
-          Container(
-            height: 80,
-            alignment: Alignment.topCenter,
-            padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
-            color: Theme.of(context).backgroundColor,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Container(
-                  width: 100,
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    color: Colors.lightBlue,
-                    icon: const Icon(Icons.settings_rounded),
-                    onPressed: () async {
-                      await Navigator.of(context).pushNamed('/settingsPage');
-                      _bookViweModel.getPreference();
-                    },
-                  ),
-                ),
-                Center(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: const StadiumBorder(),
-                    ),
-                    child: Text(L10n.of(context)!.testStart),
-                    onPressed: () async {
-                      await Navigator.of(context).pushNamed('/testPage',
-                          arguments: TestPageParameters(
-                              book: _bookViweModel.selectedBook,
-                              numberOfQuestions:
-                                  _bookViweModel.preference.numOfTest!,
-                              testMode: _bookViweModel.preference.testMode!));
-                    },
-                  ),
-                ),
-                Container(
-                  width: 100,
-                  alignment: Alignment.centerRight,
-                  child: IconButton(
-                    color: Colors.lightBlue,
-                    icon: const Icon(
-                      Icons.list_rounded,
-                      size: 38,
-                    ),
-                    onPressed: () async {
-                      await Navigator.of(context).pushNamed(
-                          '/testResultListPage',
-                          arguments: _bookViweModel.selectedBook.id);
-                    },
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
-/*       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.of(context).pushNamed('/testPage',
-              arguments: TestPageParameters(
-                  book: _bookViweModel.selectedBook,
-                  numberOfQuestions: _bookViweModel.preference.numOfTest!,
-                  testMode: _bookViweModel.preference.testMode!));
-        },
-        tooltip: 'Increment',
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [Icon(Icons.text_snippet_rounded), Text('TEST')]),
-      ), // This trailing comma ma */
     );
+
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(pageTitle),
+          backgroundColor: Globals.backgroundColor,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_outlined),
+            onPressed: () => {Navigator.of(context).pop()},
+          ),
+          actions: [
+            IconButton(
+                icon: Icon(
+                    _bookViweModel.editMode ? Icons.done : Icons.edit_rounded),
+                onPressed: () {
+                  _bookViweModel.editMode = !_bookViweModel.editMode;
+                }),
+            IconButton(
+              icon: const Icon(Icons.add),
+              onPressed: () async {
+                // List<String> values = await showInputCardDialog(context: context);
+                BookModel book = _bookViweModel.selectedBook;
+                bool next = true;
+                while (next) {
+                  CardModel card = CardModel('', book.id, '', '', 0);
+                  next = await Navigator.of(context)
+                      .pushNamed('/inputCardPage', arguments: card) as bool;
+                  if (card.front != '') {
+                    _bookViweModel.add(card.front, card.back);
+                  }
+                }
+              },
+            ),
+          ],
+        ),
+        body: Column(
+          children: [
+            Expanded(child:
+                Consumer<BookViewModel>(builder: (context, viewModel, _) {
+              return FileListView(viewModel: viewModel, nextPage: "");
+            })),
+          ],
+        ),
+        floatingActionButton: Visibility(
+          visible: true,
+          child: FloatingActionButton(
+            onPressed: () async {
+              await showModalBottomSheet<int>(
+                context: context,
+                builder: (BuildContext context) {
+                  return _bottomPanel;
+                },
+              );
+            },
+            tooltip: 'Test',
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              const Icon(Icons.text_snippet_rounded),
+              Text(
+                L10n.of(context)!.test,
+                style: const TextStyle(fontSize: 12),
+              )
+            ]),
+          ), // This trailing comma ma
+        ));
   }
 }

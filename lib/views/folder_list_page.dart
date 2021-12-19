@@ -6,6 +6,8 @@ import 'package:flash_card/viewmodels/folder_list_viewmodel.dart';
 import 'package:flash_card/views/components/drawer_menu.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../globals.dart';
+
 class FolderListPage extends StatelessWidget {
   const FolderListPage({Key? key}) : super(key: key);
 
@@ -29,7 +31,7 @@ class _FolderListPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(pageTitle),
-        backgroundColor: Colors.green,
+        backgroundColor: Globals.backgroundColor,
         actions: [
           IconButton(
               icon: Icon(_folderListViewModel.editMode

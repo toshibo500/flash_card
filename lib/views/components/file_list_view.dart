@@ -9,6 +9,7 @@ import 'package:flash_card/views/components/input_title_dialog.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flash_card/globals.dart';
 
 class FileListView extends StatefulWidget {
   const FileListView({Key? key, required this.viewModel, this.nextPage = ""})
@@ -109,13 +110,13 @@ class _FileListView extends State<FileListView> {
         alignment: Alignment.bottomLeft,
         child: Row(
           children: <Widget>[
-            const Icon(
+            Icon(
               Icons.check_circle_rounded,
-              color: Colors.green,
+              color: Colors.indigo[200],
               size: 16.0,
             ),
             SizedBox(
-              width: 20,
+              width: 30,
               child: Text(card.numberOfCorrectAnswers.toString()),
             ),
             const Icon(
@@ -127,8 +128,14 @@ class _FileListView extends State<FileListView> {
               width: 30,
               child: Text(card.numberOfWrongAnswers.toString()),
             ),
-            Text(
-                'Last test: ${card.testedAt != null ? outputFormat.format(card.testedAt as DateTime) : ""}'),
+            Icon(
+              Icons.access_time_rounded,
+              color: Colors.green[600],
+              size: 16.0,
+            ),
+            Text(card.testedAt != null
+                ? outputFormat.format(card.testedAt as DateTime)
+                : ""),
           ],
         ));
   }
@@ -149,26 +156,25 @@ class _FileListView extends State<FileListView> {
   Widget _buildListTile(int index) {
     var item = widget.viewModel.items[index];
     String text = item.title;
-    IconData icon = Icons.folder_rounded;
+    Icon icon = Globals().folderIcon;
+
     List<Widget> subContents = [];
     if (widget.viewModel is FolderListViewModel) {
-      icon = Icons.folder_rounded;
+      icon = Globals().folderIcon;
       subContents.add(_buildSubContentIcons(
-        Icons.auto_stories_rounded,
+        Globals().bookIcon,
         item.books.length,
       ));
     } else if (widget.viewModel is FolderViewModel) {
-      icon = Icons.auto_stories_rounded;
+      icon = Globals().bookIcon;
       subContents.add(_buildSubContentIcons(
-        Icons.style_rounded,
+        Globals().cardIcon,
         item.cards.length,
       ));
     }
 
     return ListTile(
-      leading: Icon(
-        icon,
-      ),
+      leading: icon,
       title: Container(
           height: widget.viewModel.editMode ? 60 : 40,
           alignment: Alignment.centerLeft,
@@ -193,7 +199,7 @@ class _FileListView extends State<FileListView> {
     );
   }
 
-  Widget _buildSubContentIcons(IconData icon, int num) {
+  Widget _buildSubContentIcons(Icon icon, int num) {
     var subContents = Container(
       padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
       width: 40,
@@ -201,9 +207,9 @@ class _FileListView extends State<FileListView> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Icon(
-            icon,
+            icon.icon,
             size: 16,
-            color: Colors.black54,
+            color: icon.color,
           ),
           Text(
             num.toString(),
@@ -282,13 +288,13 @@ class _FileListView extends State<FileListView> {
       onPressed: () async {
         if (await confirm(
           context,
-          title: const Text('Confirm'),
-          content: const Text('Would you like to remove?'),
-          textOK: const Text('Yes'),
-          textCancel: const Text('No'),
+          title: null,
+          content: Text(L10n.of(context)!.deleteConfirmation),
+          textOK: Text(L10n.of(context)!.ok),
+          textCancel: Text(L10n.of(context)!.cancel),
         )) {
           widget.viewModel.remove(index);
-          Fluttertoast.showToast(msg: "done!");
+          Fluttertoast.showToast(msg: L10n.of(context)!.deleteDone);
         }
       },
     );

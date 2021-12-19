@@ -5,6 +5,7 @@ import 'package:flash_card/viewmodels/test_result_list_viewmodel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flash_card/globals.dart';
 
 class TestResultListPage extends StatelessWidget {
   const TestResultListPage({Key? key, required this.bookId}) : super(key: key);
@@ -20,9 +21,6 @@ class TestResultListPage extends StatelessWidget {
 
 class _TestResultListPage extends StatelessWidget {
   const _TestResultListPage({Key? key}) : super(key: key);
-
-  static const TextStyle _dataTableColumnStyle = TextStyle(
-      color: Colors.black54, fontStyle: FontStyle.italic, fontSize: 12);
 
   @override
   Widget build(BuildContext context) {
@@ -74,28 +72,26 @@ class _TestResultListPage extends StatelessWidget {
         DataColumn(
           label: Text(
             L10n.of(context)!.dateTime,
-            style: _dataTableColumnStyle,
+            style: Globals.dataTableColumnStyle,
             textAlign: TextAlign.center,
           ),
         ),
         DataColumn(
           label: Text(
-            L10n.of(context)!.numberOfCorrect +
-                '/' +
-                L10n.of(context)!.numberOfQuestion,
-            style: _dataTableColumnStyle,
+            L10n.of(context)!.numberOfCorrect,
+            style: Globals.dataTableColumnStyle,
           ),
         ),
         DataColumn(
           label: Text(
             L10n.of(context)!.accuracyRate,
-            style: _dataTableColumnStyle,
+            style: Globals.dataTableColumnStyle,
           ),
         ),
         DataColumn(
           label: Text(
             L10n.of(context)!.duration,
-            style: _dataTableColumnStyle,
+            style: Globals.dataTableColumnStyle,
           ),
         ),
       ],
@@ -125,13 +121,13 @@ class _TestResultListPage extends StatelessWidget {
               onPressed: () async {
                 if (await confirm(
                   context,
-                  title: const Text('Confirm'),
-                  content: const Text('Would you like to remove?'),
-                  textOK: const Text('Yes'),
-                  textCancel: const Text('No'),
+                  title: null,
+                  content: Text(L10n.of(context)!.deleteConfirmation),
+                  textOK: Text(L10n.of(context)!.ok),
+                  textCancel: Text(L10n.of(context)!.cancel),
                 )) {
                   _testResultListViweModel.deleteByBook();
-                  Fluttertoast.showToast(msg: "done!");
+                  Fluttertoast.showToast(msg: L10n.of(context)!.deleteDone);
                 }
               },
             ),

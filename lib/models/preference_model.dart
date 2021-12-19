@@ -19,17 +19,18 @@ class PreferenceModel {
       this.testMode,
       this.numOfTest]);
 
-  static const int frontKey = 0;
+/*   static const int frontKey = 0;
   static const int backKey = 1;
   static const Map<int, String> frontAndBackItems = {
-    frontKey: '表面',
-    backKey: '裏面'
+    frontKey: 'Front',
+    backKey: 'Back'
   };
-  static const Map<int, String> testModeItems = {
+ */
+/*   static const Map<int, String> testModeItems = {
     0: 'Self mode',
     1: 'Dictation'
   };
-  static const int testModeSelfMode = 1;
+  static const int testModeSelfMode = 1; */
 
   factory PreferenceModel.fromJson(dynamic json) {
     return PreferenceModel(
