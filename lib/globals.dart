@@ -35,7 +35,7 @@ class Globals {
   }
 
   // 背景色
-  static const Color backgroundColor = Colors.brown;
+  static const Color backgroundColor = Color(0xFF6c3524);
   // フォルダアイコン
   late Icon _folderIcon;
   Icon get folderIcon => _folderIcon;
