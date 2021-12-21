@@ -110,7 +110,7 @@ class _TestResultListPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text(_testResultListViweModel.book.title),
-          backgroundColor: Colors.green,
+          backgroundColor: Globals.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
             onPressed: () => Navigator.of(context).pop(),

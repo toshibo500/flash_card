@@ -58,10 +58,10 @@ class _SettingsPage extends StatelessWidget {
     var _drawerMenuViewModel = Provider.of<SettingsViewModel>(context);
     final Map<String, String> _langItems = _drawerMenuViewModel.langItems;
     return Scaffold(
-        backgroundColor: Colors.black12,
+        backgroundColor: Globals.backgroundColor,
         appBar: AppBar(
           title: Text(L10n.of(context)!.settings),
-          backgroundColor: Colors.green,
+          backgroundColor: Globals.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
             onPressed: () => {Navigator.of(context).pop()},

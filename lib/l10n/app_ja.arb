@@ -15,7 +15,7 @@
     "testMode": "モード",
     "testModeDictation": "ディクテーション",
     "testModeSelf": "セルフ",
-    "numberOfQuestion": "問題",
+    "numberOfQuestion": "問題数",
     "numberOfCorrect": "正解数",
     "folderName": "フォルダ名",
     "bookName": "単語帳名",

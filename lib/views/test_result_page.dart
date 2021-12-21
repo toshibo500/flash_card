@@ -5,6 +5,7 @@ import 'package:flash_card/viewmodels/test_result_viewmodel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/views/components/accuracy_rate_chart.dart';
 import 'package:flash_card/views/components/answer_time_chart.dart';
+import 'package:flash_card/globals.dart';
 
 class TestResultPage extends StatelessWidget {
   const TestResultPage({Key? key, required this.id}) : super(key: key);
@@ -281,7 +282,7 @@ class _TestResultPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text(_testResultViweModel.book.title),
-          backgroundColor: Colors.green,
+          backgroundColor: Globals.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
             onPressed: () => {
