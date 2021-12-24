@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flash_card/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -32,7 +33,7 @@ class _WebViewPage extends State<WebViewPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.params.title),
-        backgroundColor: Colors.green,
+        backgroundColor: Globals.backgroundColor,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_outlined),
           onPressed: () => {Navigator.of(context).pop()},

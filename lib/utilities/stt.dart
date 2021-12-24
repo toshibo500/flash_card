@@ -67,12 +67,12 @@ class Stt {
         localeId: _currentLocaleId,
         onSoundLevelChange: onSoundLevelChange,
         cancelOnError: true,
-        listenMode: ListenMode.confirmation);
+        listenMode: ListenMode.dictation);
   }
 
-  void stopListening() {
+  Future<void> stopListening() async {
     _logEvent('stop');
-    _speech.stop();
+    await _speech.stop();
   }
 
   void cancelListening() {

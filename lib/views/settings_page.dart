@@ -191,7 +191,10 @@ class _SettingsPage extends StatelessWidget {
               tiles: [
                 SettingsTile(
                   title: L10n.of(context)!.cardFront,
-                  leading: const Icon(Icons.language_rounded),
+                  leading: const Icon(
+                    Icons.language_rounded,
+                    color: Globals.iconColor1,
+                  ),
                   trailing: SizedBox(
                       child: Text(_langItems[
                               _drawerMenuViewModel.preference.frontSideLang] ??
@@ -208,7 +211,10 @@ class _SettingsPage extends StatelessWidget {
                 ),
                 SettingsTile(
                   title: L10n.of(context)!.cardBack,
-                  leading: const Icon(Icons.language_rounded),
+                  leading: const Icon(
+                    Icons.language_rounded,
+                    color: Globals.iconColor2,
+                  ),
                   trailing: SizedBox(
                       child: Text(_langItems[
                               _drawerMenuViewModel.preference.backSideLang] ??
@@ -229,7 +235,10 @@ class _SettingsPage extends StatelessWidget {
               title: L10n.of(context)!.test,
               tiles: [
                 SettingsTile(
-                  leading: const Icon(Icons.style_rounded),
+                  leading: const Icon(
+                    Icons.style_rounded,
+                    color: Globals.iconColor1,
+                  ),
                   title: L10n.of(context)!.question,
                   trailing: DropdownButton<int>(
                     underline: DropdownButtonHideUnderline(child: Container()),
@@ -243,7 +252,10 @@ class _SettingsPage extends StatelessWidget {
                   ),
                 ),
                 SettingsTile(
-                  leading: const Icon(Icons.mode_rounded),
+                  leading: const Icon(
+                    Icons.mode_rounded,
+                    color: Globals.iconColor2,
+                  ),
                   title: L10n.of(context)!.testMode,
                   trailing: DropdownButton<int>(
                     value: _drawerMenuViewModel.preference.testMode,
@@ -257,7 +269,10 @@ class _SettingsPage extends StatelessWidget {
                   ),
                 ),
                 SettingsTile(
-                  leading: const Icon(Icons.format_list_numbered_rounded),
+                  leading: const Icon(
+                    Icons.format_list_numbered_rounded,
+                    color: Globals.iconColor3,
+                  ),
                   title: L10n.of(context)!.numberOfQuestion,
                   trailing: DropdownButton<int>(
                     value: _drawerMenuViewModel.preference.numOfTest,

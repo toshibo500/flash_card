@@ -43,7 +43,7 @@ class _SideDrawer extends StatelessWidget {
               ListTile(
                 leading: const Icon(
                   Icons.settings_rounded,
-                  color: Colors.lightGreen,
+                  color: Globals.iconColor1,
                 ),
                 title: Text(L10n.of(context)!.settings),
                 onTap: () {
@@ -52,26 +52,26 @@ class _SideDrawer extends StatelessWidget {
               ),
               ListTile(
                 leading: const Icon(Icons.privacy_tip_rounded,
-                    color: Colors.lightBlue),
+                    color: Globals.iconColor2),
                 title: Text(L10n.of(context)!.privacyPolcy),
                 onTap: () {
                   Navigator.of(context).pushNamed('/webViewPage',
                       arguments: WevViewPageParameters(
-                          title: 'Privacy Policy',
-                          url: 'https://www.google.com'));
+                          title: L10n.of(context)!.privacyPolcy,
+                          url: L10n.of(context)!.privacyPolicyURL));
                 },
               ),
               ListTile(
-                leading: Icon(
+                leading: const Icon(
                   Icons.support_outlined,
-                  color: Colors.brown[200],
+                  color: Globals.iconColor3,
                 ),
                 title: Text(L10n.of(context)!.aboutApp),
                 onTap: () {
                   Navigator.of(context).pushNamed('/webViewPage',
                       arguments: WevViewPageParameters(
-                          title: 'About this app',
-                          url: 'http://news.google.com'));
+                          title: L10n.of(context)!.aboutApp,
+                          url: L10n.of(context)!.aboutAppURL));
                 },
               ),
             ],

@@ -9,12 +9,11 @@
     "test": "テスト",
     "testStart": "テスト開始",
     "privacyPolcy": "Privacy Policy",
-    "aboutApp": "このアプリについて",
     "question": "問題",
     "answer": "解答",
     "testMode": "モード",
     "testModeDictation": "ディクテーション",
-    "testModeSelf": "セルフ",
+    "testModeSelf": "セルフモード",
     "numberOfQuestion": "問題数",
     "numberOfCorrect": "正解数",
     "folderName": "フォルダ名",
@@ -38,5 +37,9 @@
     "seeMore": "もっと見る",
     "deleteConfirmation": "削除しますか?",
     "deleteDone": "削除しました",
-    "createCardPageTitle": "カード作成"
-}
+    "createCardPageTitle": "カード作成",
+    "privacyPolicy": "Privacy Policy",
+    "privacyPolicyURL": "https://tkgapps.com/chocobanana/privacy/",
+    "aboutApp": "このアプリについて",
+    "aboutAppURL": "https://tkgapps.com/chocobanana/aboutapp/"
+  }

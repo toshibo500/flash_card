@@ -27,15 +27,26 @@ class Globals {
     _testModeItems[0] = L10n.of(context)!.testModeSelf;
     _testModeItems[1] = L10n.of(context)!.testModeDictation;
     // フォルダアイコン
-    _folderIcon = Icon(Icons.folder_rounded, color: Colors.orange[200]);
+    _folderIcon = const Icon(Icons.folder_rounded, color: iconColor1);
     // ブックアイコン
-    _bookIcon = Icon(Icons.auto_stories_rounded, color: Colors.pink[200]);
+    _bookIcon = const Icon(Icons.auto_stories_rounded, color: iconColor3);
     // カードアイコン
-    _cardIcon = Icon(Icons.style_rounded, color: Colors.blue[200]);
+    _cardIcon = const Icon(Icons.style_rounded, color: iconColor2);
   }
 
   // 背景色
   static const Color backgroundColor = Color(0xFF6c3524);
+  // アイコン色 1
+  static const Color iconColor1 = Colors.lightGreen;
+  // アイコン色 2
+  static const Color iconColor2 = Colors.lightBlue;
+  // アイコン色 3
+  static const Color iconColor3 = Color(0xFFBCAAA4);
+  // ボタン色 1
+  static const Color buttonColor1 = Colors.lightBlue;
+  // ボタン色 2
+  static const Color buttonColor2 = Color(0xFFBCAAA4);
+
   // フォルダアイコン
   late Icon _folderIcon;
   Icon get folderIcon => _folderIcon;

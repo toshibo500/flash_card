@@ -110,9 +110,9 @@ class _FileListView extends State<FileListView> {
         alignment: Alignment.bottomLeft,
         child: Row(
           children: <Widget>[
-            Icon(
+            const Icon(
               Icons.check_circle_rounded,
-              color: Colors.indigo[200],
+              color: Globals.iconColor2,
               size: 16.0,
             ),
             SizedBox(
@@ -121,16 +121,16 @@ class _FileListView extends State<FileListView> {
             ),
             const Icon(
               Icons.not_interested_outlined,
-              color: Colors.red,
+              color: Globals.iconColor3,
               size: 16.0,
             ),
             SizedBox(
               width: 30,
               child: Text(card.numberOfWrongAnswers.toString()),
             ),
-            Icon(
+            const Icon(
               Icons.access_time_rounded,
-              color: Colors.green[600],
+              color: Globals.iconColor1,
               size: 16.0,
             ),
             Text(card.testedAt != null

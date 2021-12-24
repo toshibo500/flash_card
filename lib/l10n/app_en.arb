@@ -9,12 +9,11 @@
   "test": "Test",
   "testStart": "Start TEST",
   "privacyPolcy": "Privacy Policy",
-  "aboutApp": "About App",
   "question": "Question",
   "answer": "Answer",
   "testMode": "Mode",
   "testModeDictation": "Dictation",
-  "testModeSelf": "Self",
+  "testModeSelf": "Self mode",
   "numberOfQuestion": "No of Questions",
   "numberOfCorrect": "No of Answers",
   "folderName": "Folder Name",
@@ -38,5 +37,9 @@
   "seeMore": "See more",
   "deleteConfirmation": "Would you like to remove?",
   "deleteDone": "done",
-  "createCardPageTitle": "Create a frip card"
+  "createCardPageTitle": "Create a frip card",
+  "privacyPolicy": "Privacy Policy",
+  "privacyPolicyURL": "https://tkgapps.com/chocobanana/privacy/",
+  "aboutApp": "About this app",
+  "aboutAppURL": "https://tkgapps.com/chocobanana/aboutapp/"
 }

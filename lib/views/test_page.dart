@@ -194,7 +194,7 @@ class _TestPage extends StatelessWidget {
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Colors.lightBlue[200],
+              primary: Globals.buttonColor1,
               onPrimary: Colors.black,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
@@ -238,7 +238,7 @@ class _TestPage extends StatelessWidget {
             width: 130,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.red[200],
+                primary: Globals.buttonColor2,
                 onPrimary: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
@@ -260,7 +260,7 @@ class _TestPage extends StatelessWidget {
             width: 130,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.lightBlue[200],
+                primary: Globals.buttonColor1,
                 onPrimary: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
