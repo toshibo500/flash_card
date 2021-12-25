@@ -6,7 +6,7 @@
     </intent>
   </queries>
    <application
-        android:label="flash_card"
+        android:label="Choco Banana"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

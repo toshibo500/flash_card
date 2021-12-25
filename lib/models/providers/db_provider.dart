@@ -7,7 +7,7 @@ import 'package:flash_card/models/test_model.dart';
 
 class DbProvider {
   static const _dbFileName = 'flashcard.db';
-  static const _dbCurrentVersion = 2;
+  static const _dbCurrentVersion = 4;
 
   DbProvider._();
   static final DbProvider instance = DbProvider._();
@@ -62,6 +62,129 @@ class DbProvider {
           "${TestModel.colStartedAt} TEXT,"
           "${TestModel.colEndedAt} TEXT"
           ");",
+    ],
+    3: [
+      "INSERT INTO ${FolderModel.tableName} ("
+          "${FolderModel.colId},"
+          "${FolderModel.colSequence},"
+          "${FolderModel.colTitle},"
+          "${FolderModel.colSummary}"
+          ") VALUES("
+          "'00000000000000000',"
+          "0,"
+          "'Sample',"
+          "''"
+          ");",
+      "INSERT INTO ${BookModel.tableName} ("
+          "${BookModel.colId},"
+          "${BookModel.colSequence},"
+          "${BookModel.colFolderId},"
+          "${BookModel.colTitle},"
+          "${BookModel.colSummary}"
+          ") VALUES("
+          "'00000000000000000',"
+          "0,"
+          "'00000000000000000',"
+          "'Food',"
+          "''"
+          ");",
+      "INSERT INTO ${CardModel.tableName} ("
+          "${CardModel.colId},"
+          "${CardModel.colBookId},"
+          "${CardModel.colFront},"
+          "${CardModel.colBack},"
+          "${CardModel.colSequence}"
+          ") VALUES("
+          "'00000000000000000',"
+          "'00000000000000000',"
+          "'Chocolate',"
+          "'チョコレート',"
+          "0"
+          ");",
+      "INSERT INTO ${CardModel.tableName} ("
+          "${CardModel.colId},"
+          "${CardModel.colBookId},"
+          "${CardModel.colFront},"
+          "${CardModel.colBack},"
+          "${CardModel.colSequence}"
+          ") VALUES("
+          "'00000000000000001',"
+          "'00000000000000000',"
+          "'Banana',"
+          "'バナナ',"
+          "1"
+          ");",
+      "INSERT INTO ${CardModel.tableName} ("
+          "${CardModel.colId},"
+          "${CardModel.colBookId},"
+          "${CardModel.colFront},"
+          "${CardModel.colBack},"
+          "${CardModel.colSequence}"
+          ") VALUES("
+          "'00000000000000002',"
+          "'00000000000000000',"
+          "'Mackerel',"
+          "'鯖',"
+          "2"
+          ");",
+      "INSERT INTO ${CardModel.tableName} ("
+          "${CardModel.colId},"
+          "${CardModel.colBookId},"
+          "${CardModel.colFront},"
+          "${CardModel.colBack},"
+          "${CardModel.colSequence}"
+          ") VALUES("
+          "'00000000000000003',"
+          "'00000000000000000',"
+          "'Sardine',"
+          "'いわし',"
+          "3"
+          ");",
+      "INSERT INTO ${CardModel.tableName} ("
+          "${CardModel.colId},"
+          "${CardModel.colBookId},"
+          "${CardModel.colFront},"
+          "${CardModel.colBack},"
+          "${CardModel.colSequence}"
+          ") VALUES("
+          "'00000000000000004',"
+          "'00000000000000000',"
+          "'Clam',"
+          "'しじみ',"
+          "4"
+          ");",
+      "INSERT INTO ${CardModel.tableName} ("
+          "${CardModel.colId},"
+          "${CardModel.colBookId},"
+          "${CardModel.colFront},"
+          "${CardModel.colBack},"
+          "${CardModel.colSequence}"
+          ") VALUES("
+          "'00000000000000005',"
+          "'00000000000000000',"
+          "'Pork',"
+          "'豚肉',"
+          "5"
+          ");",
+      "INSERT INTO ${CardModel.tableName} ("
+          "${CardModel.colId},"
+          "${CardModel.colBookId},"
+          "${CardModel.colFront},"
+          "${CardModel.colBack},"
+          "${CardModel.colSequence}"
+          ") VALUES("
+          "'00000000000000006',"
+          "'00000000000000000',"
+          "'Soy',"
+          "'大豆',"
+          "6"
+          ");",
+    ],
+    4: [
+      "ALTER TABLE ${FolderModel.tableName} ADD COLUMN "
+          "${FolderModel.colTestedAt} TEXT;",
+      "ALTER TABLE ${BookModel.tableName} ADD COLUMN "
+          "${BookModel.colTestedAt} TEXT;",
     ],
   };
 

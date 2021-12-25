@@ -37,7 +37,7 @@ class PreferenceModel {
       json[colFrontSideLang] ?? 'en-US',
       json[colBackSideLang] ?? 'ja-JP',
       json[colQuestion] ?? 0,
-      json[colTestMode] ?? 0,
+      json[colTestMode] ?? 1,
       json[colNumOfTest] ?? 10,
     );
   }

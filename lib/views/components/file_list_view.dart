@@ -104,7 +104,7 @@ class _FileListView extends State<FileListView> {
 
   Widget _buildHistoryBox(int index) {
     CardModel card = widget.viewModel.items[index];
-    DateFormat outputFormat = DateFormat('yyyy-MM-dd hh:mm');
+    DateFormat outputFormat = DateFormat(L10n.of(context)!.dateTimeFormat);
     return Container(
         padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
         alignment: Alignment.bottomLeft,
@@ -161,16 +161,12 @@ class _FileListView extends State<FileListView> {
     List<Widget> subContents = [];
     if (widget.viewModel is FolderListViewModel) {
       icon = Globals().folderIcon;
-      subContents.add(_buildSubContentIcons(
-        Globals().bookIcon,
-        item.books.length,
-      ));
+      subContents.add(
+          _buildSubContentIcons(Globals().bookIcon, item.books.length, index));
     } else if (widget.viewModel is FolderViewModel) {
       icon = Globals().bookIcon;
-      subContents.add(_buildSubContentIcons(
-        Globals().cardIcon,
-        item.cards.length,
-      ));
+      subContents.add(
+          _buildSubContentIcons(Globals().cardIcon, item.cards.length, index));
     }
 
     return ListTile(
@@ -199,21 +195,35 @@ class _FileListView extends State<FileListView> {
     );
   }
 
-  Widget _buildSubContentIcons(Icon icon, int num) {
+  Widget _buildSubContentIcons(Icon icon, int num, int index) {
+    var item = widget.viewModel.items[index];
+    DateFormat outputFormat = DateFormat(L10n.of(context)!.dateTimeFormat);
+
     var subContents = Container(
       padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-      width: 40,
+      width: 200,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Icon(
             icon.icon,
             size: 16,
             color: icon.color,
           ),
-          Text(
-            num.toString(),
+          SizedBox(
+            width: 30,
+            child: Text(
+              num.toString(),
+            ),
           ),
+          const Icon(
+            Icons.access_time_rounded,
+            color: Globals.iconColor1,
+            size: 16.0,
+          ),
+          Text(item.testedAt != null
+              ? outputFormat.format(item.testedAt as DateTime)
+              : ""),
         ],
       ),
     );

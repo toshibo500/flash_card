@@ -136,7 +136,7 @@ class _BookPage extends StatelessWidget {
           ],
         ),
         floatingActionButton: Visibility(
-          visible: true,
+          visible: _bookViweModel.items.isNotEmpty,
           child: FloatingActionButton(
             onPressed: () async {
               await showModalBottomSheet<int>(

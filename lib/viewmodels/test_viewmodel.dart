@@ -1,3 +1,4 @@
+import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/repositories/test_repository.dart';
 import 'package:flash_card/models/test_model.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,8 @@ import 'package:flash_card/models/repositories/card_repository.dart';
 import 'package:flash_card/models/preference_model.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
 import 'package:flash_card/globals.dart';
+import 'package:flash_card/models/repositories/book_repository.dart';
+import 'package:flash_card/models/repositories/folder_repository.dart';
 
 class TestViewModel extends ChangeNotifier {
   BookModel _selectedBook = BookModel('', '', '', '', 0);
@@ -15,11 +18,15 @@ class TestViewModel extends ChangeNotifier {
   late CardModel _item = CardModel('', '', '', '', 0);
   int _numberOfQuestions = 50;
   late TestModel _test;
+  FolderModel _folder = FolderModel('', '', '', 0);
   PreferenceModel _preference = PreferenceModel();
 
   TestViewModel(BookModel selectedBook, int numberOfQuestions) {
     this.selectedBook = selectedBook;
     _numberOfQuestions = numberOfQuestions;
+    FolderRepository.getById(selectedBook.folderId).then((value) {
+      _folder = value!;
+    });
     getPreference();
     startTest();
   }
@@ -80,8 +87,11 @@ class TestViewModel extends ChangeNotifier {
 
   bool next() {
     _test.numberOfQuestions++;
-    _test.endedAt = DateTime.now();
+    DateTime dt = DateTime.now();
+    _test.endedAt = dt;
     TestRepository.update(_test);
+    updateFolder(dt);
+    updateBook(dt);
 
     _index++;
     if (isEnded) {
@@ -96,13 +106,26 @@ class TestViewModel extends ChangeNotifier {
   void correctAnswer() async {
     _test.numberOfCorrectAnswers++;
     _item.numberOfCorrectAnswers++;
-    _item.testedAt = DateTime.now();
+    DateTime dt = DateTime.now();
+    _item.testedAt = dt;
     await CardRepository.update(_item);
   }
 
   void wrongAnswer() async {
     _item.numberOfWrongAnswers++;
     _item.testedAt = DateTime.now();
+    DateTime dt = DateTime.now();
+    _item.testedAt = dt;
     await CardRepository.update(_item);
+  }
+
+  void updateFolder(DateTime time) {
+    _folder.testedAt = time;
+    FolderRepository.updateWithModel(_folder);
+  }
+
+  void updateBook(DateTime time) {
+    _selectedBook.testedAt = time;
+    BookRepository.updateWithModel(_selectedBook);
   }
 }

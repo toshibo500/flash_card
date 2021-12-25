@@ -23,8 +23,8 @@
   "next": "Save&Next",
   "save": "Save",
   "retry": "Retry",
-  "correct": "I Know",
-  "incorrect": "I Don't Know",
+  "correct": "Correct",
+  "incorrect": "Incorrect",
   "skip": "Skip",
   "duration": "Duration",
   "result": "Result",
@@ -41,5 +41,6 @@
   "privacyPolicy": "Privacy Policy",
   "privacyPolicyURL": "https://tkgapps.com/chocobanana/privacy/",
   "aboutApp": "About this app",
-  "aboutAppURL": "https://tkgapps.com/chocobanana/aboutapp/"
+  "aboutAppURL": "https://tkgapps.com/chocobanana/aboutapp/",
+  "dateTimeFormat": "yyyy-MM-dd HH:mm"
 }

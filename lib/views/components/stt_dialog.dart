@@ -16,6 +16,7 @@ class _SttDialog extends State<SttDialog> {
   String _lastwords = '';
   double _level = 0.0;
   Color _micColor = Colors.black;
+  bool restart = false;
 
   @override
   void initState() {
@@ -35,11 +36,15 @@ class _SttDialog extends State<SttDialog> {
 
   void onSttStatus(String status) {
     // ignore: avoid_print
-    // print('Received listener status: $status, listening: ${_stt.isListening}');
+    print('Received listener status: $status, listening: ${_stt.isListening}');
     setState(() {
       if (status == 'done') {
         _level = 0.0;
         _micColor = Colors.grey;
+        if (restart) {
+          startListening();
+          restart = false;
+        }
       } else {
         _micColor = Colors.black;
       }
@@ -84,6 +89,26 @@ class _SttDialog extends State<SttDialog> {
     _stt.stopListening();
   }
 
+  void reStartListening() {
+    // _animationControler.stop();
+    if (_stt.isListening) {
+      stopListening();
+      restart = true;
+    } else {
+      startListening();
+    }
+  }
+
+  String kanaToHira(String str) {
+    return str.replaceAllMapped(RegExp("[ァ-ヴ]"),
+        (Match m) => String.fromCharCode(m.group(0)!.codeUnitAt(0) - 0x60));
+  }
+
+  String hiraToKana(String str) {
+    return str.replaceAllMapped(RegExp("[ぁ-ゔ]"),
+        (Match m) => String.fromCharCode(m.group(0)!.codeUnitAt(0) + 0x60));
+  }
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -101,11 +126,12 @@ class _SttDialog extends State<SttDialog> {
             child: Text(_lastwords),
           ),
           _buildMicIcon(),
+          _buildConvertIcon()
         ]),
         actions: [
           TextButton(
             child: Text(L10n.of(context)!.retry),
-            onPressed: () => startListening(),
+            onPressed: () => reStartListening(),
           ),
           TextButton(
             child: Text(L10n.of(context)!.cancel),
@@ -148,6 +174,38 @@ class _SttDialog extends State<SttDialog> {
         onPressed: () => startListening(),
       ),
     );
+  }
+
+  Widget _buildConvertIcon() {
+    return Visibility(
+        visible: widget.localeId == 'ja-JP',
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            TextButton(
+              child: const Text(
+                'ひら->カナ',
+                style: TextStyle(fontSize: 11),
+              ),
+              onPressed: () {
+                setState(() {
+                  _lastwords = hiraToKana(_lastwords);
+                });
+              },
+            ),
+            TextButton(
+              child: const Text(
+                'カナ->ひら',
+                style: TextStyle(fontSize: 11),
+              ),
+              onPressed: () {
+                setState(() {
+                  _lastwords = kanaToHira(_lastwords);
+                });
+              },
+            ),
+          ],
+        ));
   }
 }
 

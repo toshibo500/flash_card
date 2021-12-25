@@ -27,6 +27,12 @@ class BookRepository {
         [folderId, title, summary, sequence, id]);
   }
 
+  static Future<int> updateWithModel(BookModel row) async {
+    final db = await instance.database;
+    return await db.update(BookModel.tableName, row.toJson(),
+        where: "id = ?", whereArgs: [row.id]);
+  }
+
   static Future<int> bulkUpdate(List<BookModel> rows) async {
     final db = await instance.database;
     int cnt = 0;

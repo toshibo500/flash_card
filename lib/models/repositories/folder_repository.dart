@@ -26,6 +26,12 @@ class FolderRepository {
         [title, summary, sequence, id]);
   }
 
+  static Future<int> updateWithModel(FolderModel row) async {
+    final db = await instance.database;
+    return await db.update(FolderModel.tableName, row.toJson(),
+        where: "id = ?", whereArgs: [row.id]);
+  }
+
   static Future<int> bulkUpdate(List<FolderModel> rows) async {
     final db = await instance.database;
     int cnt = 0;
@@ -49,12 +55,23 @@ class FolderRepository {
         .rawDelete('DELETE FROM ${FolderModel.tableName} WHERE id = ?', [id]);
   }
 
-  static Future<List<FolderModel>> getAll() async {
+  static Future<List<FolderModel>> get([String id = '']) async {
     final Database db = await instance.database;
-
-    final rows = await db.rawQuery(
-        'SELECT * FROM ${FolderModel.tableName} ORDER BY ${FolderModel.colSequence} ASC');
+    String where = id != '' ? "WHERE ${FolderModel.colId} = '$id'" : '';
+    final rows =
+        await db.rawQuery('SELECT * FROM ${FolderModel.tableName} $where');
     if (rows.isEmpty) return [];
-    return rows.map((json) => FolderModel.fromJson(json)).toList();
+    List<FolderModel> list =
+        rows.map((json) => FolderModel.fromJson(json)).toList();
+    return list;
+  }
+
+  static Future<FolderModel?> getById(String id) async {
+    List<FolderModel> list = await get(id);
+    return list.isEmpty ? null : list[0];
+  }
+
+  static Future<List<FolderModel>> getAll() async {
+    return get();
   }
 }

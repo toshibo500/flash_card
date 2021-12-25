@@ -10,7 +10,7 @@
     "testStart": "テスト開始",
     "privacyPolcy": "Privacy Policy",
     "question": "問題",
-    "answer": "解答",
+    "answer": "正解",
     "testMode": "モード",
     "testModeDictation": "ディクテーション",
     "testModeSelf": "セルフモード",
@@ -23,8 +23,8 @@
     "next": "保存&新規",
     "save": "保存",
     "retry": "再施行",
-    "correct": "わかる",
-    "incorrect": "わからない",
+    "correct": "正解",
+    "incorrect": "不正解",
     "skip": "スキップ",
     "duration": "経過時間",
     "result": "テスト結果",
@@ -41,5 +41,6 @@
     "privacyPolicy": "Privacy Policy",
     "privacyPolicyURL": "https://tkgapps.com/chocobanana/privacy/",
     "aboutApp": "このアプリについて",
-    "aboutAppURL": "https://tkgapps.com/chocobanana/aboutapp/"
+    "aboutAppURL": "https://tkgapps.com/chocobanana/aboutapp/",
+    "dateTimeFormat": "yyyy-MM-dd HH:mm"
   }
