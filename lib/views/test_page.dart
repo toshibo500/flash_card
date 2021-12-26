@@ -116,7 +116,7 @@ class _TestPage extends StatelessWidget {
                   },
                   content: Container(
                     width: double.infinity,
-                    color: Colors.grey.shade100,
+                    color: Theme.of(context).backgroundColor,
                     padding: const EdgeInsets.all(20),
                     child: Text(
                       _testViweModel.answer,
@@ -161,7 +161,7 @@ class _TestPage extends StatelessWidget {
             style: Globals.contentTextStyle,
             maxLines: 100,
             controller: _textCtr,
-            autofocus: true,
+            autofocus: false,
             onChanged: (text) {
               mark(context, viewmodel, text);
             },
@@ -194,8 +194,8 @@ class _TestPage extends StatelessWidget {
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Globals.buttonColor1,
-              onPrimary: Colors.black,
+              primary: Globals.buttonColor2,
+              onPrimary: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),

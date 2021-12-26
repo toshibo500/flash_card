@@ -17,6 +17,7 @@ class _SttDialog extends State<SttDialog> {
   double _level = 0.0;
   Color _micColor = Colors.black;
   bool restart = false;
+  double _withOpacity = 0.05;
 
   @override
   void initState() {
@@ -38,15 +39,17 @@ class _SttDialog extends State<SttDialog> {
     // ignore: avoid_print
     print('Received listener status: $status, listening: ${_stt.isListening}');
     setState(() {
-      if (status == 'done') {
+      if (status == 'done' && !_stt.isListening) {
         _level = 0.0;
-        _micColor = Colors.grey;
+        _withOpacity = .0;
+        _micColor = Theme.of(context).disabledColor;
         if (restart) {
           startListening();
           restart = false;
         }
       } else {
-        _micColor = Colors.black;
+        _withOpacity = .05;
+        _micColor = Theme.of(context).textTheme.bodyText1!.color!;
       }
     });
   }
@@ -91,9 +94,9 @@ class _SttDialog extends State<SttDialog> {
 
   void reStartListening() {
     // _animationControler.stop();
-    if (_stt.isListening) {
-      stopListening();
+    if (_stt.isListening && _lastwords != '') {
       restart = true;
+      stopListening();
     } else {
       startListening();
     }
@@ -128,6 +131,7 @@ class _SttDialog extends State<SttDialog> {
           _buildMicIcon(),
           _buildConvertIcon()
         ]),
+        actionsAlignment: MainAxisAlignment.spaceAround,
         actions: [
           TextButton(
             child: Text(L10n.of(context)!.retry),
@@ -159,9 +163,9 @@ class _SttDialog extends State<SttDialog> {
           BoxShadow(
               blurRadius: 1,
               spreadRadius: _level * 1.5,
-              color: Colors.black.withOpacity(.05))
+              color: Colors.black.withOpacity(_withOpacity))
         ],
-        color: Colors.white,
+//        color: Colors.white,
         borderRadius: const BorderRadius.all(Radius.circular(50)),
       ),
       child: IconButton(
@@ -171,41 +175,42 @@ class _SttDialog extends State<SttDialog> {
         color: _micColor,
         iconSize: 26,
         // ignore: avoid_returning_null_for_void
-        onPressed: () => startListening(),
+        onPressed: () => reStartListening(),
       ),
     );
   }
 
   Widget _buildConvertIcon() {
     return Visibility(
-        visible: widget.localeId == 'ja-JP',
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            TextButton(
-              child: const Text(
-                'ひら->カナ',
-                style: TextStyle(fontSize: 11),
-              ),
-              onPressed: () {
-                setState(() {
-                  _lastwords = hiraToKana(_lastwords);
-                });
-              },
+      visible: widget.localeId == 'ja-JP',
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          TextButton(
+            child: const Text(
+              'ひら->カナ',
+              style: TextStyle(fontSize: 11),
             ),
-            TextButton(
-              child: const Text(
-                'カナ->ひら',
-                style: TextStyle(fontSize: 11),
-              ),
-              onPressed: () {
-                setState(() {
-                  _lastwords = kanaToHira(_lastwords);
-                });
-              },
+            onPressed: () {
+              setState(() {
+                _lastwords = hiraToKana(_lastwords);
+              });
+            },
+          ),
+          TextButton(
+            child: const Text(
+              'カナ->ひら',
+              style: TextStyle(fontSize: 11),
             ),
-          ],
-        ));
+            onPressed: () {
+              setState(() {
+                _lastwords = kanaToHira(_lastwords);
+              });
+            },
+          ),
+        ],
+      ),
+    );
   }
 }
 

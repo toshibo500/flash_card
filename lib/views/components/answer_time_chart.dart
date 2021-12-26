@@ -40,12 +40,14 @@ class AnswerTimeChart extends StatelessWidget {
           renderSpec: charts.SmallTickRendererSpec(
         labelStyle: charts.TextStyleSpec(
           fontSize: fontSize, // size in Pts.
+          color: charts.ColorUtil.fromDartColor(Theme.of(context).hintColor),
         ),
       )),
       primaryMeasureAxis: charts.NumericAxisSpec(
           renderSpec: charts.GridlineRendererSpec(
         labelStyle: charts.TextStyleSpec(
           fontSize: fontSize, // size in Pts.
+          color: charts.ColorUtil.fromDartColor(Theme.of(context).hintColor),
         ),
       )),
       behaviors: [
@@ -53,7 +55,8 @@ class AnswerTimeChart extends StatelessWidget {
             titleStyleSpec: charts.TextStyleSpec(
               fontSize: 12,
               fontFamily: 'Roboto',
-              color: charts.ColorUtil.fromDartColor(Colors.black54),
+              color:
+                  charts.ColorUtil.fromDartColor(Theme.of(context).hintColor),
             ),
             behaviorPosition: charts.BehaviorPosition.top,
             titleOutsideJustification: charts.OutsideJustification.start,

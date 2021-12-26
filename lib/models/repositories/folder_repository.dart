@@ -72,6 +72,6 @@ class FolderRepository {
   }
 
   static Future<List<FolderModel>> getAll() async {
-    return get();
+    return await get();
   }
 }

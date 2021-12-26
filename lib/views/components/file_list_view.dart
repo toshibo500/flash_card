@@ -148,7 +148,7 @@ class _FileListView extends State<FileListView> {
       ),
       key: Key('$index'),
       child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[_buildListTile(index)]),
     );
   }
@@ -188,7 +188,14 @@ class _FileListView extends State<FileListView> {
       enabled: !widget.viewModel.editMode,
       onTap: () {
         if (widget.nextPage != "") {
-          Navigator.of(context).pushNamed(widget.nextPage, arguments: item);
+          Navigator.of(context)
+              .pushNamed(widget.nextPage, arguments: item)
+              .then((value) {
+            // HOMEに戻った場合、再読み込みしてほしいが何故かされないので、明示的に読み込む。
+            if (widget.nextPage == '/folderPage') {
+              widget.viewModel.getAll();
+            }
+          });
         }
       },
       trailing: _buildIconButtons(index),
@@ -201,7 +208,6 @@ class _FileListView extends State<FileListView> {
 
     var subContents = Container(
       padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-      width: 200,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -214,6 +220,8 @@ class _FileListView extends State<FileListView> {
             width: 30,
             child: Text(
               num.toString(),
+              style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyText1!.color),
             ),
           ),
           const Icon(
@@ -221,9 +229,13 @@ class _FileListView extends State<FileListView> {
             color: Globals.iconColor1,
             size: 16.0,
           ),
-          Text(item.testedAt != null
-              ? outputFormat.format(item.testedAt as DateTime)
-              : ""),
+          Text(
+            item.testedAt != null
+                ? outputFormat.format(item.testedAt as DateTime)
+                : "",
+            style:
+                TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),
+          ),
         ],
       ),
     );

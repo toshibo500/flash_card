@@ -37,12 +37,16 @@ class AccuracyRateChart extends StatelessWidget {
       domainAxis: charts.OrdinalAxisSpec(
           renderSpec: charts.SmallTickRendererSpec(
         labelJustification: charts.TickLabelJustification.inside,
-        labelStyle: charts.TextStyleSpec(fontSize: fontSize),
+        labelStyle: charts.TextStyleSpec(
+          fontSize: fontSize,
+          color: charts.ColorUtil.fromDartColor(Theme.of(context).hintColor),
+        ),
       )),
       primaryMeasureAxis: charts.NumericAxisSpec(
           renderSpec: charts.GridlineRendererSpec(
         labelStyle: charts.TextStyleSpec(
           fontSize: fontSize, // size in Pts.
+          color: charts.ColorUtil.fromDartColor(Theme.of(context).hintColor),
         ),
       )),
       behaviors: [
@@ -50,7 +54,8 @@ class AccuracyRateChart extends StatelessWidget {
             titleStyleSpec: charts.TextStyleSpec(
               fontSize: 12,
               fontFamily: 'Roboto',
-              color: charts.ColorUtil.fromDartColor(Colors.black54),
+              color:
+                  charts.ColorUtil.fromDartColor(Theme.of(context).hintColor),
             ),
             behaviorPosition: charts.BehaviorPosition.top,
             titleOutsideJustification: charts.OutsideJustification.start,

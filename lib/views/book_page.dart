@@ -42,7 +42,7 @@ class _BookPage extends StatelessWidget {
             width: 100,
             alignment: Alignment.centerLeft,
             child: IconButton(
-              color: Colors.lightBlue,
+              color: Globals.panelBtnForeColor1,
               icon: const Icon(Icons.settings_rounded),
               onPressed: () async {
                 await Navigator.of(context).pushNamed('/settingsPage');
@@ -52,9 +52,7 @@ class _BookPage extends StatelessWidget {
           ),
           Center(
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: const StadiumBorder(),
-              ),
+              style: Globals.panelbtnStyle,
               child: Text(L10n.of(context)!.testStart),
               onPressed: () async {
                 await Navigator.of(context).pushNamed('/testPage',
@@ -71,7 +69,7 @@ class _BookPage extends StatelessWidget {
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               IconButton(
-                color: Colors.lightBlue,
+                color: Globals.panelBtnForeColor3,
                 icon: const Icon(
                   Icons.list_rounded,
                   size: 45,
@@ -85,7 +83,8 @@ class _BookPage extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
                 child: Text(
                   L10n.of(context)!.resultList,
-                  style: const TextStyle(color: Colors.lightBlue, fontSize: 10),
+                  style: const TextStyle(
+                      color: Globals.panelBtnForeColor3, fontSize: 10),
                 ),
               )
             ]),

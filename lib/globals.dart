@@ -34,8 +34,13 @@ class Globals {
     _cardIcon = const Icon(Icons.style_rounded, color: iconColor2);
   }
 
+  // チョコ色
+  static const Color chocoColor = Color(0xFF6c3524);
+  // バナナ色
+  static const Color bananaColor = Color(0xFFffdb2b);
+
   // 背景色
-  static const Color backgroundColor = Color(0xFF6c3524);
+  static const Color backgroundColor = chocoColor;
   // アイコン色 1
   static const Color iconColor1 = Colors.lightGreen;
   // アイコン色 2
@@ -46,6 +51,22 @@ class Globals {
   static const Color buttonColor1 = Colors.lightBlue;
   // ボタン色 2
   static const Color buttonColor2 = Color(0xFFBCAAA4);
+  // FloatingActionButton色
+  static const Color floatingBtnBackColor = chocoColor;
+  static const Color floatingBtnForeColor = bananaColor;
+  // panelボタン色
+  static const Color panelBtnForeColor1 = Colors.white;
+  static const Color panelBtnForeColor2 = Colors.lightBlue;
+  static const Color panelBtnForeColor3 = Colors.white;
+
+  // panelボタンスタイル
+  static ButtonStyle panelbtnStyle = ElevatedButton.styleFrom(
+      primary: panelBtnForeColor2,
+      textStyle: const TextStyle(fontWeight: FontWeight.w600),
+      // onPrimary: panelBtnForeColor2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ));
 
   // フォルダアイコン
   late Icon _folderIcon;
@@ -59,14 +80,14 @@ class Globals {
 
   // テキストスタイル
   static const TextStyle titleTextStyle = TextStyle(
-    color: Colors.black54,
+    //color: Colors.black54,
     fontWeight: FontWeight.w500,
     fontFamily: 'Roboto',
     letterSpacing: 1,
     fontSize: 18.0,
   );
   static const TextStyle contentTextStyle = TextStyle(
-    color: Colors.black,
+//    color: Colors.black,
     fontWeight: FontWeight.w400,
     fontFamily: 'Roboto',
     letterSpacing: 1,
@@ -74,11 +95,18 @@ class Globals {
   );
   static const TextStyle buttonTextStyle = TextStyle(
     color: Colors.white,
-    fontWeight: FontWeight.w700,
+    fontWeight: FontWeight.w200,
     fontFamily: 'Roboto',
     letterSpacing: 1,
     fontSize: 18.0,
   );
-  static const TextStyle dataTableColumnStyle = TextStyle(
-      color: Colors.black54, fontStyle: FontStyle.italic, fontSize: 12);
+  static ButtonStyle buttonStyle = ElevatedButton.styleFrom(
+      primary: buttonColor1,
+      onPrimary: Colors.black,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ));
+
+  static const TextStyle dataTableColumnStyle =
+      TextStyle(fontStyle: FontStyle.italic, fontSize: 12);
 }

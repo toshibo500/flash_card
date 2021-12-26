@@ -42,29 +42,6 @@ class _InputCardPage extends State<InputCardPage> {
     });
   }
 
-  static const TextStyle titleTextStyle = TextStyle(
-    color: Colors.black54,
-    fontWeight: FontWeight.w500,
-    fontFamily: 'Roboto',
-    letterSpacing: 1,
-    fontSize: 18.0,
-  );
-
-  static const TextStyle buttonTextStyle = TextStyle(
-    color: Colors.white,
-    fontWeight: FontWeight.w500,
-    fontFamily: 'Roboto',
-    letterSpacing: 1,
-    fontSize: 14.0,
-  );
-
-  static ButtonStyle buttonStyle = ElevatedButton.styleFrom(
-      primary: Colors.lightBlue,
-      onPrimary: Colors.black,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ));
-
   @override
   Widget build(BuildContext context) {
     _isNew = widget.card.id == '' ? true : false;
@@ -108,9 +85,9 @@ class _InputCardPage extends State<InputCardPage> {
                     },
                     child: Text(
                       L10n.of(context)!.next,
-                      style: buttonTextStyle,
+                      style: Globals.buttonTextStyle,
                     ),
-                    style: buttonStyle,
+                    style: Globals.buttonStyle,
                   ),
                   Container()
                 ])));
@@ -123,14 +100,15 @@ class _InputCardPage extends State<InputCardPage> {
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop<bool>(context, false),
-                  child: Text(L10n.of(context)!.cancel, style: buttonTextStyle),
-                  style: buttonStyle,
+                  child: Text(L10n.of(context)!.cancel,
+                      style: Globals.buttonTextStyle),
+                  style: Globals.buttonStyle,
                 )),
             Container(
                 width: 110,
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
-                  style: buttonStyle,
+                  style: Globals.buttonStyle,
                   onPressed: () {
                     widget.card.front = _textCtl[0].text;
                     widget.card.back = _textCtl[1].text;
@@ -138,7 +116,7 @@ class _InputCardPage extends State<InputCardPage> {
                   },
                   child: Text(
                     L10n.of(context)!.save,
-                    style: buttonTextStyle,
+                    style: Globals.buttonTextStyle,
                   ),
                 ))
           ],
@@ -179,7 +157,7 @@ class _InputCardPage extends State<InputCardPage> {
             padding: const EdgeInsets.all(10),
             child: Text(
               title,
-              style: titleTextStyle,
+              style: Globals.titleTextStyle,
             )),
         SizedBox(
             child: TextField(

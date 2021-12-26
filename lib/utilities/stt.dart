@@ -62,7 +62,7 @@ class Stt {
     _speech.listen(
         onResult: onResult,
         listenFor: const Duration(seconds: 30),
-        pauseFor: const Duration(seconds: 5),
+        pauseFor: const Duration(seconds: 30),
         partialResults: true,
         localeId: _currentLocaleId,
         onSoundLevelChange: onSoundLevelChange,

@@ -23,29 +23,29 @@ class _TestResultPage extends StatelessWidget {
   const _TestResultPage({Key? key}) : super(key: key);
 
   static const TextStyle scoreLTextStyle = TextStyle(
-    color: Colors.indigoAccent,
+    //color: Colors.indigoAccent,
     fontWeight: FontWeight.w400,
     fontFamily: 'Roboto',
     letterSpacing: 1,
     fontSize: 42.0,
   );
   static const TextStyle scoreSTextStyle = TextStyle(
-    color: Colors.indigoAccent,
+    //color: Colors.indigoAccent,
     fontWeight: FontWeight.w400,
     fontFamily: 'Roboto',
     letterSpacing: 1,
     fontSize: 13.0,
   );
   static const TextStyle titleTextStyle = TextStyle(
-    color: Colors.black54,
+    //color: Colors.black54,
     fontWeight: FontWeight.w500,
     fontFamily: 'Roboto',
     letterSpacing: 1,
     fontSize: 18.0,
   );
 
-  static const TextStyle _dataTableColumnStyle = TextStyle(
-      color: Colors.black54, fontStyle: FontStyle.italic, fontSize: 12);
+  static const TextStyle _dataTableColumnStyle =
+      TextStyle(fontStyle: FontStyle.italic, fontSize: 12);
 
   @override
   Widget build(BuildContext context) {
@@ -229,7 +229,9 @@ class _TestResultPage extends StatelessWidget {
           Navigator.of(context).pushNamed('/testResultListPage',
               arguments: _testResultViweModel.book.id);
         },
-        child: Text(L10n.of(context)!.seeMore),
+        child: Text(
+          L10n.of(context)!.seeMore,
+        ),
       ),
     );
 
