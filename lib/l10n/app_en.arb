@@ -42,5 +42,6 @@
   "privacyPolicyURL": "https://tkgapps.com/chocobanana/privacy/",
   "aboutApp": "About this app",
   "aboutAppURL": "https://tkgapps.com/chocobanana/aboutapp/",
-  "dateTimeFormat": "yyyy-MM-dd HH:mm"
+  "dateTimeFormat": "yyyy-MM-dd HH:mm",
+  "answerHintText": "Enter your answer"
 }

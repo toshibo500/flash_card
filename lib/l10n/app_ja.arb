@@ -22,7 +22,7 @@
     "cancel": "キャンセル",
     "next": "保存&新規",
     "save": "保存",
-    "retry": "再施行",
+    "retry": "やり直す",
     "correct": "正解",
     "incorrect": "不正解",
     "skip": "スキップ",
@@ -42,5 +42,6 @@
     "privacyPolicyURL": "https://tkgapps.com/chocobanana/privacy/",
     "aboutApp": "このアプリについて",
     "aboutAppURL": "https://tkgapps.com/chocobanana/aboutapp/",
-    "dateTimeFormat": "yyyy-MM-dd HH:mm"
+    "dateTimeFormat": "yyyy-MM-dd HH:mm",
+    "answerHintText": "解答を入力してください"
   }

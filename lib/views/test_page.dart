@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flash_card/views/components/stt_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 
 class TestPageParameters {
   TestPageParameters(
@@ -35,12 +36,23 @@ class _TestPage extends StatelessWidget {
   _TestPage({Key? key, required this.param}) : super(key: key);
   final TestPageParameters param;
   final TextEditingController _textCtr = TextEditingController(text: "");
+  final FocusNode _textNode1 = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     bool _answerExpanded = false;
     TestViewModel _testViweModel = Provider.of<TestViewModel>(context);
     _textCtr.clear();
+
+    // キーボードに done アクション追加
+    KeyboardActionsConfig _keyboardActionConfig = KeyboardActionsConfig(
+      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardBarColor: Theme.of(context).disabledColor,
+      nextFocus: false,
+      actions: [
+        KeyboardActionsItem(focusNode: _textNode1),
+      ],
+    );
 
     return Scaffold(
         appBar: AppBar(
@@ -52,80 +64,84 @@ class _TestPage extends StatelessWidget {
           ),
           actions: const [],
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                alignment: Alignment.topLeft,
-                padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      L10n.of(context)!.question,
-                      style: Globals.titleTextStyle,
+        body: KeyboardActions(
+            config: _keyboardActionConfig,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.topLeft,
+                    padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          L10n.of(context)!.question,
+                          style: Globals.titleTextStyle,
+                        ),
+                        Text(
+                          '${_testViweModel.index + 1}/${_testViweModel.items.length}',
+                          style: Globals.titleTextStyle,
+                        ),
+                      ],
                     ),
-                    Text(
-                      '${_testViweModel.index + 1}/${_testViweModel.items.length}',
-                      style: Globals.titleTextStyle,
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                alignment: Alignment.topLeft,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                ),
-                height: 200,
-                child: SingleChildScrollView(
-                  child: Text(
-                    _testViweModel.question,
-                    style: Globals.contentTextStyle,
                   ),
-                ),
-              ),
-              _buildAnswerArea(context, _testViweModel, param.testMode),
-              ExpansionWidget(
-                  initiallyExpanded: false,
-                  onSaveState: (value) => _answerExpanded = value,
-                  onRestoreState: () => _answerExpanded,
-                  duration: const Duration(microseconds: 0),
-                  titleBuilder: (double animationValue, _, bool isExpaned,
-                      toogleFunction) {
-                    return InkWell(
-                        onTap: () => toogleFunction(animated: true),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Expanded(
-                                  child: Text(
-                                L10n.of(context)!.answer,
-                                style: Globals.titleTextStyle,
-                              )),
-                              Transform.rotate(
-                                angle: math.pi * animationValue / 2,
-                                child: const Icon(Icons.arrow_right, size: 40),
-                                alignment: Alignment.center,
-                              )
-                            ],
-                          ),
-                        ));
-                  },
-                  content: Container(
-                    width: double.infinity,
-                    color: Theme.of(context).backgroundColor,
-                    padding: const EdgeInsets.all(20),
-                    child: Text(
-                      _testViweModel.answer,
-                      style: Globals.contentTextStyle,
+                  Container(
+                    alignment: Alignment.topLeft,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
                     ),
-                  )),
-            ],
-          ),
-        ));
+                    padding: const EdgeInsets.all(10),
+                    height: 200,
+                    child: SingleChildScrollView(
+                      child: Text(
+                        _testViweModel.question,
+                        style: Globals.contentTextStyle,
+                      ),
+                    ),
+                  ),
+                  _buildAnswerArea(context, _testViweModel, param.testMode),
+                  ExpansionWidget(
+                      initiallyExpanded: false,
+                      onSaveState: (value) => _answerExpanded = value,
+                      onRestoreState: () => _answerExpanded,
+                      duration: const Duration(microseconds: 0),
+                      titleBuilder: (double animationValue, _, bool isExpaned,
+                          toogleFunction) {
+                        return InkWell(
+                            onTap: () => toogleFunction(animated: true),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                      child: Text(
+                                    L10n.of(context)!.answer,
+                                    style: Globals.titleTextStyle,
+                                  )),
+                                  Transform.rotate(
+                                    angle: math.pi * animationValue / 2,
+                                    child:
+                                        const Icon(Icons.arrow_right, size: 40),
+                                    alignment: Alignment.center,
+                                  )
+                                ],
+                              ),
+                            ));
+                      },
+                      content: Container(
+                        width: double.infinity,
+                        color: Theme.of(context).backgroundColor,
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          _testViweModel.answer,
+                          style: Globals.contentTextStyle,
+                        ),
+                      )),
+                ],
+              ),
+            )));
   }
 
   Widget _buildAnswerArea(
@@ -155,17 +171,42 @@ class _TestPage extends StatelessWidget {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
         ),
+        padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
         height: 200,
-        child: SingleChildScrollView(
-          child: TextField(
-            style: Globals.contentTextStyle,
-            maxLines: 100,
-            controller: _textCtr,
-            autofocus: false,
-            onChanged: (text) {
-              mark(context, viewmodel, text);
-            },
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Expanded(
+                child: SingleChildScrollView(
+              child: TextField(
+                focusNode: _textNode1,
+                style: Globals.contentTextStyle,
+                decoration: InputDecoration(
+                  hintText: L10n.of(context)!.answerHintText,
+                ),
+                maxLines: 100,
+                controller: _textCtr,
+                autofocus: false,
+                onChanged: (text) {
+                  mark(context, viewmodel, text);
+                },
+              ),
+            )),
+            Visibility(
+                visible: true,
+                child: Container(
+                  width: 25,
+                  alignment: Alignment.topRight,
+                  margin: EdgeInsets.zero,
+                  child: IconButton(
+                      color: Theme.of(context).disabledColor,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                      onPressed: () {
+                        _textCtr.text = '';
+                      },
+                      icon: const Icon(Icons.close_rounded)),
+                ))
+          ],
         ),
       ),
       Container(

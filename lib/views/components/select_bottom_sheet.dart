@@ -65,9 +65,9 @@ Future showSelectBottomSheet(
     maxHeight: .9,
     headerHeight: 50,
     context: context,
-    decoration: const BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.only(
+    decoration: BoxDecoration(
+      color: Theme.of(context).bottomAppBarColor,
+      borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(10.0),
         topRight: Radius.circular(10.0),
       ),
@@ -78,7 +78,7 @@ Future showSelectBottomSheet(
         width: double.infinity,
         height: 50,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Theme.of(context).bottomAppBarColor,
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(offset == 1.0 ? 0 : 10),
             topRight: Radius.circular(offset == 1.0 ? 0 : 10),

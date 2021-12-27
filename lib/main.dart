@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData.light(), // ライト用テーマ
+//      theme: ThemeData.dark(), // ライト用テーマ
       darkTheme: ThemeData.dark(), // ダーク用テーマ
       themeMode: ThemeMode.system, // モードをシステム設定にする
       localizationsDelegates: L10n.localizationsDelegates,
