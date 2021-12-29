@@ -11,10 +11,16 @@ import 'package:flash_card/views/test_result_page.dart';
 import 'package:flash_card/views/test_result_list_page.dart';
 import 'package:flash_card/views/web_view_page.dart';
 import 'package:flash_card/views/settings_page.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
 
 void main() {
+  //向き指定
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, //縦固定
+  ]);
   runApp(const MyApp());
 }
 
@@ -25,6 +31,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false, // debugのバナーを消す
       theme: ThemeData.light(), // ライト用テーマ
 //      theme: ThemeData.dark(), // ライト用テーマ
       darkTheme: ThemeData.dark(), // ダーク用テーマ
