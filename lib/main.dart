@@ -6,9 +6,9 @@ import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/views/folder_page.dart';
 import 'package:flash_card/views/book_page.dart';
 import 'package:flash_card/views/input_card_page.dart';
-import 'package:flash_card/views/test_page.dart';
-import 'package:flash_card/views/test_result_page.dart';
-import 'package:flash_card/views/test_result_list_page.dart';
+import 'package:flash_card/views/quiz_page.dart';
+import 'package:flash_card/views/quiz_result_page.dart';
+import 'package:flash_card/views/quiz_result_list_page.dart';
 import 'package:flash_card/views/web_view_page.dart';
 import 'package:flash_card/views/settings_page.dart';
 import 'package:flutter/services.dart';
@@ -60,21 +60,21 @@ class MyApp extends StatelessWidget {
                 InputCardPage(card: settings.arguments as CardModel),
           );
         }
-        if (settings.name == '/testPage') {
+        if (settings.name == '/quizPage') {
           return MaterialPageRoute(
             builder: (context) =>
-                TestPage(param: settings.arguments as TestPageParameters),
+                QuizPage(param: settings.arguments as QuizPageParameters),
           );
         }
-        if (settings.name == '/testResultPage') {
+        if (settings.name == '/quizResultPage') {
           return MaterialPageRoute(
               builder: (context) =>
-                  TestResultPage(id: settings.arguments as String));
+                  QuizResultPage(id: settings.arguments as String));
         }
-        if (settings.name == '/testResultListPage') {
+        if (settings.name == '/quizResultListPage') {
           return MaterialPageRoute(
               builder: (context) =>
-                  TestResultListPage(bookId: settings.arguments as String));
+                  QuizResultListPage(bookId: settings.arguments as String));
         }
         if (settings.name == '/webViewPage') {
           return MaterialPageRoute(

@@ -3,11 +3,11 @@ import 'package:path/path.dart';
 import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/card_model.dart';
-import 'package:flash_card/models/test_model.dart';
+import 'package:flash_card/models/quiz_model.dart';
 
 class DbProvider {
   static const _dbFileName = 'flashcard.db';
-  static const _dbCurrentVersion = 4;
+  static const _dbCurrentVersion = 5;
 
   DbProvider._();
   static final DbProvider instance = DbProvider._();
@@ -46,7 +46,7 @@ class DbProvider {
         "${CardModel.colSequence} INTEGER,"
         "${CardModel.colNumberOfCorrectAnswers} INTEGER DEFAULT 0,"
         "${CardModel.colNumberOfWrongAnswers} INTEGER DEFAULT 0,"
-        "${CardModel.colTestedAt} TEXT"
+        "testedAt TEXT"
         ")");
     _upgradeTable(db, 1, version);
     return;
@@ -54,13 +54,13 @@ class DbProvider {
 
   static const scripts = {
     2: [
-      "CREATE TABLE ${TestModel.tableName} ("
-          "${TestModel.colId} TEXT PRIMARY KEY,"
-          "${TestModel.colBookId} TEXT,"
-          "${TestModel.colNumberOfQuestions} INTEGER DEFAULT 0,"
-          "${TestModel.colNumberOfCorrectAnswers} INTEGER DEFAULT 0,"
-          "${TestModel.colStartedAt} TEXT,"
-          "${TestModel.colEndedAt} TEXT"
+      "CREATE TABLE tests ("
+          "${QuizModel.colId} TEXT PRIMARY KEY,"
+          "${QuizModel.colBookId} TEXT,"
+          "${QuizModel.colNumberOfQuestions} INTEGER DEFAULT 0,"
+          "${QuizModel.colNumberOfCorrectAnswers} INTEGER DEFAULT 0,"
+          "${QuizModel.colStartedAt} TEXT,"
+          "${QuizModel.colEndedAt} TEXT"
           ");",
     ],
     3: [
@@ -182,9 +182,15 @@ class DbProvider {
     ],
     4: [
       "ALTER TABLE ${FolderModel.tableName} ADD COLUMN "
-          "${FolderModel.colTestedAt} TEXT;",
+          "testedAt TEXT;",
       "ALTER TABLE ${BookModel.tableName} ADD COLUMN "
-          "${BookModel.colTestedAt} TEXT;",
+          "testedAt TEXT;",
+    ],
+    5: [
+      "ALTER TABLE tests RENAME TO ${QuizModel.tableName};",
+      "ALTER TABLE ${CardModel.tableName} RENAME COLUMN testedAt TO ${CardModel.colQuizedAt};",
+      "ALTER TABLE ${FolderModel.tableName} RENAME COLUMN testedAt TO ${FolderModel.colQuizedAt};",
+      "ALTER TABLE ${BookModel.tableName} RENAME COLUMN testedAt TO ${BookModel.colQuizedAt};",
     ],
   };
 

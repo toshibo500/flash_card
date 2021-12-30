@@ -6,18 +6,18 @@ class FolderModel {
   static const String colTitle = 'title';
   static const String colSummary = 'summary';
   static const String colSequence = 'sequence';
-  static const String colTestedAt = 'testedAt';
+  static const String colQuizedAt = 'quizedAt';
 
   final String id;
   final String title;
   final String summary;
   final int sequence;
-  late DateTime? testedAt;
+  late DateTime? quizedAt;
 
   List<BookModel>? books = [];
 
   FolderModel(this.id, this.title, this.summary, this.sequence,
-      [this.testedAt]);
+      [this.quizedAt]);
 
   factory FolderModel.fromJson(dynamic json) {
     return FolderModel(
@@ -25,15 +25,15 @@ class FolderModel {
       json[colTitle] as String,
       json[colSummary] as String,
       json[colSequence] as int,
-      json[colTestedAt] != null
-          ? DateTime.parse(json[colTestedAt]).toLocal()
+      json[colQuizedAt] != null
+          ? DateTime.parse(json[colQuizedAt]).toLocal()
           : null,
     );
   }
 
   @override
   String toString() {
-    return '{$id, $title, $summary, $sequence, $testedAt}';
+    return '{$id, $title, $summary, $sequence, $quizedAt}';
   }
 
   Map<String, dynamic> toJson() => {
@@ -41,6 +41,6 @@ class FolderModel {
         colTitle: title,
         colSummary: summary,
         colSequence: sequence,
-        colTestedAt: testedAt?.toUtc().toIso8601String()
+        colQuizedAt: quizedAt?.toUtc().toIso8601String()
       };
 }

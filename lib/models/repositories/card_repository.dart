@@ -9,7 +9,7 @@ class CardRepository {
       String bookId, String front, String back, int sequence,
       [int? numberOfQuestions,
       int? numberOfCorrectAnswers,
-      DateTime? testedAt]) async {
+      DateTime? quizedAt]) async {
     final row = CardModel(
         DateTime.now().millisecondsSinceEpoch.toString(),
         bookId,
@@ -18,7 +18,7 @@ class CardRepository {
         sequence,
         numberOfQuestions ?? 0,
         numberOfCorrectAnswers ?? 0,
-        testedAt);
+        quizedAt);
     final db = await instance.database;
     final int res = await db.insert(CardModel.tableName, row.toJson());
     return res > 0 ? row : null;

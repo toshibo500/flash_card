@@ -90,7 +90,25 @@ class _FileListView extends State<FileListView> {
                           overflow: TextOverflow.clip))),
               Visibility(
                   visible: !widget.viewModel.editMode,
-                  child: _buildHistoryBox(index)),
+                  child: SizedBox(
+                    height: 15,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildHistoryBox(index),
+                          Container(
+                            alignment: Alignment.centerRight,
+                            child: IconButton(
+                                onPressed: () {},
+                                iconSize: 16,
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                                color: Theme.of(context)
+                                    .disabledColor, // Globals.iconColor2,
+                                icon: const Icon(Icons.mic_rounded)),
+                          ),
+                        ]),
+                  )),
             ],
           )),
           SizedBox(
@@ -133,8 +151,8 @@ class _FileListView extends State<FileListView> {
               color: Globals.iconColor1,
               size: 16.0,
             ),
-            Text(card.testedAt != null
-                ? outputFormat.format(card.testedAt as DateTime)
+            Text(card.quizedAt != null
+                ? outputFormat.format(card.quizedAt as DateTime)
                 : ""),
           ],
         ));
@@ -230,8 +248,8 @@ class _FileListView extends State<FileListView> {
             size: 16.0,
           ),
           Text(
-            item.testedAt != null
-                ? outputFormat.format(item.testedAt as DateTime)
+            item.quizedAt != null
+                ? outputFormat.format(item.quizedAt as DateTime)
                 : "",
             style:
                 TextStyle(color: Theme.of(context).textTheme.bodyText1!.color),

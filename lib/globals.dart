@@ -17,15 +17,15 @@ class Globals {
   Map<int, String> get frontAndBackItems => _frontAndBackItems;
 
   // テストモードマスタ
-  final Map<int, String> _testModeItems = {0: 'Self mode', 1: 'Dictation'};
-  Map<int, String> get testModeItems => _testModeItems;
-  static const int testModeSelfMode = 1;
+  final Map<int, String> _quizModeItems = {0: 'Self mode', 1: 'Dictation'};
+  Map<int, String> get quizModeItems => _quizModeItems;
+  static const int quizModeSelfMode = 1;
 
   void initGlobals(BuildContext context) {
     _frontAndBackItems[cardFrontKey] = L10n.of(context)!.cardFront;
     _frontAndBackItems[cardBackKey] = L10n.of(context)!.cardBack;
-    _testModeItems[0] = L10n.of(context)!.testModeSelf;
-    _testModeItems[1] = L10n.of(context)!.testModeDictation;
+    _quizModeItems[0] = L10n.of(context)!.quizModeSelf;
+    _quizModeItems[1] = L10n.of(context)!.quizModeDictation;
     // フォルダアイコン
     _folderIcon = const Icon(Icons.folder_rounded, color: iconColor1);
     // ブックアイコン

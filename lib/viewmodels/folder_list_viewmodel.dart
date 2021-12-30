@@ -4,7 +4,7 @@ import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/repositories/folder_repository.dart';
 import 'package:flash_card/models/repositories/book_repository.dart';
 import 'package:flash_card/models/repositories/card_repository.dart';
-import 'package:flash_card/models/repositories/test_repository.dart';
+import 'package:flash_card/models/repositories/quiz_repository.dart';
 
 class FolderListViewModel extends ChangeNotifier {
   FolderListViewModel() {
@@ -35,10 +35,10 @@ class FolderListViewModel extends ChangeNotifier {
     String folderId = _folderList[index].id;
     // 配下のbookを取得
     List<BookModel> books = await BookRepository.getAll(folderId);
-    // 配下のCard, Testを削除
+    // 配下のCard, Quizを削除
     for (var e in books) {
       CardRepository.deleteByBookId(e.id);
-      TestRepository.deleteByBook(e.id);
+      QuizRepository.deleteByBook(e.id);
     }
     // フォルダを削除
     int res = await FolderRepository.delete(folderId);
