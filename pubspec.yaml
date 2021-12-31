@@ -36,7 +36,7 @@ dependencies:
   sqflite: any
   path_provider: any
   flip_card: any
-  speech_to_text: any
+  speech_to_text: ^5.4.2
   blinking_text: ^1.0.1+2
   expansion_widget: ^0.0.3
   intl: ^0.17.0
@@ -46,7 +46,8 @@ dependencies:
   flutter_localizations: # 多言語パッケージの本体
     sdk: flutter
   charts_flutter: ^0.12.0
-  keyboard_actions: "^3.4.5"  
+  keyboard_actions: "^3.4.5"
+  flutter_tts: ^3.3.3
   
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -109,6 +110,6 @@ flutter:
   generate: true
 
 flutter_icons:
-  android: false #Android用にアイコンを作成する場合は true
+  android: true #Android用にアイコンを作成する場合は true
   ios: true #iOS用にアイコンを作成する場合は true
   image_path: 'lib/assets/icon-1024.png' #画像のパス（lib/以下なら置き場所は自由）

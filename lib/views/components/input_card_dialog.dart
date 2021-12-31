@@ -54,12 +54,12 @@ class _InputCardDialog extends State<InputCardDialog>
 
   void onSttError(SpeechRecognitionError error) {
     // ignore: avoid_print
-    print('Received listener status: $error, listening: ${stt.isListening}');
+    // print('Received listener status: $error, listening: ${stt.isListening}');
   }
 
   void onSttStatus(String status) {
     // ignore: avoid_print
-    print('Received listener status: $status, listening: ${stt.isListening}');
+    // print('Received listener status: $status, listening: ${stt.isListening}');
     if (status == 'done') {
       int index = _isListening.indexOf(true);
       setState(() {

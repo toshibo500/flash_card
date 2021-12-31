@@ -23,9 +23,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This app requires to add file to your photo library your microphone</string>
+	<string>this app uses the microphone to help you enter words or phrases you want to learn.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>This app requires to speech recognition</string>
+	<string>this app uses uses speech recognition to help you enter words or phrases you want to learn.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

@@ -1,26 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:flash_card/viewmodels/test_result_viewmodel.dart';
+import 'package:flash_card/viewmodels/quiz_result_viewmodel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/views/components/accuracy_rate_chart.dart';
 import 'package:flash_card/views/components/answer_time_chart.dart';
 import 'package:flash_card/globals.dart';
 
-class TestResultPage extends StatelessWidget {
-  const TestResultPage({Key? key, required this.id}) : super(key: key);
+class QuizResultPage extends StatelessWidget {
+  const QuizResultPage({Key? key, required this.id}) : super(key: key);
   final String id;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => TestResultViewModel(id),
-      child: const Scaffold(body: _TestResultPage()),
+      create: (context) => QuizResultViewModel(id),
+      child: const Scaffold(body: _QuizResultPage()),
     );
   }
 }
 
-class _TestResultPage extends StatelessWidget {
-  const _TestResultPage({Key? key}) : super(key: key);
+class _QuizResultPage extends StatelessWidget {
+  const _QuizResultPage({Key? key}) : super(key: key);
 
   static const TextStyle scoreLTextStyle = TextStyle(
     //color: Colors.indigoAccent,
@@ -49,7 +49,7 @@ class _TestResultPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _testResultViweModel = Provider.of<TestResultViewModel>(context);
+    var _quizResultViweModel = Provider.of<QuizResultViewModel>(context);
 
     String _getDifferenceInSec(DateTime from, DateTime? to,
         [bool addUnit = true]) {
@@ -57,9 +57,9 @@ class _TestResultPage extends StatelessWidget {
       return to != null ? '${to.difference(from).inSeconds}$unit' : 'N/A';
     }
 
-    String _getTestingTime(TestResultViewModel model) {
-      DateTime from = model.test.startedAt;
-      DateTime? to = model.test.endedAt;
+    String _getQuizingTime(QuizResultViewModel model) {
+      DateTime from = model.quiz.startedAt;
+      DateTime? to = model.quiz.endedAt;
       return _getDifferenceInSec(from, to, false);
     }
 
@@ -89,11 +89,11 @@ class _TestResultPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '${_testResultViweModel.test.numberOfCorrectAnswers}',
+                      '${_quizResultViweModel.quiz.numberOfCorrectAnswers}',
                       style: scoreLTextStyle,
                     ),
                     Text(
-                      '/${_testResultViweModel.test.numberOfQuestions}',
+                      '/${_quizResultViweModel.quiz.numberOfQuestions}',
                       style: scoreSTextStyle,
                     )
                   ],
@@ -111,8 +111,8 @@ class _TestResultPage extends StatelessWidget {
                   children: [
                     Text(
                       _getSccuracyRate(
-                          _testResultViweModel.test.numberOfCorrectAnswers,
-                          _testResultViweModel.test.numberOfQuestions,
+                          _quizResultViweModel.quiz.numberOfCorrectAnswers,
+                          _quizResultViweModel.quiz.numberOfQuestions,
                           false),
                       style: scoreLTextStyle,
                     ),
@@ -134,7 +134,7 @@ class _TestResultPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      _getTestingTime(_testResultViweModel),
+                      _getQuizingTime(_quizResultViweModel),
                       style: scoreLTextStyle,
                     ),
                     Text(
@@ -162,7 +162,7 @@ class _TestResultPage extends StatelessWidget {
 
     // 結果表示リスト
     List<DataRow> _resultRows = [];
-    _testResultViweModel.testList.asMap().forEach((int key, var item) {
+    _quizResultViweModel.quizList.asMap().forEach((int key, var item) {
       String title = '${item.numberOfCorrectAnswers}/${item.numberOfQuestions}';
       String startAt = DateFormat('M/d HH:mm').format(item.startedAt);
       String accuracyRate =
@@ -226,8 +226,8 @@ class _TestResultPage extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0, 0, 30, 0),
       child: TextButton(
         onPressed: () {
-          Navigator.of(context).pushNamed('/testResultListPage',
-              arguments: _testResultViweModel.book.id);
+          Navigator.of(context).pushNamed('/quizResultListPage',
+              arguments: _quizResultViweModel.book.id);
         },
         child: Text(
           L10n.of(context)!.seeMore,
@@ -245,7 +245,7 @@ class _TestResultPage extends StatelessWidget {
 
     // 正解率グラフ
     final List<AccuracyRate> accRateData = [];
-    _testResultViweModel.testList.asMap().forEach((int key, var item) {
+    _quizResultViweModel.quizList.asMap().forEach((int key, var item) {
       // String startAt = DateFormat('M/d\nHH:mm').format(item.startedAt);
       String startAt = (key + 1).toString();
       String accuracyRate = _getSccuracyRate(
@@ -255,7 +255,7 @@ class _TestResultPage extends StatelessWidget {
     Widget accRateChart = Column(children: [
       SizedBox(
           height: 170,
-          width: 180,
+          width: 175,
           child: AccuracyRateChart.show(
             data: accRateData,
             title: L10n.of(context)!.accuracyRateChart,
@@ -264,16 +264,17 @@ class _TestResultPage extends StatelessWidget {
 
     // 解答時間グラフ
     final List<AnswerTime> ansTimeData = [];
-    _testResultViweModel.testList.asMap().forEach((int key, var item) {
+    _quizResultViweModel.quizList.asMap().forEach((int key, var item) {
       // String startAt = DateFormat('M/d\nHH:mm').format(item.startedAt);
       String startAt = (key + 1).toString();
-      int ansTime = item.endedAt!.difference(item.startedAt).inSeconds;
+      int ansTotalTime = item.endedAt!.difference(item.startedAt).inSeconds;
+      int ansTime = (ansTotalTime / item.numberOfQuestions).round();
       ansTimeData.add(AnswerTime(startAt, ansTime));
     });
     Widget ansTimeChart = Column(children: [
       SizedBox(
           height: 170,
-          width: 180,
+          width: 175,
           child: AnswerTimeChart.show(
             data: ansTimeData,
             title: L10n.of(context)!.answerTimeChart,
@@ -283,7 +284,7 @@ class _TestResultPage extends StatelessWidget {
     // Scaffold
     return Scaffold(
         appBar: AppBar(
-          title: Text(_testResultViweModel.book.title),
+          title: Text(_quizResultViweModel.book.title),
           backgroundColor: Globals.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),

@@ -1,6 +1,6 @@
 import 'package:flash_card/models/folder_model.dart';
-import 'package:flash_card/models/repositories/test_repository.dart';
-import 'package:flash_card/models/test_model.dart';
+import 'package:flash_card/models/repositories/quiz_repository.dart';
+import 'package:flash_card/models/quiz_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/card_model.dart';
@@ -11,31 +11,31 @@ import 'package:flash_card/globals.dart';
 import 'package:flash_card/models/repositories/book_repository.dart';
 import 'package:flash_card/models/repositories/folder_repository.dart';
 
-class TestViewModel extends ChangeNotifier {
+class QuizViewModel extends ChangeNotifier {
   BookModel _selectedBook = BookModel('', '', '', '', 0);
   late List<CardModel> _cardList = [];
   int _index = 0;
   late CardModel _item = CardModel('', '', '', '', 0);
   int _numberOfQuestions = 50;
-  late TestModel _test;
+  late QuizModel _quiz;
   FolderModel _folder = FolderModel('', '', '', 0);
   PreferenceModel _preference = PreferenceModel();
 
-  TestViewModel(BookModel selectedBook, int numberOfQuestions) {
+  QuizViewModel(BookModel selectedBook, int numberOfQuestions) {
     this.selectedBook = selectedBook;
     _numberOfQuestions = numberOfQuestions;
     FolderRepository.getById(selectedBook.folderId).then((value) {
       _folder = value!;
     });
     getPreference();
-    startTest();
+    startQuiz();
   }
 
   List<CardModel> get items => _cardList;
   get index => _index;
   CardModel get item => _item;
   bool get isEnded => _index >= _cardList.length;
-  TestModel get test => _test;
+  QuizModel get quiz => _quiz;
 
   PreferenceModel get preference => _preference;
   void getPreference() async {
@@ -72,9 +72,9 @@ class TestViewModel extends ChangeNotifier {
         _selectedBook.id, limit ?? _numberOfQuestions);
   }
 
-  void startTest() {
-    TestRepository.create(_selectedBook.id, DateTime.now()).then((value) {
-      _test = value!;
+  void startQuiz() {
+    QuizRepository.create(_selectedBook.id, DateTime.now()).then((value) {
+      _quiz = value!;
     });
     _getCardList(_numberOfQuestions).then((value) {
       _index = 0;
@@ -86,10 +86,10 @@ class TestViewModel extends ChangeNotifier {
   }
 
   bool next() {
-    _test.numberOfQuestions++;
+    _quiz.numberOfQuestions++;
     DateTime dt = DateTime.now();
-    _test.endedAt = dt;
-    TestRepository.update(_test);
+    _quiz.endedAt = dt;
+    QuizRepository.update(_quiz);
     updateFolder(dt);
     updateBook(dt);
 
@@ -104,28 +104,28 @@ class TestViewModel extends ChangeNotifier {
   }
 
   void correctAnswer() async {
-    _test.numberOfCorrectAnswers++;
+    _quiz.numberOfCorrectAnswers++;
     _item.numberOfCorrectAnswers++;
     DateTime dt = DateTime.now();
-    _item.testedAt = dt;
+    _item.quizedAt = dt;
     await CardRepository.update(_item);
   }
 
   void wrongAnswer() async {
     _item.numberOfWrongAnswers++;
-    _item.testedAt = DateTime.now();
+    _item.quizedAt = DateTime.now();
     DateTime dt = DateTime.now();
-    _item.testedAt = dt;
+    _item.quizedAt = dt;
     await CardRepository.update(_item);
   }
 
   void updateFolder(DateTime time) {
-    _folder.testedAt = time;
+    _folder.quizedAt = time;
     FolderRepository.updateWithModel(_folder);
   }
 
   void updateBook(DateTime time) {
-    _selectedBook.testedAt = time;
+    _selectedBook.quizedAt = time;
     BookRepository.updateWithModel(_selectedBook);
   }
 }

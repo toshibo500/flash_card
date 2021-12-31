@@ -1,7 +1,7 @@
 import 'package:flash_card/models/book_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:flash_card/viewmodels/test_viewmodel.dart';
+import 'package:flash_card/viewmodels/quiz_viewmodel.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'dart:math' as math;
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,38 +10,38 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
-class TestPageParameters {
-  TestPageParameters(
+class QuizPageParameters {
+  QuizPageParameters(
       {required this.book,
       required this.numberOfQuestions,
-      required this.testMode});
+      required this.quizMode});
   BookModel book;
   int numberOfQuestions;
-  int testMode;
+  int quizMode;
 }
 
-class TestPage extends StatelessWidget {
-  const TestPage({Key? key, required this.param}) : super(key: key);
-  final TestPageParameters param;
+class QuizPage extends StatelessWidget {
+  const QuizPage({Key? key, required this.param}) : super(key: key);
+  final QuizPageParameters param;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => TestViewModel(param.book, param.numberOfQuestions),
-      child: Scaffold(body: _TestPage(param: param)),
+      create: (context) => QuizViewModel(param.book, param.numberOfQuestions),
+      child: Scaffold(body: _QuizPage(param: param)),
     );
   }
 }
 
-class _TestPage extends StatelessWidget {
-  _TestPage({Key? key, required this.param}) : super(key: key);
-  final TestPageParameters param;
+class _QuizPage extends StatelessWidget {
+  _QuizPage({Key? key, required this.param}) : super(key: key);
+  final QuizPageParameters param;
   final TextEditingController _textCtr = TextEditingController(text: "");
   final FocusNode _textNode1 = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     bool _answerExpanded = false;
-    TestViewModel _testViweModel = Provider.of<TestViewModel>(context);
+    QuizViewModel _quizViweModel = Provider.of<QuizViewModel>(context);
     _textCtr.clear();
 
     // キーボードに done アクション追加
@@ -80,7 +80,7 @@ class _TestPage extends StatelessWidget {
                           style: Globals.titleTextStyle,
                         ),
                         Text(
-                          '${_testViweModel.index + 1}/${_testViweModel.items.length}',
+                          '${_quizViweModel.index + 1}/${_quizViweModel.items.length}',
                           style: Globals.titleTextStyle,
                         ),
                       ],
@@ -95,12 +95,12 @@ class _TestPage extends StatelessWidget {
                     height: 200,
                     child: SingleChildScrollView(
                       child: Text(
-                        _testViweModel.question,
+                        _quizViweModel.question,
                         style: Globals.contentTextStyle,
                       ),
                     ),
                   ),
-                  _buildAnswerArea(context, _testViweModel, param.testMode),
+                  _buildAnswerArea(context, _quizViweModel, param.quizMode),
                   ExpansionWidget(
                       initiallyExpanded: false,
                       onSaveState: (value) => _answerExpanded = value,
@@ -135,7 +135,7 @@ class _TestPage extends StatelessWidget {
                         color: Theme.of(context).backgroundColor,
                         padding: const EdgeInsets.all(20),
                         child: Text(
-                          _testViweModel.answer,
+                          _quizViweModel.answer,
                           style: Globals.contentTextStyle,
                         ),
                       )),
@@ -145,13 +145,13 @@ class _TestPage extends StatelessWidget {
   }
 
   Widget _buildAnswerArea(
-      BuildContext context, TestViewModel viewmodel, int testMode) {
-    return testMode == Globals.testModeSelfMode
+      BuildContext context, QuizViewModel viewmodel, int quizMode) {
+    return quizMode == Globals.quizModeSelfMode
         ? _buildDictaion(context, viewmodel)
         : _buildSelfMode(context, viewmodel);
   }
 
-  Column _buildDictaion(BuildContext context, TestViewModel viewmodel) {
+  Column _buildDictaion(BuildContext context, QuizViewModel viewmodel) {
     return Column(children: [
       Container(
         alignment: Alignment.topLeft,
@@ -160,7 +160,7 @@ class _TestPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              L10n.of(context)!.testModeDictation,
+              L10n.of(context)!.quizModeDictation,
               style: Globals.titleTextStyle,
             ),
           ],
@@ -249,7 +249,7 @@ class _TestPage extends StatelessWidget {
               viewmodel.wrongAnswer();
               if (!viewmodel.next()) {
                 Navigator.of(context)
-                    .pushNamed('/testResultPage', arguments: viewmodel.test.id);
+                    .pushNamed('/quizResultPage', arguments: viewmodel.quiz.id);
               }
             },
           )
@@ -258,19 +258,19 @@ class _TestPage extends StatelessWidget {
     ]);
   }
 
-  void mark(BuildContext context, TestViewModel viewmodel, String text) {
+  void mark(BuildContext context, QuizViewModel viewmodel, String text) {
     text = text.toLowerCase().trim();
     if (text.compareTo(viewmodel.answer.toLowerCase().trim()) == 0) {
       Fluttertoast.showToast(msg: L10n.of(context)!.correct);
       viewmodel.correctAnswer();
       if (!viewmodel.next()) {
         Navigator.of(context)
-            .pushNamed('/testResultPage', arguments: viewmodel.test.id);
+            .pushNamed('/quizResultPage', arguments: viewmodel.quiz.id);
       }
     }
   }
 
-  Container _buildSelfMode(BuildContext context, TestViewModel viewmodel) {
+  Container _buildSelfMode(BuildContext context, QuizViewModel viewmodel) {
     return Container(
       alignment: Alignment.center,
       height: 80,
@@ -292,8 +292,8 @@ class _TestPage extends StatelessWidget {
               onPressed: () {
                 viewmodel.wrongAnswer();
                 if (!viewmodel.next()) {
-                  Navigator.of(context).pushNamed('/testResultPage',
-                      arguments: viewmodel.test.id);
+                  Navigator.of(context).pushNamed('/quizResultPage',
+                      arguments: viewmodel.quiz.id);
                 }
               },
             )),
@@ -314,8 +314,8 @@ class _TestPage extends StatelessWidget {
               onPressed: () {
                 viewmodel.correctAnswer();
                 if (!viewmodel.next()) {
-                  Navigator.of(context).pushNamed('/testResultPage',
-                      arguments: viewmodel.test.id);
+                  Navigator.of(context).pushNamed('/quizResultPage',
+                      arguments: viewmodel.quiz.id);
                 }
               },
             ))

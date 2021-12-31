@@ -7,7 +7,7 @@ class CardModel {
   static const String colSequence = 'sequence';
   static const String colNumberOfCorrectAnswers = 'numberOfCorrectAnswers';
   static const String colNumberOfWrongAnswers = 'numberOfWrongAnswers';
-  static const String colTestedAt = 'testedAt';
+  static const String colQuizedAt = 'quizedAt';
 
   final String id;
   final String bookId;
@@ -16,14 +16,14 @@ class CardModel {
   final int sequence;
   late int numberOfCorrectAnswers;
   late int numberOfWrongAnswers;
-  late DateTime? testedAt;
+  late DateTime? quizedAt;
 
   String get title => front;
 
   CardModel(this.id, this.bookId, this.front, this.back, this.sequence,
       [this.numberOfCorrectAnswers = 0,
       this.numberOfWrongAnswers = 0,
-      this.testedAt]);
+      this.quizedAt]);
 
   factory CardModel.fromJson(dynamic json) {
     return CardModel(
@@ -34,15 +34,15 @@ class CardModel {
       json[colSequence] as int,
       json[colNumberOfCorrectAnswers] as int,
       json[colNumberOfWrongAnswers] as int,
-      json[colTestedAt] != null
-          ? DateTime.parse(json[colTestedAt]).toLocal()
+      json[colQuizedAt] != null
+          ? DateTime.parse(json[colQuizedAt]).toLocal()
           : null,
     );
   }
 
   @override
   String toString() {
-    return '{$id, $bookId, $front, $back, $sequence, $numberOfCorrectAnswers, $numberOfWrongAnswers, $testedAt}';
+    return '{$id, $bookId, $front, $back, $sequence, $numberOfCorrectAnswers, $numberOfWrongAnswers, $quizedAt}';
   }
 
   Map<String, dynamic> toJson() => {
@@ -53,6 +53,6 @@ class CardModel {
         colSequence: sequence,
         colNumberOfCorrectAnswers: numberOfCorrectAnswers,
         colNumberOfWrongAnswers: numberOfWrongAnswers,
-        colTestedAt: testedAt?.toUtc().toIso8601String()
+        colQuizedAt: quizedAt?.toUtc().toIso8601String()
       };
 }

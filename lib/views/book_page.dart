@@ -1,7 +1,7 @@
 import 'package:flash_card/globals.dart';
 import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/card_model.dart';
-import 'package:flash_card/views/test_page.dart';
+import 'package:flash_card/views/quiz_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/viewmodels/book_viewmodel.dart';
@@ -53,13 +53,13 @@ class _BookPage extends StatelessWidget {
           Center(
             child: ElevatedButton(
               style: Globals.panelbtnStyle,
-              child: Text(L10n.of(context)!.testStart),
+              child: Text(L10n.of(context)!.quizStart),
               onPressed: () async {
-                await Navigator.of(context).pushNamed('/testPage',
-                    arguments: TestPageParameters(
+                await Navigator.of(context).pushNamed('/quizPage',
+                    arguments: QuizPageParameters(
                         book: _bookViweModel.selectedBook,
-                        numberOfQuestions: _bookViweModel.preference.numOfTest!,
-                        testMode: _bookViweModel.preference.testMode!));
+                        numberOfQuestions: _bookViweModel.preference.numOfQuiz!,
+                        quizMode: _bookViweModel.preference.quizMode!));
               },
             ),
           ),
@@ -75,7 +75,7 @@ class _BookPage extends StatelessWidget {
                   size: 45,
                 ),
                 onPressed: () {
-                  Navigator.of(context).pushNamed('/testResultListPage',
+                  Navigator.of(context).pushNamed('/quizResultListPage',
                       arguments: _bookViweModel.selectedBook.id);
                 },
               ),
@@ -145,12 +145,12 @@ class _BookPage extends StatelessWidget {
                 },
               );
             },
-            tooltip: 'Test',
+            tooltip: 'Quiz',
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               const Icon(Icons.text_snippet_rounded),
               Text(
-                L10n.of(context)!.test,
+                L10n.of(context)!.quiz,
                 style: const TextStyle(fontSize: 12),
               )
             ]),
