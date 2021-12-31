@@ -255,7 +255,7 @@ class _QuizResultPage extends StatelessWidget {
     Widget accRateChart = Column(children: [
       SizedBox(
           height: 170,
-          width: 180,
+          width: 175,
           child: AccuracyRateChart.show(
             data: accRateData,
             title: L10n.of(context)!.accuracyRateChart,
@@ -267,13 +267,14 @@ class _QuizResultPage extends StatelessWidget {
     _quizResultViweModel.quizList.asMap().forEach((int key, var item) {
       // String startAt = DateFormat('M/d\nHH:mm').format(item.startedAt);
       String startAt = (key + 1).toString();
-      int ansTime = item.endedAt!.difference(item.startedAt).inSeconds;
+      int ansTotalTime = item.endedAt!.difference(item.startedAt).inSeconds;
+      int ansTime = (ansTotalTime / item.numberOfQuestions).round();
       ansTimeData.add(AnswerTime(startAt, ansTime));
     });
     Widget ansTimeChart = Column(children: [
       SizedBox(
           height: 170,
-          width: 180,
+          width: 175,
           child: AnswerTimeChart.show(
             data: ansTimeData,
             title: L10n.of(context)!.answerTimeChart,

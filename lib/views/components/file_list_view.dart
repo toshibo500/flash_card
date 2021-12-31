@@ -96,7 +96,7 @@ class _FileListView extends State<FileListView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           _buildHistoryBox(index),
-                          Container(
+/*                           Container(
                             alignment: Alignment.centerRight,
                             child: IconButton(
                                 onPressed: () {},
@@ -105,8 +105,8 @@ class _FileListView extends State<FileListView> {
                                 padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                                 color: Theme.of(context)
                                     .disabledColor, // Globals.iconColor2,
-                                icon: const Icon(Icons.mic_rounded)),
-                          ),
+                                icon: const Icon(Icons.mic_rounded)), 
+                          ),*/
                         ]),
                   )),
             ],

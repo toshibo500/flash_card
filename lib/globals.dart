@@ -98,7 +98,7 @@ class Globals {
     fontWeight: FontWeight.w200,
     fontFamily: 'Roboto',
     letterSpacing: 1,
-    fontSize: 18.0,
+    fontSize: 14.0,
   );
   static ButtonStyle buttonStyle = ElevatedButton.styleFrom(
       primary: buttonColor1,

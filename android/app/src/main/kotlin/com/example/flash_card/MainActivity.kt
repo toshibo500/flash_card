@@ -1,4 +1,4 @@
-package com.example.flash_card
+package com.tkgapps.ChocoBanana
 
 import io.flutter.embedding.android.FlutterActivity
 
