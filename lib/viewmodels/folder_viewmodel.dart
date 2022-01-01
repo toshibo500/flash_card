@@ -1,4 +1,4 @@
-import 'package:flash_card/models/repositories/test_repository.dart';
+import 'package:flash_card/models/repositories/quiz_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/repositories/book_repository.dart';
@@ -39,9 +39,9 @@ class FolderViewModel extends ChangeNotifier {
   void remove(int index) async {
     // book id
     String bookId = _bookList[index].id;
-    // 配下のCard, Testを削除
+    // 配下のCard, Quizを削除
     CardRepository.deleteByBookId(bookId);
-    TestRepository.deleteByBook(bookId);
+    QuizRepository.deleteByBook(bookId);
     // bookを削除
     int res = await BookRepository.delete(bookId);
     if (res > 0) {

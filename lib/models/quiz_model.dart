@@ -1,5 +1,5 @@
-class TestModel {
-  static const String tableName = 'tests';
+class QuizModel {
+  static const String tableName = 'quizzes';
   static const String colId = 'id';
   static const String colBookId = 'bookId';
   static const String colStartedAt = 'startedAt';
@@ -14,13 +14,13 @@ class TestModel {
   late int numberOfQuestions;
   late int numberOfCorrectAnswers;
 
-  TestModel(this.id, this.bookId, this.startedAt,
+  QuizModel(this.id, this.bookId, this.startedAt,
       [this.endedAt,
       this.numberOfQuestions = 0,
       this.numberOfCorrectAnswers = 0]);
 
-  factory TestModel.fromJson(dynamic json) {
-    return TestModel(
+  factory QuizModel.fromJson(dynamic json) {
+    return QuizModel(
       json[colId] as String,
       json[colBookId] as String,
       DateTime.parse(json[colStartedAt]).toLocal(),

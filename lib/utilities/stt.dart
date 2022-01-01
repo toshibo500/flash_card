@@ -5,7 +5,7 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 
 class Stt {
   bool _hasSpeech = false;
-  final bool _logEvents = true;
+  final bool _logEvents = false;
   double minSoundLevel = 20;
   double maxSoundLevel = -20;
   String _currentLocaleId = '';
@@ -23,7 +23,8 @@ class Stt {
   set(String currentLocaleId) => _currentLocaleId = currentLocaleId;
   String get currentLocaleName => _hasSpeech
       ? localeNames
-          .firstWhere((element) => element.localeId == _currentLocaleId)
+          .firstWhere((element) => element.localeId == _currentLocaleId,
+              orElse: () => LocaleName('', ''))
           .name
       : '';
 

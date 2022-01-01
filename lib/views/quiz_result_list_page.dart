@@ -1,31 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:flash_card/viewmodels/test_result_list_viewmodel.dart';
+import 'package:flash_card/viewmodels/quiz_result_list_viewmodel.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flash_card/globals.dart';
 
-class TestResultListPage extends StatelessWidget {
-  const TestResultListPage({Key? key, required this.bookId}) : super(key: key);
+class QuizResultListPage extends StatelessWidget {
+  const QuizResultListPage({Key? key, required this.bookId}) : super(key: key);
   final String bookId;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => TestResultListViewModel(bookId),
-      child: const Scaffold(body: _TestResultListPage()),
+      create: (context) => QuizResultListViewModel(bookId),
+      child: const Scaffold(body: _QuizResultListPage()),
     );
   }
 }
 
-class _TestResultListPage extends StatelessWidget {
-  const _TestResultListPage({Key? key}) : super(key: key);
+class _QuizResultListPage extends StatelessWidget {
+  const _QuizResultListPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    var _testResultListViweModel =
-        Provider.of<TestResultListViewModel>(context);
+    var _quizResultListViweModel =
+        Provider.of<QuizResultListViewModel>(context);
 
     String _getDifferenceInSec(DateTime from, DateTime? to,
         [bool addUnit = true]) {
@@ -48,7 +48,7 @@ class _TestResultListPage extends StatelessWidget {
 
     // 結果表示リスト
     List<DataRow> _resultRows = [];
-    for (var item in _testResultListViweModel.testList) {
+    for (var item in _quizResultListViweModel.quizList) {
       String title = '${item.numberOfCorrectAnswers}/${item.numberOfQuestions}';
       String startAt = DateFormat('M/d HH:mm').format(item.startedAt);
       String accuracyRate =
@@ -109,7 +109,7 @@ class _TestResultListPage extends StatelessWidget {
     // Scaffold
     return Scaffold(
         appBar: AppBar(
-          title: Text(_testResultListViweModel.book.title),
+          title: Text(_quizResultListViweModel.book.title),
           backgroundColor: Globals.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
@@ -126,7 +126,7 @@ class _TestResultListPage extends StatelessWidget {
                   textOK: Text(L10n.of(context)!.ok),
                   textCancel: Text(L10n.of(context)!.cancel),
                 )) {
-                  _testResultListViweModel.deleteByBook();
+                  _quizResultListViweModel.deleteByBook();
                   Fluttertoast.showToast(msg: L10n.of(context)!.deleteDone);
                 }
               },

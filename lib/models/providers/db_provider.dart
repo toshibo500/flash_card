@@ -3,7 +3,7 @@ import 'package:path/path.dart';
 import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/card_model.dart';
-import 'package:flash_card/models/test_model.dart';
+import 'package:flash_card/models/quiz_model.dart';
 
 class DbProvider {
   static const _dbFileName = 'flashcard.db';
@@ -21,7 +21,13 @@ class DbProvider {
     return await openDatabase(path,
         version: _dbCurrentVersion,
         onCreate: _createTable,
-        onUpgrade: _upgradeTable);
+        onUpgrade: _upgradeTable,
+        onOpen: _onOpen);
+  }
+
+  Future<void> _onOpen(Database db) async {
+    // ignore: avoid_print
+    // db.rawQuery("select * from sqlite_master;").then((value) => print(value));
   }
 
   Future<void> _createTable(Database db, int version) async {
@@ -46,7 +52,7 @@ class DbProvider {
         "${CardModel.colSequence} INTEGER,"
         "${CardModel.colNumberOfCorrectAnswers} INTEGER DEFAULT 0,"
         "${CardModel.colNumberOfWrongAnswers} INTEGER DEFAULT 0,"
-        "${CardModel.colTestedAt} TEXT"
+        "${CardModel.colQuizedAt} TEXT"
         ")");
     _upgradeTable(db, 1, version);
     return;
@@ -54,13 +60,13 @@ class DbProvider {
 
   static const scripts = {
     2: [
-      "CREATE TABLE ${TestModel.tableName} ("
-          "${TestModel.colId} TEXT PRIMARY KEY,"
-          "${TestModel.colBookId} TEXT,"
-          "${TestModel.colNumberOfQuestions} INTEGER DEFAULT 0,"
-          "${TestModel.colNumberOfCorrectAnswers} INTEGER DEFAULT 0,"
-          "${TestModel.colStartedAt} TEXT,"
-          "${TestModel.colEndedAt} TEXT"
+      "CREATE TABLE ${QuizModel.tableName} ("
+          "${QuizModel.colId} TEXT PRIMARY KEY,"
+          "${QuizModel.colBookId} TEXT,"
+          "${QuizModel.colNumberOfQuestions} INTEGER DEFAULT 0,"
+          "${QuizModel.colNumberOfCorrectAnswers} INTEGER DEFAULT 0,"
+          "${QuizModel.colStartedAt} TEXT,"
+          "${QuizModel.colEndedAt} TEXT"
           ");",
     ],
     3: [
@@ -182,9 +188,9 @@ class DbProvider {
     ],
     4: [
       "ALTER TABLE ${FolderModel.tableName} ADD COLUMN "
-          "${FolderModel.colTestedAt} TEXT;",
+          "${FolderModel.colQuizedAt} TEXT;",
       "ALTER TABLE ${BookModel.tableName} ADD COLUMN "
-          "${BookModel.colTestedAt} TEXT;",
+          "${BookModel.colQuizedAt} TEXT;",
     ],
   };
 
@@ -193,7 +199,7 @@ class DbProvider {
     for (var i = oldVersion + 1; i <= newVersion; i++) {
       List? queries = scripts[i];
       for (String query in queries!) {
-        await db.execute(query);
+        await db.rawQuery(query);
       }
     }
   }

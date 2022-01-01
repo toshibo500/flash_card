@@ -21,8 +21,8 @@ class SettingsPage extends StatelessWidget {
 class _SettingsPage extends StatelessWidget {
 //  final Map<String, String> _langItems = {};
   final List<DropdownMenuItem<int>> _questionItems = [];
-  final List<DropdownMenuItem<int>> _testModeItems = [];
-  final List<DropdownMenuItem<int>> _numOfTest = [];
+  final List<DropdownMenuItem<int>> _quizModeItems = [];
+  final List<DropdownMenuItem<int>> _numOfQuiz = [];
 
   _SettingsPage({Key? key}) : super(key: key) {
     Globals().frontAndBackItems.forEach((key, value) {
@@ -35,9 +35,9 @@ class _SettingsPage extends StatelessWidget {
         value: key,
       ));
     });
-    Globals().testModeItems.forEach((key, value) {
-      // PreferenceModel.testModeItems.forEach((key, value) {
-      _testModeItems.add(DropdownMenuItem(
+    Globals().quizModeItems.forEach((key, value) {
+      // PreferenceModel.quizModeItems.forEach((key, value) {
+      _quizModeItems.add(DropdownMenuItem(
         child: Text(
           value,
           style: const TextStyle(fontSize: 16.0),
@@ -46,7 +46,7 @@ class _SettingsPage extends StatelessWidget {
       ));
     });
     List.generate(100, (index) {
-      _numOfTest.add(DropdownMenuItem(
+      _numOfQuiz.add(DropdownMenuItem(
         child: Text(index.toString()),
         value: index,
       ));
@@ -115,7 +115,7 @@ class _SettingsPage extends StatelessWidget {
               ],
             ),
             SettingsSection(
-              title: L10n.of(context)!.test,
+              title: L10n.of(context)!.quiz,
               tiles: [
                 SettingsTile(
                   leading: const Icon(
@@ -139,13 +139,13 @@ class _SettingsPage extends StatelessWidget {
                     Icons.mode_rounded,
                     color: Globals.iconColor2,
                   ),
-                  title: L10n.of(context)!.testMode,
+                  title: L10n.of(context)!.quizMode,
                   trailing: DropdownButton<int>(
-                    value: _drawerMenuViewModel.preference.testMode,
+                    value: _drawerMenuViewModel.preference.quizMode,
                     underline: DropdownButtonHideUnderline(child: Container()),
-                    items: _testModeItems,
+                    items: _quizModeItems,
                     onChanged: (value) {
-                      _drawerMenuViewModel.preference.testMode = value!;
+                      _drawerMenuViewModel.preference.quizMode = value!;
                       _drawerMenuViewModel
                           .update(_drawerMenuViewModel.preference);
                     },
@@ -158,11 +158,11 @@ class _SettingsPage extends StatelessWidget {
                   ),
                   title: L10n.of(context)!.numberOfQuestion,
                   trailing: DropdownButton<int>(
-                    value: _drawerMenuViewModel.preference.numOfTest,
+                    value: _drawerMenuViewModel.preference.numOfQuiz,
                     underline: DropdownButtonHideUnderline(child: Container()),
-                    items: _numOfTest,
+                    items: _numOfQuiz,
                     onChanged: (value) {
-                      _drawerMenuViewModel.preference.numOfTest = value!;
+                      _drawerMenuViewModel.preference.numOfQuiz = value!;
                       _drawerMenuViewModel
                           .update(_drawerMenuViewModel.preference);
                     },
@@ -236,7 +236,7 @@ class _SettingsPage extends StatelessWidget {
                 alignment: Alignment.bottomLeft,
                 padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
                 child: const Text(
-                  'Test',
+                  'Quiz',
                   style: TextStyle(color: Colors.black45),
                 ),
               ),
@@ -268,10 +268,10 @@ class _SettingsPage extends StatelessWidget {
                       children: [
                         const Text('Mode'),
                         DropdownButton<int>(
-                          value: _drawerMenuViewModel.preference.testMode,
-                          items: _testModeItems,
+                          value: _drawerMenuViewModel.preference.quizMode,
+                          items: _quizModeItems,
                           onChanged: (value) {
-                            _drawerMenuViewModel.preference.testMode = value!;
+                            _drawerMenuViewModel.preference.quizMode = value!;
                             _drawerMenuViewModel
                                 .update(_drawerMenuViewModel.preference);
                           },
@@ -286,10 +286,10 @@ class _SettingsPage extends StatelessWidget {
                       children: [
                         const Text('Number of questions'),
                         DropdownButton<int>(
-                          value: _drawerMenuViewModel.preference.numOfTest,
-                          items: _numOfTest,
+                          value: _drawerMenuViewModel.preference.numOfQuiz,
+                          items: _numOfQuiz,
                           onChanged: (value) {
-                            _drawerMenuViewModel.preference.numOfTest = value!;
+                            _drawerMenuViewModel.preference.numOfQuiz = value!;
                             _drawerMenuViewModel
                                 .update(_drawerMenuViewModel.preference);
                           },

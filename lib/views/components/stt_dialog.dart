@@ -37,7 +37,7 @@ class _SttDialog extends State<SttDialog> {
 
   void onSttStatus(String status) {
     // ignore: avoid_print
-    print('Received listener status: $status, listening: ${_stt.isListening}');
+    // print('Received listener status: $status, listening: ${_stt.isListening}');
     setState(() {
       if (status == 'done' && !_stt.isListening) {
         _level = 0.0;

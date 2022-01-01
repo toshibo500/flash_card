@@ -7,19 +7,19 @@ class BookModel {
   static const String colTitle = 'title';
   static const String colSummary = 'summary';
   static const String colSequence = 'sequence';
-  static const String colTestedAt = 'testedAt';
+  static const String colQuizedAt = 'quizedAt';
 
   final String id;
   final String folderId;
   final String title;
   final String summary;
   final int sequence;
-  late DateTime? testedAt;
+  late DateTime? quizedAt;
 
   List<CardModel> cards = [];
 
   BookModel(this.id, this.folderId, this.title, this.summary, this.sequence,
-      [this.testedAt]);
+      [this.quizedAt]);
 
   factory BookModel.fromJson(dynamic json) {
     return BookModel(
@@ -28,15 +28,15 @@ class BookModel {
       json[colTitle] as String,
       json[colSummary] as String,
       json[colSequence] as int,
-      json[colTestedAt] != null
-          ? DateTime.parse(json[colTestedAt]).toLocal()
+      json[colQuizedAt] != null
+          ? DateTime.parse(json[colQuizedAt]).toLocal()
           : null,
     );
   }
 
   @override
   String toString() {
-    return '{$id, $folderId, $title, $summary, $sequence, $testedAt}';
+    return '{$id, $folderId, $title, $summary, $sequence, $quizedAt}';
   }
 
   Map<String, dynamic> toJson() => {
@@ -45,6 +45,6 @@ class BookModel {
         colTitle: title,
         colSummary: summary,
         colSequence: sequence,
-        colTestedAt: testedAt?.toUtc().toIso8601String()
+        colQuizedAt: quizedAt?.toUtc().toIso8601String()
       };
 }
