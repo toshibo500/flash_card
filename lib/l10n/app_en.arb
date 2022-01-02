@@ -43,5 +43,12 @@
   "aboutApp": "About this app",
   "aboutAppURL": "https://tkgapps.com/chocobanana/aboutapp/",
   "dateTimeFormat": "yyyy-MM-dd HH:mm",
-  "answerHintText": "Enter your answer"
+  "answerHintText": "Enter your answer",
+  "quizOrder": "Order",
+  "orderOfQuizTitle": "{key, plural, =0 {Random} =1 {Card Order} =2 {Quiz Date} other {Marks}}",
+  "@orderOfQuizTitle": {
+    "placeholders": {
+        "key": {}
+    }
+  }
 }

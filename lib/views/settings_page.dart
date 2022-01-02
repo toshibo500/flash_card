@@ -35,6 +35,7 @@ class _SettingsPage extends StatelessWidget {
         value: key,
       ));
     });
+
     Globals().quizModeItems.forEach((key, value) {
       // PreferenceModel.quizModeItems.forEach((key, value) {
       _quizModeItems.add(DropdownMenuItem(
@@ -57,6 +58,17 @@ class _SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var _drawerMenuViewModel = Provider.of<SettingsViewModel>(context);
     final Map<String, String> _langItems = _drawerMenuViewModel.langItems;
+    // 並び順用のDropdownMenuItemを生成。contextがいるのでここで生成する。
+    List<DropdownMenuItem<int>> _quizOrderItems = [];
+    Globals().quizOrderItems.forEach((key, value) {
+      _quizOrderItems.add(DropdownMenuItem(
+        child: Text(
+          L10n.of(context)!.orderOfQuizTitle(key),
+          style: const TextStyle(fontSize: 16.0),
+        ),
+        value: key,
+      ));
+    });
     return Scaffold(
         backgroundColor: Globals.backgroundColor,
         appBar: AppBar(
@@ -163,6 +175,23 @@ class _SettingsPage extends StatelessWidget {
                     items: _numOfQuiz,
                     onChanged: (value) {
                       _drawerMenuViewModel.preference.numOfQuiz = value!;
+                      _drawerMenuViewModel
+                          .update(_drawerMenuViewModel.preference);
+                    },
+                  ),
+                ),
+                SettingsTile(
+                  leading: const Icon(
+                    Icons.sort_rounded,
+                    color: Globals.iconColor2,
+                  ),
+                  title: L10n.of(context)!.quizOrder,
+                  trailing: DropdownButton<int>(
+                    value: _drawerMenuViewModel.preference.orderOfQuiz,
+                    underline: DropdownButtonHideUnderline(child: Container()),
+                    items: _quizOrderItems,
+                    onChanged: (value) {
+                      _drawerMenuViewModel.preference.orderOfQuiz = value!;
                       _drawerMenuViewModel
                           .update(_drawerMenuViewModel.preference);
                     },

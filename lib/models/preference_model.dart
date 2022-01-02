@@ -19,7 +19,8 @@ class PreferenceModel {
       this.backSideLang,
       this.question,
       this.quizMode,
-      this.numOfQuiz]);
+      this.numOfQuiz,
+      this.orderOfQuiz]);
 
 /*   static const int frontKey = 0;
   static const int backKey = 1;
@@ -41,12 +42,13 @@ class PreferenceModel {
       json[colQuestion] ?? 0,
       json[colQuizMode] ?? 1,
       json[colNumOfQuiz] ?? 10,
+      json[colOrderOfQuiz] ?? 0,
     );
   }
 
   @override
   String toString() {
-    return '{$frontSideLang, $backSideLang, $question, $quizMode, $numOfQuiz}';
+    return '{$frontSideLang, $backSideLang, $question, $quizMode, $numOfQuiz, $orderOfQuiz}';
   }
 
   Map<String, dynamic> toJson() => {
@@ -55,5 +57,6 @@ class PreferenceModel {
         colQuestion: question,
         colQuizMode: quizMode,
         colNumOfQuiz: numOfQuiz,
+        colOrderOfQuiz: orderOfQuiz,
       };
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flash_card/models/card_model.dart';
 
 class Globals {
   Globals._();
@@ -23,13 +24,13 @@ class Globals {
 
   // テスト並び順マスタ
   final Map<int, String> _quizOrderItems = {
-    0: 'In order',
-    1: 'Random',
-    2: 'From oldest quiz date',
-    3: 'From lowest marks',
+    0: 'random',
+    1: CardModel.colSequence,
+    2: CardModel.colQuizedAt,
+    3: CardModel.colNumberOfCorrectAnswers,
   };
   Map<int, String> get quizOrderItems => _quizOrderItems;
-  static const int quizOrder = 0;
+  static const int quizOrderRandom = 0;
 
   void initGlobals(BuildContext context) {
     _frontAndBackItems[cardFrontKey] = L10n.of(context)!.cardFront;
