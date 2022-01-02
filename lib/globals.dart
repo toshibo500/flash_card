@@ -19,7 +19,17 @@ class Globals {
   // テストモードマスタ
   final Map<int, String> _quizModeItems = {0: 'Self mode', 1: 'Dictation'};
   Map<int, String> get quizModeItems => _quizModeItems;
-  static const int quizModeSelfMode = 1;
+  static const int quizModeSelfMode = 0;
+
+  // テスト並び順マスタ
+  final Map<int, String> _quizOrderItems = {
+    0: 'In order',
+    1: 'Random',
+    2: 'From oldest quiz date',
+    3: 'From lowest marks',
+  };
+  Map<int, String> get quizOrderItems => _quizOrderItems;
+  static const int quizOrder = 0;
 
   void initGlobals(BuildContext context) {
     _frontAndBackItems[cardFrontKey] = L10n.of(context)!.cardFront;

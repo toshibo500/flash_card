@@ -147,8 +147,8 @@ class _QuizPage extends StatelessWidget {
   Widget _buildAnswerArea(
       BuildContext context, QuizViewModel viewmodel, int quizMode) {
     return quizMode == Globals.quizModeSelfMode
-        ? _buildDictaion(context, viewmodel)
-        : _buildSelfMode(context, viewmodel);
+        ? _buildSelfMode(context, viewmodel)
+        : _buildDictaion(context, viewmodel);
   }
 
   Column _buildDictaion(BuildContext context, QuizViewModel viewmodel) {

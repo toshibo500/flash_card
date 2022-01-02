@@ -5,12 +5,14 @@ class PreferenceModel {
   static const String colQuestion = 'question';
   static const String colQuizMode = 'quizMode';
   static const String colNumOfQuiz = 'numOfQuiz';
+  static const String colOrderOfQuiz = 'orderOfQuiz';
 
   String? frontSideLang;
   String? backSideLang;
   int? question;
   int? quizMode;
   int? numOfQuiz;
+  int? orderOfQuiz;
 
   PreferenceModel(
       [this.frontSideLang,
