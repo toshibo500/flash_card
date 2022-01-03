@@ -135,7 +135,7 @@ class _FileListView extends State<FileListView> {
             ),
             SizedBox(
               width: 30,
-              child: Text(card.numberOfCorrectAnswers.toString()),
+              child: Text(card.correctNum.toString()),
             ),
             const Icon(
               Icons.not_interested_outlined,
@@ -144,7 +144,7 @@ class _FileListView extends State<FileListView> {
             ),
             SizedBox(
               width: 30,
-              child: Text(card.numberOfWrongAnswers.toString()),
+              child: Text(card.wrongNum.toString()),
             ),
             const Icon(
               Icons.access_time_rounded,

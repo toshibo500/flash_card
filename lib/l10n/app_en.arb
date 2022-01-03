@@ -14,7 +14,7 @@
   "quizMode": "Mode",
   "quizModeDictation": "Dictation",
   "quizModeSelf": "Self mode",
-  "numberOfQuestion": "Questions",
+  "quizNum": "Questions",
   "numberOfCorrect": "Marks",
   "folderName": "Folder Name",
   "bookName": "Flashcard Name",
@@ -45,8 +45,15 @@
   "dateTimeFormat": "yyyy-MM-dd HH:mm",
   "answerHintText": "Enter your answer",
   "quizOrder": "Order",
-  "orderOfQuizTitle": "{key, plural, =0 {Random} =1 {Card Order} =2 {Quiz Date} other {Marks}}",
-  "@orderOfQuizTitle": {
+  "quizOrderItems": "{key, plural, =0 {Random} =1 {Card Order} =2 {Quiz Date} other {Marks}}",
+  "@quizOrderItems": {
+    "placeholders": {
+        "key": {}
+    }
+  },
+  "quizOrderMethod": "Order Method",
+  "quizOrderMethodItems": "{key, plural, =0 {ASC} other {DESC}}",
+  "@quizOrderMethodItems": {
     "placeholders": {
         "key": {}
     }

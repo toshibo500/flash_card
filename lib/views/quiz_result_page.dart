@@ -89,11 +89,11 @@ class _QuizResultPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '${_quizResultViweModel.quiz.numberOfCorrectAnswers}',
+                      '${_quizResultViweModel.quiz.correctNum}',
                       style: scoreLTextStyle,
                     ),
                     Text(
-                      '/${_quizResultViweModel.quiz.numberOfQuestions}',
+                      '/${_quizResultViweModel.quiz.quizNum}',
                       style: scoreSTextStyle,
                     )
                   ],
@@ -110,10 +110,8 @@ class _QuizResultPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      _getSccuracyRate(
-                          _quizResultViweModel.quiz.numberOfCorrectAnswers,
-                          _quizResultViweModel.quiz.numberOfQuestions,
-                          false),
+                      _getSccuracyRate(_quizResultViweModel.quiz.correctNum,
+                          _quizResultViweModel.quiz.quizNum, false),
                       style: scoreLTextStyle,
                     ),
                     const Text(
@@ -163,10 +161,9 @@ class _QuizResultPage extends StatelessWidget {
     // 結果表示リスト
     List<DataRow> _resultRows = [];
     _quizResultViweModel.quizList.asMap().forEach((int key, var item) {
-      String title = '${item.numberOfCorrectAnswers}/${item.numberOfQuestions}';
+      String title = '${item.correctNum}/${item.quizNum}';
       String startAt = DateFormat('M/d HH:mm').format(item.startedAt);
-      String accuracyRate =
-          _getSccuracyRate(item.numberOfCorrectAnswers, item.numberOfQuestions);
+      String accuracyRate = _getSccuracyRate(item.correctNum, item.quizNum);
       String duration = _getDifferenceInSec(item.startedAt, item.endedAt);
       _resultRows.add(DataRow(cells: <DataCell>[
         _getDataCell((key + 1).toString()),
@@ -248,8 +245,8 @@ class _QuizResultPage extends StatelessWidget {
     _quizResultViweModel.quizList.asMap().forEach((int key, var item) {
       // String startAt = DateFormat('M/d\nHH:mm').format(item.startedAt);
       String startAt = (key + 1).toString();
-      String accuracyRate = _getSccuracyRate(
-          item.numberOfCorrectAnswers, item.numberOfQuestions, false);
+      String accuracyRate =
+          _getSccuracyRate(item.correctNum, item.quizNum, false);
       accRateData.add(AccuracyRate(startAt, int.parse(accuracyRate)));
     });
     Widget accRateChart = Column(children: [
@@ -268,7 +265,7 @@ class _QuizResultPage extends StatelessWidget {
       // String startAt = DateFormat('M/d\nHH:mm').format(item.startedAt);
       String startAt = (key + 1).toString();
       int ansTotalTime = item.endedAt!.difference(item.startedAt).inSeconds;
-      int ansTime = (ansTotalTime / item.numberOfQuestions).round();
+      int ansTime = (ansTotalTime / item.quizNum).round();
       ansTimeData.add(AnswerTime(startAt, ansTime));
     });
     Widget ansTimeChart = Column(children: [

@@ -49,10 +49,9 @@ class _QuizResultListPage extends StatelessWidget {
     // 結果表示リスト
     List<DataRow> _resultRows = [];
     for (var item in _quizResultListViweModel.quizList) {
-      String title = '${item.numberOfCorrectAnswers}/${item.numberOfQuestions}';
+      String title = '${item.correctNum}/${item.quizNum}';
       String startAt = DateFormat('M/d HH:mm').format(item.startedAt);
-      String accuracyRate =
-          _getSccuracyRate(item.numberOfCorrectAnswers, item.numberOfQuestions);
+      String accuracyRate = _getSccuracyRate(item.correctNum, item.quizNum);
       String duration = _getDifferenceInSec(item.startedAt, item.endedAt);
       _resultRows.add(DataRow(cells: <DataCell>[
         _getDataCell(startAt),

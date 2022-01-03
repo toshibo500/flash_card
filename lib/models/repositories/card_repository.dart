@@ -7,18 +7,9 @@ class CardRepository {
 
   static Future<CardModel?> create(
       String bookId, String front, String back, int sequence,
-      [int? numberOfQuestions,
-      int? numberOfCorrectAnswers,
-      DateTime? quizedAt]) async {
-    final row = CardModel(
-        DateTime.now().millisecondsSinceEpoch.toString(),
-        bookId,
-        front,
-        back,
-        sequence,
-        numberOfQuestions ?? 0,
-        numberOfCorrectAnswers ?? 0,
-        quizedAt);
+      [int? quizNum, int? correctNum, DateTime? quizedAt]) async {
+    final row = CardModel(DateTime.now().millisecondsSinceEpoch.toString(),
+        bookId, front, back, sequence, quizNum ?? 0, correctNum ?? 0, quizedAt);
     final db = await instance.database;
     final int res = await db.insert(CardModel.tableName, row.toJson());
     return res > 0 ? row : null;
@@ -67,6 +58,21 @@ class CardRepository {
         bookId != '' ? "WHERE ${CardModel.colBookId} = '$bookId'" : '';
     final rows = await db.rawQuery(
         'SELECT * FROM ${CardModel.tableName} $where ORDER BY ${CardModel.colSequence} ASC');
+    if (rows.isEmpty) return [];
+    return rows.map((json) => CardModel.fromJson(json)).toList();
+  }
+
+  static Future<List<CardModel>> getList(
+      {String bookId = '',
+      String orderBy = 'RANDOM()',
+      String orderMethod = 'ASC',
+      int limit = 50}) async {
+    final Database db = await instance.database;
+    String where =
+        bookId != '' ? "WHERE ${CardModel.colBookId} = '$bookId'" : '';
+
+    final rows = await db.rawQuery(
+        'SELECT * FROM ${CardModel.tableName} $where ORDER BY $orderBy $orderMethod LIMIT $limit');
     if (rows.isEmpty) return [];
     return rows.map((json) => CardModel.fromJson(json)).toList();
   }

@@ -4,23 +4,26 @@ class PreferenceModel {
   static const String colBackSideLang = 'backSideLang';
   static const String colQuestion = 'question';
   static const String colQuizMode = 'quizMode';
-  static const String colNumOfQuiz = 'numOfQuiz';
-  static const String colOrderOfQuiz = 'orderOfQuiz';
+  static const String colQuizNum = 'quizNum';
+  static const String colQuizOrder = 'quizOrder';
+  static const String colQuizOrderMethod = 'quizOrderMethod';
 
   String? frontSideLang;
   String? backSideLang;
   int? question;
   int? quizMode;
-  int? numOfQuiz;
-  int? orderOfQuiz;
+  int? quizNum;
+  int? quizOrder;
+  int? quizOrderMethod;
 
   PreferenceModel(
       [this.frontSideLang,
       this.backSideLang,
       this.question,
       this.quizMode,
-      this.numOfQuiz,
-      this.orderOfQuiz]);
+      this.quizNum,
+      this.quizOrder,
+      this.quizOrderMethod]);
 
 /*   static const int frontKey = 0;
   static const int backKey = 1;
@@ -41,14 +44,16 @@ class PreferenceModel {
       json[colBackSideLang] ?? 'ja-JP',
       json[colQuestion] ?? 0,
       json[colQuizMode] ?? 1,
-      json[colNumOfQuiz] ?? 10,
-      json[colOrderOfQuiz] ?? 0,
+      json[colQuizNum] ?? 10,
+      json[colQuizOrder] ?? 0,
+      json[colQuizOrderMethod] ?? 0,
     );
   }
 
   @override
   String toString() {
-    return '{$frontSideLang, $backSideLang, $question, $quizMode, $numOfQuiz, $orderOfQuiz}';
+    return '{$frontSideLang, $backSideLang, $question, $quizMode,'
+        ' $quizNum, $quizOrder, $quizOrderMethod}';
   }
 
   Map<String, dynamic> toJson() => {
@@ -56,7 +61,8 @@ class PreferenceModel {
         colBackSideLang: backSideLang,
         colQuestion: question,
         colQuizMode: quizMode,
-        colNumOfQuiz: numOfQuiz,
-        colOrderOfQuiz: orderOfQuiz,
+        colQuizNum: quizNum,
+        colQuizOrder: quizOrder,
+        colQuizOrderMethod: quizOrderMethod,
       };
 }
