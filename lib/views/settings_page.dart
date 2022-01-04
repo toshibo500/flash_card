@@ -23,7 +23,6 @@ class _SettingsPage extends StatelessWidget {
   final List<DropdownMenuItem<int>> _questionItems = [];
   final List<DropdownMenuItem<int>> _quizModeItems = [];
   final List<DropdownMenuItem<int>> _quizNum = [];
-  final List<DropdownMenuItem<int>> _quizOrderMethodItems = [];
 
   _SettingsPage({Key? key}) : super(key: key) {
     Globals().frontAndBackItems.forEach((key, value) {
@@ -53,16 +52,6 @@ class _SettingsPage extends StatelessWidget {
         value: index,
       ));
     });
-
-    Globals().quizOrderMethodItems.forEach((key, value) {
-      _quizOrderMethodItems.add(DropdownMenuItem(
-        child: Text(
-          value,
-          style: const TextStyle(fontSize: 16.0),
-        ),
-        value: key,
-      ));
-    });
   }
 
   @override
@@ -80,6 +69,18 @@ class _SettingsPage extends StatelessWidget {
         value: key,
       ));
     });
+    // 並び替え方法用のDropdownMenuItemを生成。contextがいるのでここで生成する。
+    final List<DropdownMenuItem<int>> _quizOrderMethodItems = [];
+    Globals().quizOrderMethodItems.forEach((key, value) {
+      _quizOrderMethodItems.add(DropdownMenuItem(
+        child: Text(
+          L10n.of(context)!.quizOrderMethodItems(key),
+          style: const TextStyle(fontSize: 16.0),
+        ),
+        value: key,
+      ));
+    });
+
     return Scaffold(
         backgroundColor: Globals.backgroundColor,
         appBar: AppBar(

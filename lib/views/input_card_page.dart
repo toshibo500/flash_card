@@ -35,10 +35,8 @@ class _InputCardPage extends State<InputCardPage> {
 
   void initPreference() async {
     PreferenceRepository.get().then((value) {
-      if (value != null) {
-        _langIds[0] = value.frontSideLang!;
-        _langIds[1] = value.backSideLang!;
-      }
+      _langIds[0] = value.frontSideLang!;
+      _langIds[1] = value.backSideLang!;
     });
   }
 

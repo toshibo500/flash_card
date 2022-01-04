@@ -78,7 +78,7 @@ class BookViewModel extends ChangeNotifier {
 
   void getPreference() {
     PreferenceRepository.get().then((value) {
-      _preference = value!;
+      _preference = value;
     });
     notifyListeners();
   }

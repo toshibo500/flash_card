@@ -27,8 +27,9 @@ class QuizViewModel extends ChangeNotifier {
     FolderRepository.getById(selectedBook.folderId).then((value) {
       _folder = value!;
     });
-    getPreference();
-    startQuiz();
+    getPreference().then((value) {
+      startQuiz();
+    });
   }
 
   List<CardModel> get items => _cardList;
@@ -38,8 +39,8 @@ class QuizViewModel extends ChangeNotifier {
   QuizModel get quiz => _quiz;
 
   PreferenceModel get preference => _preference;
-  void getPreference() async {
-    _preference = (await PreferenceRepository.get())!;
+  Future<void> getPreference() async {
+    _preference = await PreferenceRepository.get();
   }
 
   get selectedBook => _selectedBook;
@@ -73,7 +74,9 @@ class QuizViewModel extends ChangeNotifier {
     _cardList = await CardRepository.getList(
         bookId: _selectedBook.id,
         orderBy: orderBy!,
-        orderMethod: orderMethod!,
+        orderMethod: _preference.quizOrder == Globals.quizOrderRandom
+            ? ''
+            : orderMethod!,
         limit: limit ?? _quizNum);
   }
 

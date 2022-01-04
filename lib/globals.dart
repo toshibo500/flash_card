@@ -24,7 +24,7 @@ class Globals {
 
   // テスト並び順マスタ
   final Map<int, String> _quizOrderItems = {
-    0: 'RANDOME()',
+    0: 'RANDOM()',
     1: CardModel.colSequence,
     2: CardModel.colQuizedAt,
     3: CardModel.colCorrectNum,
@@ -45,9 +45,6 @@ class Globals {
     _frontAndBackItems[cardBackKey] = l10n.cardBack;
     _quizModeItems[0] = l10n.quizModeSelf;
     _quizModeItems[1] = l10n.quizModeDictation;
-    _quizOrderMethodItems.forEach((key, value) {
-      _quizOrderMethodItems[key] = l10n.quizOrderMethodItems(key);
-    });
     // フォルダアイコン
     _folderIcon = const Icon(Icons.folder_rounded, color: iconColor1);
     // ブックアイコン
