@@ -12,11 +12,9 @@ import 'package:keyboard_actions/keyboard_actions.dart';
 
 class QuizPageParameters {
   QuizPageParameters(
-      {required this.book,
-      required this.numberOfQuestions,
-      required this.quizMode});
+      {required this.book, required this.quizNum, required this.quizMode});
   BookModel book;
-  int numberOfQuestions;
+  int quizNum;
   int quizMode;
 }
 
@@ -26,7 +24,7 @@ class QuizPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => QuizViewModel(param.book, param.numberOfQuestions),
+      create: (context) => QuizViewModel(param.book, param.quizNum),
       child: Scaffold(body: _QuizPage(param: param)),
     );
   }
@@ -147,8 +145,8 @@ class _QuizPage extends StatelessWidget {
   Widget _buildAnswerArea(
       BuildContext context, QuizViewModel viewmodel, int quizMode) {
     return quizMode == Globals.quizModeSelfMode
-        ? _buildDictaion(context, viewmodel)
-        : _buildSelfMode(context, viewmodel);
+        ? _buildSelfMode(context, viewmodel)
+        : _buildDictaion(context, viewmodel);
   }
 
   Column _buildDictaion(BuildContext context, QuizViewModel viewmodel) {

@@ -50,8 +50,8 @@ class DbProvider {
         "${CardModel.colFront} TEXT,"
         "${CardModel.colBack} TEXT,"
         "${CardModel.colSequence} INTEGER,"
-        "${CardModel.colNumberOfCorrectAnswers} INTEGER DEFAULT 0,"
-        "${CardModel.colNumberOfWrongAnswers} INTEGER DEFAULT 0,"
+        "${CardModel.colCorrectNum} INTEGER DEFAULT 0,"
+        "${CardModel.colWrongNum} INTEGER DEFAULT 0,"
         "${CardModel.colQuizedAt} TEXT"
         ")");
     _upgradeTable(db, 1, version);
@@ -63,8 +63,8 @@ class DbProvider {
       "CREATE TABLE ${QuizModel.tableName} ("
           "${QuizModel.colId} TEXT PRIMARY KEY,"
           "${QuizModel.colBookId} TEXT,"
-          "${QuizModel.colNumberOfQuestions} INTEGER DEFAULT 0,"
-          "${QuizModel.colNumberOfCorrectAnswers} INTEGER DEFAULT 0,"
+          "${QuizModel.colQuizNum} INTEGER DEFAULT 0,"
+          "${QuizModel.colCorrectNum} INTEGER DEFAULT 0,"
           "${QuizModel.colStartedAt} TEXT,"
           "${QuizModel.colEndedAt} TEXT"
           ");",

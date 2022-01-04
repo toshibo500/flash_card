@@ -14,7 +14,7 @@
     "quizMode": "モード",
     "quizModeDictation": "ディクテーション",
     "quizModeSelf": "セルフモード",
-    "numberOfQuestion": "問題数",
+    "quizNum": "問題数",
     "numberOfCorrect": "正解数",
     "folderName": "フォルダ名",
     "bookName": "単語帳名",
@@ -43,5 +43,9 @@
     "aboutApp": "このアプリについて",
     "aboutAppURL": "https://tkgapps.com/chocobanana/aboutapp/",
     "dateTimeFormat": "yyyy-MM-dd HH:mm",
-    "answerHintText": "解答を入力してください"
-  }
+    "answerHintText": "解答を入力してください",
+    "quizOrder": "並び順",
+    "quizOrderItems": "{key, plural, =0 {シャッフル} =1 {カード並び順} =2 {クイズ実施日} other {正解数}}",
+    "quizOrderMethod": "並び替え方法",
+    "quizOrderMethodItems": "{key, plural, =0 {昇順} other {降順}}"
+    }

@@ -22,7 +22,7 @@ class _SettingsPage extends StatelessWidget {
 //  final Map<String, String> _langItems = {};
   final List<DropdownMenuItem<int>> _questionItems = [];
   final List<DropdownMenuItem<int>> _quizModeItems = [];
-  final List<DropdownMenuItem<int>> _numOfQuiz = [];
+  final List<DropdownMenuItem<int>> _quizNum = [];
 
   _SettingsPage({Key? key}) : super(key: key) {
     Globals().frontAndBackItems.forEach((key, value) {
@@ -35,6 +35,7 @@ class _SettingsPage extends StatelessWidget {
         value: key,
       ));
     });
+
     Globals().quizModeItems.forEach((key, value) {
       // PreferenceModel.quizModeItems.forEach((key, value) {
       _quizModeItems.add(DropdownMenuItem(
@@ -46,7 +47,7 @@ class _SettingsPage extends StatelessWidget {
       ));
     });
     List.generate(100, (index) {
-      _numOfQuiz.add(DropdownMenuItem(
+      _quizNum.add(DropdownMenuItem(
         child: Text(index.toString()),
         value: index,
       ));
@@ -57,6 +58,29 @@ class _SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     var _drawerMenuViewModel = Provider.of<SettingsViewModel>(context);
     final Map<String, String> _langItems = _drawerMenuViewModel.langItems;
+    // 並び順用のDropdownMenuItemを生成。contextがいるのでここで生成する。
+    List<DropdownMenuItem<int>> _quizOrderItems = [];
+    Globals().quizOrderItems.forEach((key, value) {
+      _quizOrderItems.add(DropdownMenuItem(
+        child: Text(
+          L10n.of(context)!.quizOrderItems(key),
+          style: const TextStyle(fontSize: 16.0),
+        ),
+        value: key,
+      ));
+    });
+    // 並び替え方法用のDropdownMenuItemを生成。contextがいるのでここで生成する。
+    final List<DropdownMenuItem<int>> _quizOrderMethodItems = [];
+    Globals().quizOrderMethodItems.forEach((key, value) {
+      _quizOrderMethodItems.add(DropdownMenuItem(
+        child: Text(
+          L10n.of(context)!.quizOrderMethodItems(key),
+          style: const TextStyle(fontSize: 16.0),
+        ),
+        value: key,
+      ));
+    });
+
     return Scaffold(
         backgroundColor: Globals.backgroundColor,
         appBar: AppBar(
@@ -156,13 +180,50 @@ class _SettingsPage extends StatelessWidget {
                     Icons.format_list_numbered_rounded,
                     color: Globals.iconColor3,
                   ),
-                  title: L10n.of(context)!.numberOfQuestion,
+                  title: L10n.of(context)!.quizNum,
                   trailing: DropdownButton<int>(
-                    value: _drawerMenuViewModel.preference.numOfQuiz,
+                    value: _drawerMenuViewModel.preference.quizNum,
                     underline: DropdownButtonHideUnderline(child: Container()),
-                    items: _numOfQuiz,
+                    items: _quizNum,
                     onChanged: (value) {
-                      _drawerMenuViewModel.preference.numOfQuiz = value!;
+                      _drawerMenuViewModel.preference.quizNum = value!;
+                      _drawerMenuViewModel
+                          .update(_drawerMenuViewModel.preference);
+                    },
+                  ),
+                ),
+                SettingsTile(
+                  leading: const Icon(
+                    Icons.sort_by_alpha_rounded,
+                    color: Globals.iconColor1,
+                  ),
+                  title: L10n.of(context)!.quizOrder,
+                  trailing: DropdownButton<int>(
+                    value: _drawerMenuViewModel.preference.quizOrder,
+                    underline: DropdownButtonHideUnderline(child: Container()),
+                    items: _quizOrderItems,
+                    onChanged: (value) {
+                      _drawerMenuViewModel.preference.quizOrder = value!;
+                      _drawerMenuViewModel
+                          .update(_drawerMenuViewModel.preference);
+                    },
+                  ),
+                ),
+                SettingsTile(
+                  enabled: !_drawerMenuViewModel.isRandom,
+                  leading: const Icon(
+                    Icons.sort_rounded,
+                    color: Globals.iconColor2,
+                  ),
+                  title: L10n.of(context)!.quizOrderMethod,
+                  trailing: DropdownButton<int>(
+                    value: _drawerMenuViewModel.preference.quizOrderMethod,
+                    underline: DropdownButtonHideUnderline(child: Container()),
+                    items: _drawerMenuViewModel.isRandom
+                        ? null
+                        : _quizOrderMethodItems,
+                    onChanged: (value) {
+                      _drawerMenuViewModel.preference.quizOrderMethod = value!;
                       _drawerMenuViewModel
                           .update(_drawerMenuViewModel.preference);
                     },
@@ -172,131 +233,5 @@ class _SettingsPage extends StatelessWidget {
             ),
           ],
         ));
-
-    /* SizedBox(
-        width: 350,
-        child: Drawer(
-          child: Column(
-            children: <Widget>[
-              const SizedBox(
-                  height: 150,
-                  child: DrawerHeader(
-                    child: Center(
-                      child: Text(
-                        'Settings',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.white, fontSize: 25),
-                      ),
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                    ),
-                  )),
-              Container(
-                height: 30,
-                alignment: Alignment.bottomLeft,
-                padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                child: const Text(
-                  'Voice Input',
-                  style: TextStyle(color: Colors.black45),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(
-                  Icons.language_rounded,
-                ),
-                title: const Text('Front'),
-                subtitle: DropdownButton<String>(
-                  value: _drawerMenuViewModel.preference.frontSideLang,
-                  items: _langItems,
-                  onChanged: (value) {
-                    _drawerMenuViewModel.preference.frontSideLang = value!;
-                    _drawerMenuViewModel
-                        .update(_drawerMenuViewModel.preference);
-                  },
-                ),
-              ),
-              ListTile(
-                leading: const Icon(
-                  Icons.language_rounded,
-                ),
-                title: const Text('Back'),
-                subtitle: DropdownButton<String>(
-                  value: _drawerMenuViewModel.preference.backSideLang,
-                  items: _langItems,
-                  onChanged: (value) {
-                    _drawerMenuViewModel.preference.backSideLang = value!;
-                    _drawerMenuViewModel
-                        .update(_drawerMenuViewModel.preference);
-                  },
-                ),
-              ),
-              Container(
-                height: 30,
-                alignment: Alignment.bottomLeft,
-                padding: const EdgeInsets.fromLTRB(20, 10, 0, 0),
-                child: const Text(
-                  'Quiz',
-                  style: TextStyle(color: Colors.black45),
-                ),
-              ),
-              ListTile(
-                leading: const Icon(
-                  Icons.style_rounded,
-                ),
-                title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Question'),
-                      DropdownButton<int>(
-                        value: _drawerMenuViewModel.preference.question,
-                        items: _questionItems,
-                        onChanged: (value) {
-                          _drawerMenuViewModel.preference.question = value!;
-                          _drawerMenuViewModel
-                              .update(_drawerMenuViewModel.preference);
-                        },
-                      )
-                    ]),
-              ),
-              ListTile(
-                  leading: const Icon(
-                    Icons.mode_rounded,
-                  ),
-                  title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Mode'),
-                        DropdownButton<int>(
-                          value: _drawerMenuViewModel.preference.quizMode,
-                          items: _quizModeItems,
-                          onChanged: (value) {
-                            _drawerMenuViewModel.preference.quizMode = value!;
-                            _drawerMenuViewModel
-                                .update(_drawerMenuViewModel.preference);
-                          },
-                        )
-                      ])),
-              ListTile(
-                  leading: const Icon(
-                    Icons.format_list_numbered_rounded,
-                  ),
-                  title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text('Number of questions'),
-                        DropdownButton<int>(
-                          value: _drawerMenuViewModel.preference.numOfQuiz,
-                          items: _numOfQuiz,
-                          onChanged: (value) {
-                            _drawerMenuViewModel.preference.numOfQuiz = value!;
-                            _drawerMenuViewModel
-                                .update(_drawerMenuViewModel.preference);
-                          },
-                        ),
-                      ])),
-            ],
-          ),
-        )); */
   }
 }

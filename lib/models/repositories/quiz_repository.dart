@@ -6,16 +6,9 @@ class QuizRepository {
   static DbProvider instance = DbProvider.instance;
 
   static Future<QuizModel?> create(String bookId, DateTime startedAt,
-      [DateTime? endedAt,
-      int? numberOfQuestions,
-      int? numberOfCorrectAnswers]) async {
-    final row = QuizModel(
-        DateTime.now().millisecondsSinceEpoch.toString(),
-        bookId,
-        startedAt,
-        endedAt,
-        numberOfQuestions ?? 0,
-        numberOfCorrectAnswers ?? 0);
+      [DateTime? endedAt, int? quizNum, int? correctNum]) async {
+    final row = QuizModel(DateTime.now().millisecondsSinceEpoch.toString(),
+        bookId, startedAt, endedAt, quizNum ?? 0, correctNum ?? 0);
     final db = await instance.database;
     final int res = await db.insert(QuizModel.tableName, row.toJson());
     return res > 0 ? row : null;
@@ -58,7 +51,7 @@ class QuizRepository {
   static Future<List<QuizModel>> getList(
       [String bookId = '', int rowCount = -1, String orderBy = 'ASC']) async {
     final Database db = await instance.database;
-    String where = "WHERE ${QuizModel.colNumberOfQuestions} != 0";
+    String where = "WHERE ${QuizModel.colQuizNum} != 0";
     where += bookId != '' ? " AND ${QuizModel.colBookId} = '$bookId'" : '';
 
     String limit = rowCount >= 0 ? "LIMIT $rowCount" : '';

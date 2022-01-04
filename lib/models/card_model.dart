@@ -5,8 +5,8 @@ class CardModel {
   static const String colFront = 'front';
   static const String colBack = 'back';
   static const String colSequence = 'sequence';
-  static const String colNumberOfCorrectAnswers = 'numberOfCorrectAnswers';
-  static const String colNumberOfWrongAnswers = 'numberOfWrongAnswers';
+  static const String colCorrectNum = 'numberOfCorrectAnswers';
+  static const String colWrongNum = 'numberOfWrongAnswers';
   static const String colQuizedAt = 'quizedAt';
 
   final String id;
@@ -14,16 +14,14 @@ class CardModel {
   String front;
   String back;
   final int sequence;
-  late int numberOfCorrectAnswers;
-  late int numberOfWrongAnswers;
+  late int correctNum;
+  late int wrongNum;
   late DateTime? quizedAt;
 
   String get title => front;
 
   CardModel(this.id, this.bookId, this.front, this.back, this.sequence,
-      [this.numberOfCorrectAnswers = 0,
-      this.numberOfWrongAnswers = 0,
-      this.quizedAt]);
+      [this.correctNum = 0, this.wrongNum = 0, this.quizedAt]);
 
   factory CardModel.fromJson(dynamic json) {
     return CardModel(
@@ -32,8 +30,8 @@ class CardModel {
       json[colFront] as String,
       json[colBack] as String,
       json[colSequence] as int,
-      json[colNumberOfCorrectAnswers] as int,
-      json[colNumberOfWrongAnswers] as int,
+      json[colCorrectNum] as int,
+      json[colWrongNum] as int,
       json[colQuizedAt] != null
           ? DateTime.parse(json[colQuizedAt]).toLocal()
           : null,
@@ -42,7 +40,7 @@ class CardModel {
 
   @override
   String toString() {
-    return '{$id, $bookId, $front, $back, $sequence, $numberOfCorrectAnswers, $numberOfWrongAnswers, $quizedAt}';
+    return '{$id, $bookId, $front, $back, $sequence, $correctNum, $wrongNum, $quizedAt}';
   }
 
   Map<String, dynamic> toJson() => {
@@ -51,8 +49,8 @@ class CardModel {
         colFront: front,
         colBack: back,
         colSequence: sequence,
-        colNumberOfCorrectAnswers: numberOfCorrectAnswers,
-        colNumberOfWrongAnswers: numberOfWrongAnswers,
+        colCorrectNum: correctNum,
+        colWrongNum: wrongNum,
         colQuizedAt: quizedAt?.toUtc().toIso8601String()
       };
 }
