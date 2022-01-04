@@ -10,6 +10,7 @@ import 'package:flip_card/flip_card.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class FileListView extends StatefulWidget {
   const FileListView({Key? key, required this.viewModel, this.nextPage = ""})
@@ -59,13 +60,16 @@ class _FileListView extends State<FileListView> {
         onFlipDone: (status) {
           // print(status);
         },
-        front: _buildFlipCardContent(front, index),
-        back: _buildFlipCardContent(back, index),
+        front: _buildFlipCardContent(
+            front, widget.viewModel.preference.frontSideLang, index),
+        back: _buildFlipCardContent(
+            back, widget.viewModel.preference.backSideLang, index),
       ),
     );
   }
 
-  Container _buildFlipCardContent(String text, int index) {
+  Container _buildFlipCardContent(String text, String locale, int index) {
+    final FlutterTts tts = FlutterTts();
     return Container(
       padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
       decoration: BoxDecoration(
@@ -96,17 +100,20 @@ class _FileListView extends State<FileListView> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           _buildHistoryBox(index),
-/*                           Container(
+                          Container(
                             alignment: Alignment.centerRight,
                             child: IconButton(
-                                onPressed: () {},
+                                onPressed: () async {
+                                  tts.setLanguage(locale);
+                                  await tts.speak(text);
+                                },
                                 iconSize: 16,
                                 alignment: Alignment.centerRight,
                                 padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
                                 color: Theme.of(context)
                                     .disabledColor, // Globals.iconColor2,
-                                icon: const Icon(Icons.mic_rounded)), 
-                          ),*/
+                                icon: const Icon(Icons.mic_rounded)),
+                          ),
                         ]),
                   )),
             ],
