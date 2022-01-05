@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "789033550204",
+    "project_id": "com-tkgapps-chocobanana",
+    "storage_bucket": "com-tkgapps-chocobanana.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:789033550204:android:001e3add8cde493d68e4f9",
+        "android_client_info": {
+          "package_name": "com.tkgapps.ChocoBanana"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "789033550204-h52g4c0593bgdi1fqakdvf0pl9ou8q7g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8UJS2SmHvVqHT5vIVRLoy_wmkewFIRoQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "789033550204-h52g4c0593bgdi1fqakdvf0pl9ou8q7g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "789033550204-emmh5ddacae9v75d9l05o8kcceujv3rj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tkgapps.ChocoBanana",
+                "app_store_id": "1602332069"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
