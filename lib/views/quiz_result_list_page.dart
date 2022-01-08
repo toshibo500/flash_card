@@ -8,12 +8,13 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flash_card/globals.dart';
 
 class QuizResultListPage extends StatelessWidget {
-  const QuizResultListPage({Key? key, required this.bookId}) : super(key: key);
-  final String bookId;
+  const QuizResultListPage({Key? key, required this.folderId})
+      : super(key: key);
+  final String folderId;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => QuizResultListViewModel(bookId),
+      create: (context) => QuizResultListViewModel(folderId),
       child: const Scaffold(body: _QuizResultListPage()),
     );
   }
@@ -108,7 +109,7 @@ class _QuizResultListPage extends StatelessWidget {
     // Scaffold
     return Scaffold(
         appBar: AppBar(
-          title: Text(_quizResultListViweModel.book.title),
+          title: Text(_quizResultListViweModel.folder.title),
           backgroundColor: Globals.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
@@ -125,7 +126,7 @@ class _QuizResultListPage extends StatelessWidget {
                   textOK: Text(L10n.of(context)!.ok),
                   textCancel: Text(L10n.of(context)!.cancel),
                 )) {
-                  _quizResultListViweModel.deleteByBook();
+                  _quizResultListViweModel.deleteByFolderId();
                   Fluttertoast.showToast(msg: L10n.of(context)!.deleteDone);
                 }
               },

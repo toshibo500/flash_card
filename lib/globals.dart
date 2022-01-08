@@ -47,10 +47,8 @@ class Globals {
     _quizModeItems[1] = l10n.quizModeDictation;
     // フォルダアイコン
     _folderIcon = const Icon(Icons.folder_rounded, color: iconColor1);
-    // ブックアイコン
-    _bookIcon = const Icon(Icons.style_rounded, color: iconColor3);
     // カードアイコン
-    _cardIcon = const Icon(Icons.description_rounded, color: iconColor2);
+    _cardIcon = const Icon(Icons.style_rounded, color: iconColor2);
   }
 
   // チョコ色

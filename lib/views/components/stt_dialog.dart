@@ -162,7 +162,7 @@ class _SttDialog extends State<SttDialog> {
         boxShadow: [
           BoxShadow(
               blurRadius: 1,
-              spreadRadius: _level * 1.5,
+              spreadRadius: _level * 0.9,
               color: Colors.black.withOpacity(_withOpacity))
         ],
 //        color: Colors.white,

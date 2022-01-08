@@ -5,10 +5,10 @@ import 'package:flash_card/models/quiz_model.dart';
 class QuizRepository {
   static DbProvider instance = DbProvider.instance;
 
-  static Future<QuizModel?> create(String bookId, DateTime startedAt,
+  static Future<QuizModel?> create(String folderId, DateTime startedAt,
       [DateTime? endedAt, int? quizNum, int? correctNum]) async {
     final row = QuizModel(DateTime.now().millisecondsSinceEpoch.toString(),
-        bookId, startedAt, endedAt, quizNum ?? 0, correctNum ?? 0);
+        folderId, startedAt, endedAt, quizNum ?? 0, correctNum ?? 0);
     final db = await instance.database;
     final int res = await db.insert(QuizModel.tableName, row.toJson());
     return res > 0 ? row : null;
@@ -26,11 +26,11 @@ class QuizRepository {
         .rawDelete('DELETE FROM ${QuizModel.tableName} WHERE id = ?', [id]);
   }
 
-  static Future<int> deleteByBook(String bookId) async {
+  static Future<int> deleteByFolderId(String folderId) async {
     final db = await instance.database;
     return await db.rawDelete(
-        'DELETE FROM ${QuizModel.tableName} WHERE ${QuizModel.colBookId} = ?',
-        [bookId]);
+        'DELETE FROM ${QuizModel.tableName} WHERE ${QuizModel.colFolderId} = ?',
+        [folderId]);
   }
 
   static Future<QuizModel?> get(String id) async {
@@ -44,15 +44,16 @@ class QuizRepository {
     return list[0];
   }
 
-  static Future<List<QuizModel>> getAll([String bookId = '']) async {
-    return await getList(bookId);
+  static Future<List<QuizModel>> getAll([String folderId = '']) async {
+    return await getList(folderId);
   }
 
   static Future<List<QuizModel>> getList(
-      [String bookId = '', int rowCount = -1, String orderBy = 'ASC']) async {
+      [String folderId = '', int rowCount = -1, String orderBy = 'ASC']) async {
     final Database db = await instance.database;
     String where = "WHERE ${QuizModel.colQuizNum} != 0";
-    where += bookId != '' ? " AND ${QuizModel.colBookId} = '$bookId'" : '';
+    where +=
+        folderId != '' ? " AND ${QuizModel.colFolderId} = '$folderId'" : '';
 
     String limit = rowCount >= 0 ? "LIMIT $rowCount" : '';
 

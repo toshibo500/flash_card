@@ -1,10 +1,7 @@
 import 'package:flash_card/models/card_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flash_card/views/folder_list_page.dart';
 import 'package:flash_card/models/folder_model.dart';
-import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/views/folder_page.dart';
-import 'package:flash_card/views/book_page.dart';
 import 'package:flash_card/views/input_card_page.dart';
 import 'package:flash_card/views/quiz_page.dart';
 import 'package:flash_card/views/quiz_result_page.dart';
@@ -48,12 +45,6 @@ class MyApp extends StatelessWidget {
                 FolderPage(folder: settings.arguments as FolderModel),
           );
         }
-        if (settings.name == '/bookPage') {
-          return MaterialPageRoute(
-            builder: (context) =>
-                BookPage(book: settings.arguments as BookModel),
-          );
-        }
         if (settings.name == '/inputCardPage') {
           return MaterialPageRoute(
             builder: (context) =>
@@ -74,7 +65,7 @@ class MyApp extends StatelessWidget {
         if (settings.name == '/quizResultListPage') {
           return MaterialPageRoute(
               builder: (context) =>
-                  QuizResultListPage(bookId: settings.arguments as String));
+                  QuizResultListPage(folderId: settings.arguments as String));
         }
         if (settings.name == '/webViewPage') {
           return MaterialPageRoute(
@@ -102,6 +93,9 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     // Global変数初期化
     Globals().initGlobals(context);
-    return const Scaffold(body: FolderListPage());
+    // return const Scaffold(body: FolderListPage());
+    return FolderPage(
+        folder: FolderModel(
+            '00000000000000000', '', L10n.of(context)!.appTitle, '', 0));
   }
 }

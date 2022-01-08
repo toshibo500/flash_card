@@ -17,6 +17,8 @@
   "quizNum": "Questions",
   "numberOfCorrect": "Marks",
   "folderName": "Folder Name",
+  "createFolderMemuTitle": "Folder",
+  "createFolderNameHint": "Input folder name",
   "bookName": "Flashcard Name",
   "ok": "OK",
   "cancel": "Cancel",
@@ -38,6 +40,7 @@
   "deleteConfirmation": "Would you like to remove?",
   "deleteDone": "done",
   "createCardPageTitle": "Create a card",
+  "createCardMemuTitle": "Card",
   "privacyPolicy": "Privacy Policy",
   "privacyPolicyURL": "https://tkgapps.com/chocobanana/privacy/",
   "aboutApp": "About this app",
@@ -57,5 +60,7 @@
     "placeholders": {
         "key": {}
     }
-  }
+  },
+  "createCardFrontHint": "Input front side word/phrase",
+  "createCardBackHint": "Input front side word/phrase"
 }

@@ -1,4 +1,4 @@
-import 'package:flash_card/models/book_model.dart';
+import 'package:flash_card/models/folder_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/viewmodels/quiz_viewmodel.dart';
@@ -12,8 +12,8 @@ import 'package:keyboard_actions/keyboard_actions.dart';
 
 class QuizPageParameters {
   QuizPageParameters(
-      {required this.book, required this.quizNum, required this.quizMode});
-  BookModel book;
+      {required this.folder, required this.quizNum, required this.quizMode});
+  FolderModel folder;
   int quizNum;
   int quizMode;
 }
@@ -24,7 +24,7 @@ class QuizPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => QuizViewModel(param.book, param.quizNum),
+      create: (context) => QuizViewModel(param.folder, param.quizNum),
       child: Scaffold(body: _QuizPage(param: param)),
     );
   }
@@ -54,7 +54,7 @@ class _QuizPage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(param.book.title),
+          title: Text(param.folder.title),
           backgroundColor: Globals.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
@@ -90,7 +90,7 @@ class _QuizPage extends StatelessWidget {
                       border: Border.all(color: Colors.grey),
                     ),
                     padding: const EdgeInsets.all(10),
-                    height: 200,
+                    height: 180,
                     child: SingleChildScrollView(
                       child: Text(
                         _quizViweModel.question,
@@ -170,7 +170,7 @@ class _QuizPage extends StatelessWidget {
           border: Border.all(color: Colors.grey),
         ),
         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-        height: 200,
+        height: 180,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
