@@ -1,7 +1,5 @@
 import 'package:flash_card/models/card_model.dart';
-import 'package:flash_card/viewmodels/book_viewmodel.dart';
 import 'package:flash_card/viewmodels/folder_viewmodel.dart';
-import 'package:flash_card/viewmodels/folder_list_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
@@ -23,6 +21,23 @@ class FileListView extends StatefulWidget {
 }
 
 class _FileListView extends State<FileListView> {
+  late FlutterTts tts;
+
+  @override
+  void initState() {
+    initTts();
+    super.initState();
+  }
+
+  void initTts() async {
+    tts = FlutterTts();
+    await tts.setVolume(1.0);
+    await tts.setSpeechRate(0.4);
+    await tts.setSpeechRate(0.4);
+    await tts.setIosAudioCategory(IosTextToSpeechAudioCategory.playback,
+        [IosTextToSpeechAudioCategoryOptions.defaultToSpeaker]);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ReorderableListView(
@@ -33,21 +48,27 @@ class _FileListView extends State<FileListView> {
         if (oldIndex < newIndex) {
           newIndex -= 1;
         }
-        widget.viewModel.reorder(oldIndex, newIndex);
+        if (widget.viewModel.hasSubFolders) {
+          widget.viewModel.reorderFolder(oldIndex, newIndex);
+        } else {
+          widget.viewModel.reorderCard(oldIndex, newIndex);
+        }
       },
     );
   }
 
   List<Widget> _buildListTileView() {
     List<Widget> tiles = [];
-    for (int index = 0; index < widget.viewModel.items.length; index++) {
-      if (widget.viewModel is BookViewModel) {
-        tiles.add(_buildFlipCard(widget.viewModel.items[index].front,
-            widget.viewModel.items[index].back, index));
-      } else {
-        tiles.add(_buildCard(widget.viewModel.items[index].title, index));
-      }
+    if (widget.viewModel.hasSubFolders) {
+      widget.viewModel.folderItems.asMap().forEach((int index, var item) {
+        tiles.add(_buildCard(item.title, index));
+      });
+    } else {
+      widget.viewModel.cardItems.asMap().forEach((int index, var item) {
+        tiles.add(_buildFlipCard(item.front, item.back, index));
+      });
     }
+
     return tiles;
   }
 
@@ -69,7 +90,6 @@ class _FileListView extends State<FileListView> {
   }
 
   Container _buildFlipCardContent(String text, String locale, int index) {
-    final FlutterTts tts = FlutterTts();
     return Container(
       padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
       decoration: BoxDecoration(
@@ -104,15 +124,15 @@ class _FileListView extends State<FileListView> {
                             alignment: Alignment.centerRight,
                             child: IconButton(
                                 onPressed: () async {
-                                  tts.setLanguage(locale);
+                                  await tts.setLanguage(locale);
                                   await tts.speak(text);
                                 },
                                 iconSize: 16,
                                 alignment: Alignment.centerRight,
                                 padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                                color: Theme.of(context)
-                                    .disabledColor, // Globals.iconColor2,
-                                icon: const Icon(Icons.mic_rounded)),
+                                color:
+                                    Globals.buttonColor1, // Globals.iconColor2,
+                                icon: const Icon(Icons.volume_up_rounded)),
                           ),
                         ]),
                   )),
@@ -128,7 +148,7 @@ class _FileListView extends State<FileListView> {
   }
 
   Widget _buildHistoryBox(int index) {
-    CardModel card = widget.viewModel.items[index];
+    CardModel card = widget.viewModel.cardItems[index];
     DateFormat outputFormat = DateFormat(L10n.of(context)!.dateTimeFormat);
     return Container(
         padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
@@ -179,17 +199,13 @@ class _FileListView extends State<FileListView> {
   }
 
   Widget _buildListTile(int index) {
-    var item = widget.viewModel.items[index];
+    var item = widget.viewModel.folderItems[index];
     String text = item.title;
     Icon icon = Globals().folderIcon;
 
     List<Widget> subContents = [];
-    if (widget.viewModel is FolderListViewModel) {
+    if (widget.viewModel is FolderViewModel) {
       icon = Globals().folderIcon;
-      subContents.add(
-          _buildSubContentIcons(Globals().bookIcon, item.books.length, index));
-    } else if (widget.viewModel is FolderViewModel) {
-      icon = Globals().bookIcon;
       subContents.add(
           _buildSubContentIcons(Globals().cardIcon, item.cards.length, index));
     }
@@ -218,7 +234,7 @@ class _FileListView extends State<FileListView> {
               .then((value) {
             // HOMEに戻った場合、再読み込みしてほしいが何故かされないので、明示的に読み込む。
             if (widget.nextPage == '/folderPage') {
-              widget.viewModel.getAll();
+              widget.viewModel.getAllFolder(widget.viewModel.selectedFolder.id);
             }
           });
         }
@@ -228,7 +244,7 @@ class _FileListView extends State<FileListView> {
   }
 
   Widget _buildSubContentIcons(Icon icon, int num, int index) {
-    var item = widget.viewModel.items[index];
+    var item = widget.viewModel.folderItems[index];
     DateFormat outputFormat = DateFormat(L10n.of(context)!.dateTimeFormat);
 
     var subContents = Container(
@@ -282,15 +298,15 @@ class _FileListView extends State<FileListView> {
   }
 
   IconButton _editIconButton(int index) {
-    if (widget.viewModel is BookViewModel) {
-      return _editCardIconButton(index);
-    } else {
+    if (widget.viewModel.hasSubFolders) {
       return _editTitleIconButton(index);
+    } else {
+      return _editCardIconButton(index);
     }
   }
 
   IconButton _editTitleIconButton(int index) {
-    String text = widget.viewModel.items[index].title;
+    String text = widget.viewModel.folderItems[index].title;
     return IconButton(
       icon: const Icon(Icons.edit),
       onPressed: () async {
@@ -299,8 +315,8 @@ class _FileListView extends State<FileListView> {
             dialogTitle: L10n.of(context)!.folderName,
             title: text);
         if (title != "") {
-          int seq = widget.viewModel.items[index].sequence;
-          widget.viewModel.update(
+          int seq = widget.viewModel.folderItems[index].sequence;
+          widget.viewModel.updateFolder(
             index: index,
             title: title,
             summary: '',
@@ -312,15 +328,15 @@ class _FileListView extends State<FileListView> {
   }
 
   IconButton _editCardIconButton(int index) {
-    CardModel card = widget.viewModel.items[index];
+    CardModel card = widget.viewModel.cardItems[index];
     return IconButton(
       icon: const Icon(Icons.edit),
       onPressed: () async {
         await Navigator.of(context).pushNamed('/inputCardPage', arguments: card)
             as bool;
-        widget.viewModel.update(
+        widget.viewModel.updateCard(
           index: index,
-          bookId: card.bookId,
+          folderId: card.folderId,
           front: card.front,
           back: card.back,
           sequence: card.sequence,
@@ -340,7 +356,11 @@ class _FileListView extends State<FileListView> {
           textOK: Text(L10n.of(context)!.ok),
           textCancel: Text(L10n.of(context)!.cancel),
         )) {
-          widget.viewModel.remove(index);
+          if (widget.viewModel.hasSubFolders) {
+            widget.viewModel.removeFolder(index);
+          } else {
+            widget.viewModel.removeCard(index);
+          }
           Fluttertoast.showToast(msg: L10n.of(context)!.deleteDone);
         }
       },

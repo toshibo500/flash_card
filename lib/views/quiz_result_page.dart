@@ -224,7 +224,7 @@ class _QuizResultPage extends StatelessWidget {
       child: TextButton(
         onPressed: () {
           Navigator.of(context).pushNamed('/quizResultListPage',
-              arguments: _quizResultViweModel.book.id);
+              arguments: _quizResultViweModel.folder.id);
         },
         child: Text(
           L10n.of(context)!.seeMore,
@@ -281,13 +281,13 @@ class _QuizResultPage extends StatelessWidget {
     // Scaffold
     return Scaffold(
         appBar: AppBar(
-          title: Text(_quizResultViweModel.book.title),
+          title: Text(_quizResultViweModel.folder.title),
           backgroundColor: Globals.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
             onPressed: () => {
               Navigator.popUntil(context, ModalRoute.withName('/'))
-            }, // 一旦rootに戻す。bookPageに戻す場合はrooting方法を再検討。単純に/bookPageとすると真っ黒画面。参考:https://blog.dalt.me/2616
+            }, // 一旦rootに戻す。folderPageに戻す場合はrooting方法を再検討。単純に/folderPageとすると真っ黒画面。参考:https://blog.dalt.me/2616
           ),
         ),
         body: Column(children: [

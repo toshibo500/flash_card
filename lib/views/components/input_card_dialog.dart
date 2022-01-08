@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flash_card/utilities/stt.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InputCardDialog extends StatefulWidget {
   const InputCardDialog(
@@ -104,9 +105,9 @@ class _InputCardDialog extends State<InputCardDialog>
         title: const Text("Create a card"),
         content: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-          _buildTextField(_textCtl[0], 'front'),
+          _buildTextField(_textCtl[0], L10n.of(context)!.createCardFrontHint),
           Container(alignment: Alignment.topLeft, child: _buildMicIcon(0)),
-          _buildTextField(_textCtl[1], 'back'),
+          _buildTextField(_textCtl[1], L10n.of(context)!.createCardBackHint),
           Container(alignment: Alignment.topLeft, child: _buildMicIcon(1)),
         ])),
         actions: [

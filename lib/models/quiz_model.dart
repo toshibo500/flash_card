@@ -1,26 +1,26 @@
 class QuizModel {
   static const String tableName = 'quizzes';
   static const String colId = 'id';
-  static const String colBookId = 'bookId';
+  static const String colFolderId = 'folderId';
   static const String colStartedAt = 'startedAt';
   static const String colEndedAt = 'endedAt';
-  static const String colQuizNum = 'numberOfQuestions';
-  static const String colCorrectNum = 'numberOfCorrectAnswers';
+  static const String colQuizNum = 'quizNum';
+  static const String colCorrectNum = 'correctNum';
 
   final String id;
-  final String bookId;
+  final String folderId;
   DateTime startedAt;
   DateTime? endedAt;
   late int quizNum;
   late int correctNum;
 
-  QuizModel(this.id, this.bookId, this.startedAt,
+  QuizModel(this.id, this.folderId, this.startedAt,
       [this.endedAt, this.quizNum = 0, this.correctNum = 0]);
 
   factory QuizModel.fromJson(dynamic json) {
     return QuizModel(
       json[colId] as String,
-      json[colBookId] as String,
+      json[colFolderId] as String,
       DateTime.parse(json[colStartedAt]).toLocal(),
       json[colEndedAt] != null
           ? DateTime.parse(json[colEndedAt]).toLocal()
@@ -32,12 +32,12 @@ class QuizModel {
 
   @override
   String toString() {
-    return '{$id, $bookId, $colStartedAt, $colEndedAt, $colQuizNum, $colCorrectNum}';
+    return '{$id, $folderId, $colStartedAt, $colEndedAt, $colQuizNum, $colCorrectNum}';
   }
 
   Map<String, dynamic> toJson() => {
         colId: id,
-        colBookId: bookId,
+        colFolderId: folderId,
         colStartedAt: startedAt.toUtc().toIso8601String(),
         colEndedAt: endedAt?.toUtc().toIso8601String(),
         colQuizNum: quizNum,

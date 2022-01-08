@@ -17,6 +17,8 @@
     "quizNum": "問題数",
     "numberOfCorrect": "正解数",
     "folderName": "フォルダ名",
+    "createFolderMemuTitle": "フォルダ",
+    "createFolderNameHint": "フォルダ名を入力",
     "bookName": "単語帳名",
     "ok": "OK",
     "cancel": "キャンセル",
@@ -38,6 +40,7 @@
     "deleteConfirmation": "削除しますか?",
     "deleteDone": "削除しました",
     "createCardPageTitle": "カード作成",
+    "createCardMemuTitle": "カード",
     "privacyPolicy": "Privacy Policy",
     "privacyPolicyURL": "https://tkgapps.com/chocobanana/privacy/",
     "aboutApp": "このアプリについて",
@@ -47,5 +50,7 @@
     "quizOrder": "並び順",
     "quizOrderItems": "{key, plural, =0 {シャッフル} =1 {カード並び順} =2 {クイズ実施日} other {正解数}}",
     "quizOrderMethod": "並び替え方法",
-    "quizOrderMethodItems": "{key, plural, =0 {昇順} other {降順}}"
+    "quizOrderMethodItems": "{key, plural, =0 {昇順} other {降順}}",
+    "createCardFrontHint": "表面を入力してください",
+    "createCardBackHint": "裏面を入力してください"  
     }

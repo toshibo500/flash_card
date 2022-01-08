@@ -22,7 +22,8 @@ class _InputTitleDialog extends State<InputTitleDialog> {
         title: Text(widget.dialogTitle),
         content: TextField(
           controller: _textFieldController,
-//          decoration: const InputDecoration(hintText: 'input folder name'),
+          decoration:
+              InputDecoration(hintText: L10n.of(context)!.createFolderNameHint),
           autofocus: true,
         ),
         actions: [

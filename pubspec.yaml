@@ -113,4 +113,5 @@ flutter:
 flutter_icons:
   android: true #Android用にアイコンを作成する場合は true
   ios: true #iOS用にアイコンを作成する場合は true
-  image_path: 'lib/assets/icon-1024.png' #画像のパス（lib/以下なら置き場所は自由）
+  image_path_ios: 'lib/assets/icon-1024.png'
+  image_path_android: 'lib/assets/icon-512.png'
