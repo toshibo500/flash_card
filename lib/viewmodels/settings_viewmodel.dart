@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flash_card/models/preference_model.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
 import 'package:flash_card/utilities/stt.dart';
+import 'package:flash_card/globals.dart';
 
 class SettingsViewModel extends ChangeNotifier {
   PreferenceModel _preference = PreferenceModel();
@@ -17,6 +18,9 @@ class SettingsViewModel extends ChangeNotifier {
   PreferenceModel get preference => _preference;
   Map<String, String> get langItems => _langItems;
 
+  bool _isRandom = true;
+  bool get isRandom => _isRandom;
+
   void initSpeech() async {
     await _stt.initSpeechState().then((value) {
       for (var e in _stt.localeNames) {
@@ -27,6 +31,7 @@ class SettingsViewModel extends ChangeNotifier {
   }
 
   void update(PreferenceModel pref) {
+    _isRandom = pref.quizOrder == Globals.quizOrderRandom;
     PreferenceRepository.update(pref).then((value) {
       notifyListeners();
     });
@@ -34,7 +39,8 @@ class SettingsViewModel extends ChangeNotifier {
 
   void get() {
     PreferenceRepository.get().then((value) {
-      _preference = value!;
+      _preference = value;
+      _isRandom = value.quizOrder == Globals.quizOrderRandom;
       notifyListeners();
     });
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flash_card/models/card_model.dart';
 
 class Globals {
   Globals._();
@@ -19,19 +20,35 @@ class Globals {
   // テストモードマスタ
   final Map<int, String> _quizModeItems = {0: 'Self mode', 1: 'Dictation'};
   Map<int, String> get quizModeItems => _quizModeItems;
-  static const int quizModeSelfMode = 1;
+  static const int quizModeSelfMode = 0;
+
+  // テスト並び順マスタ
+  final Map<int, String> _quizOrderItems = {
+    0: 'RANDOM()',
+    1: CardModel.colSequence,
+    2: CardModel.colQuizedAt,
+    3: CardModel.colCorrectNum,
+  };
+  Map<int, String> get quizOrderItems => _quizOrderItems;
+  static const int quizOrderRandom = 0;
+
+  // テスト並び替え方法マスタ
+  final Map<int, String> _quizOrderMethodItems = {
+    0: 'ASC',
+    1: 'DESC',
+  };
+  Map<int, String> get quizOrderMethodItems => _quizOrderMethodItems;
 
   void initGlobals(BuildContext context) {
-    _frontAndBackItems[cardFrontKey] = L10n.of(context)!.cardFront;
-    _frontAndBackItems[cardBackKey] = L10n.of(context)!.cardBack;
-    _quizModeItems[0] = L10n.of(context)!.quizModeSelf;
-    _quizModeItems[1] = L10n.of(context)!.quizModeDictation;
+    var l10n = L10n.of(context)!;
+    _frontAndBackItems[cardFrontKey] = l10n.cardFront;
+    _frontAndBackItems[cardBackKey] = l10n.cardBack;
+    _quizModeItems[0] = l10n.quizModeSelf;
+    _quizModeItems[1] = l10n.quizModeDictation;
     // フォルダアイコン
     _folderIcon = const Icon(Icons.folder_rounded, color: iconColor1);
-    // ブックアイコン
-    _bookIcon = const Icon(Icons.style_rounded, color: iconColor3);
     // カードアイコン
-    _cardIcon = const Icon(Icons.description_rounded, color: iconColor2);
+    _cardIcon = const Icon(Icons.style_rounded, color: iconColor2);
   }
 
   // チョコ色

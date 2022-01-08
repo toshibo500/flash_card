@@ -10,7 +10,7 @@ class PreferenceRepository {
     return await prefs.setString(PreferenceModel.tableName, json);
   }
 
-  static Future<PreferenceModel?> get() async {
+  static Future<PreferenceModel> get() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     if (!prefs.containsKey(PreferenceModel.tableName)) {
       // デフォルト値を返す

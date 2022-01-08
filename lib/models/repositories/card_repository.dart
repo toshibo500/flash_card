@@ -6,18 +6,16 @@ class CardRepository {
   static DbProvider instance = DbProvider.instance;
 
   static Future<CardModel?> create(
-      String bookId, String front, String back, int sequence,
-      [int? numberOfQuestions,
-      int? numberOfCorrectAnswers,
-      DateTime? quizedAt]) async {
+      String folderId, String front, String back, int sequence,
+      [int? quizNum, int? correctNum, DateTime? quizedAt]) async {
     final row = CardModel(
         DateTime.now().millisecondsSinceEpoch.toString(),
-        bookId,
+        folderId,
         front,
         back,
         sequence,
-        numberOfQuestions ?? 0,
-        numberOfCorrectAnswers ?? 0,
+        quizNum ?? 0,
+        correctNum ?? 0,
         quizedAt);
     final db = await instance.database;
     final int res = await db.insert(CardModel.tableName, row.toJson());
@@ -37,12 +35,12 @@ class CardRepository {
       for (CardModel row in rows) {
         cnt += await txn.rawUpdate(
             'UPDATE ${CardModel.tableName} SET '
-            '${CardModel.colBookId} = ?,'
+            '${CardModel.colFolderId} = ?,'
             '${CardModel.colFront} = ?,'
             '${CardModel.colBack} = ?,'
             '${CardModel.colSequence} = ? '
             'WHERE id = ?',
-            [row.bookId, row.front, row.back, row.sequence, row.id]);
+            [row.folderId, row.front, row.back, row.sequence, row.id]);
       }
     });
     return cnt;
@@ -54,28 +52,44 @@ class CardRepository {
         .rawDelete('DELETE FROM ${CardModel.tableName} WHERE id = ?', [id]);
   }
 
-  static Future<int> deleteByBookId(String bookId) async {
+  static Future<int> deleteByFolderId(String folderId) async {
     final db = await instance.database;
     return await db.rawDelete(
-        'DELETE FROM ${CardModel.tableName} WHERE ${CardModel.colBookId} = ?',
-        [bookId]);
+        'DELETE FROM ${CardModel.tableName} WHERE ${CardModel.colFolderId} = ?',
+        [folderId]);
   }
 
-  static Future<List<CardModel>> getAll([String bookId = '']) async {
+  static Future<List<CardModel>> getAll([String folderId = '']) async {
     final Database db = await instance.database;
-    String where =
-        bookId != '' ? "WHERE ${CardModel.colBookId} = '$bookId'" : '';
+    String where = folderId.isNotEmpty
+        ? "WHERE ${CardModel.colFolderId} = '$folderId'"
+        : '';
     final rows = await db.rawQuery(
         'SELECT * FROM ${CardModel.tableName} $where ORDER BY ${CardModel.colSequence} ASC');
     if (rows.isEmpty) return [];
     return rows.map((json) => CardModel.fromJson(json)).toList();
   }
 
-  static Future<List<CardModel>> getListRandom(
-      [String bookId = '', int limit = 50]) async {
+  static Future<List<CardModel>> getList(
+      {String folderId = '',
+      String orderBy = 'RANDOM()',
+      String orderMethod = 'ASC',
+      int limit = 50}) async {
     final Database db = await instance.database;
     String where =
-        bookId != '' ? "WHERE ${CardModel.colBookId} = '$bookId'" : '';
+        folderId != '' ? "WHERE ${CardModel.colFolderId} = '$folderId'" : '';
+
+    final rows = await db.rawQuery(
+        'SELECT * FROM ${CardModel.tableName} $where ORDER BY $orderBy $orderMethod LIMIT $limit');
+    if (rows.isEmpty) return [];
+    return rows.map((json) => CardModel.fromJson(json)).toList();
+  }
+
+  static Future<List<CardModel>> getListRandom(
+      [String folderId = '', int limit = 50]) async {
+    final Database db = await instance.database;
+    String where =
+        folderId != '' ? "WHERE ${CardModel.colFolderId} = '$folderId'" : '';
     final rows = await db.rawQuery(
         'SELECT * FROM ${CardModel.tableName} $where ORDER BY RANDOM() LIMIT $limit');
     if (rows.isEmpty) return [];

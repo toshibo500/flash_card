@@ -1,27 +1,30 @@
-import 'package:flash_card/models/book_model.dart';
+import 'package:flash_card/models/card_model.dart';
 
 class FolderModel {
   static const String tableName = 'folders';
   static const String colId = 'id';
+  static const String colParentId = 'parentId';
   static const String colTitle = 'title';
   static const String colSummary = 'summary';
   static const String colSequence = 'sequence';
   static const String colQuizedAt = 'quizedAt';
 
   final String id;
+  final String parentId;
   final String title;
   final String summary;
   final int sequence;
   late DateTime? quizedAt;
 
-  List<BookModel>? books = [];
+  List<CardModel> cards = [];
 
-  FolderModel(this.id, this.title, this.summary, this.sequence,
+  FolderModel(this.id, this.parentId, this.title, this.summary, this.sequence,
       [this.quizedAt]);
 
   factory FolderModel.fromJson(dynamic json) {
     return FolderModel(
       json[colId] as String,
+      json[colParentId] as String,
       json[colTitle] as String,
       json[colSummary] as String,
       json[colSequence] as int,
@@ -33,11 +36,12 @@ class FolderModel {
 
   @override
   String toString() {
-    return '{$id, $title, $summary, $sequence, $quizedAt}';
+    return '{$id, $parentId, $title, $summary, $sequence, $quizedAt}';
   }
 
   Map<String, dynamic> toJson() => {
         colId: id,
+        colParentId: parentId,
         colTitle: title,
         colSummary: summary,
         colSequence: sequence,

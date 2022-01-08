@@ -19,7 +19,7 @@ class DrawerMenuViewModel extends ChangeNotifier {
 
   void get() {
     PreferenceRepository.get().then((value) {
-      _preference = value!;
+      _preference = value;
       notifyListeners();
     });
   }

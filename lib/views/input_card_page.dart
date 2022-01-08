@@ -35,10 +35,8 @@ class _InputCardPage extends State<InputCardPage> {
 
   void initPreference() async {
     PreferenceRepository.get().then((value) {
-      if (value != null) {
-        _langIds[0] = value.frontSideLang!;
-        _langIds[1] = value.backSideLang!;
-      }
+      _langIds[0] = value.frontSideLang!;
+      _langIds[1] = value.backSideLang!;
     });
   }
 
@@ -57,10 +55,12 @@ class _InputCardPage extends State<InputCardPage> {
       ),
       body: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        _buildTextField(_textCtl[0], L10n.of(context)!.cardFront, ''),
+        _buildTextField(_textCtl[0], L10n.of(context)!.cardFront,
+            L10n.of(context)!.createCardFrontHint),
 //            'Input word or phrase for front side of the card'),
         Container(alignment: Alignment.centerRight, child: _buildMicIcon(0)),
-        _buildTextField(_textCtl[1], L10n.of(context)!.cardBack, ''),
+        _buildTextField(_textCtl[1], L10n.of(context)!.cardBack,
+            L10n.of(context)!.createCardBackHint),
 //            'Input word or phrase for back side of the card'),
         Container(alignment: Alignment.centerRight, child: _buildMicIcon(1)),
         Container(

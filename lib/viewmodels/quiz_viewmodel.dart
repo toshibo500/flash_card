@@ -2,33 +2,28 @@ import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/repositories/quiz_repository.dart';
 import 'package:flash_card/models/quiz_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/repositories/card_repository.dart';
 import 'package:flash_card/models/preference_model.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
 import 'package:flash_card/globals.dart';
-import 'package:flash_card/models/repositories/book_repository.dart';
 import 'package:flash_card/models/repositories/folder_repository.dart';
 
 class QuizViewModel extends ChangeNotifier {
-  BookModel _selectedBook = BookModel('', '', '', '', 0);
+  FolderModel _selectedFolder = FolderModel('', '', '', '', 0);
   late List<CardModel> _cardList = [];
   int _index = 0;
   late CardModel _item = CardModel('', '', '', '', 0);
-  int _numberOfQuestions = 50;
+  int _quizNum = 50;
   late QuizModel _quiz;
-  FolderModel _folder = FolderModel('', '', '', 0);
   PreferenceModel _preference = PreferenceModel();
 
-  QuizViewModel(BookModel selectedBook, int numberOfQuestions) {
-    this.selectedBook = selectedBook;
-    _numberOfQuestions = numberOfQuestions;
-    FolderRepository.getById(selectedBook.folderId).then((value) {
-      _folder = value!;
+  QuizViewModel(FolderModel selectedFolder, int quizNum) {
+    this.selectedFolder = selectedFolder;
+    _quizNum = quizNum;
+    getPreference().then((value) {
+      startQuiz();
     });
-    getPreference();
-    startQuiz();
   }
 
   List<CardModel> get items => _cardList;
@@ -38,15 +33,13 @@ class QuizViewModel extends ChangeNotifier {
   QuizModel get quiz => _quiz;
 
   PreferenceModel get preference => _preference;
-  void getPreference() async {
-    await PreferenceRepository.get().then((value) {
-      _preference = value!;
-    });
+  Future<void> getPreference() async {
+    _preference = await PreferenceRepository.get();
   }
 
-  get selectedBook => _selectedBook;
-  set selectedBook(book) {
-    _selectedBook = book;
+  get selectedFolder => _selectedFolder;
+  set selectedFolder(folder) {
+    _selectedFolder = folder;
   }
 
   String get question {
@@ -68,15 +61,24 @@ class QuizViewModel extends ChangeNotifier {
   }
 
   Future<void> _getCardList(int? limit) async {
-    _cardList = await CardRepository.getListRandom(
-        _selectedBook.id, limit ?? _numberOfQuestions);
+    String? orderBy = Globals().quizOrderItems[_preference.quizOrder];
+    String? orderMethod =
+        Globals().quizOrderMethodItems[_preference.quizOrderMethod];
+
+    _cardList = await CardRepository.getList(
+        folderId: _selectedFolder.id,
+        orderBy: orderBy!,
+        orderMethod: _preference.quizOrder == Globals.quizOrderRandom
+            ? ''
+            : orderMethod!,
+        limit: limit ?? _quizNum);
   }
 
   void startQuiz() {
-    QuizRepository.create(_selectedBook.id, DateTime.now()).then((value) {
+    QuizRepository.create(_selectedFolder.id, DateTime.now()).then((value) {
       _quiz = value!;
     });
-    _getCardList(_numberOfQuestions).then((value) {
+    _getCardList(_quizNum).then((value) {
       _index = 0;
       if (_cardList.isNotEmpty) {
         _item = _cardList[_index];
@@ -86,12 +88,11 @@ class QuizViewModel extends ChangeNotifier {
   }
 
   bool next() {
-    _quiz.numberOfQuestions++;
+    _quiz.quizNum++;
     DateTime dt = DateTime.now();
     _quiz.endedAt = dt;
     QuizRepository.update(_quiz);
     updateFolder(dt);
-    updateBook(dt);
 
     _index++;
     if (isEnded) {
@@ -104,15 +105,15 @@ class QuizViewModel extends ChangeNotifier {
   }
 
   void correctAnswer() async {
-    _quiz.numberOfCorrectAnswers++;
-    _item.numberOfCorrectAnswers++;
+    _quiz.correctNum++;
+    _item.correctNum++;
     DateTime dt = DateTime.now();
     _item.quizedAt = dt;
     await CardRepository.update(_item);
   }
 
   void wrongAnswer() async {
-    _item.numberOfWrongAnswers++;
+    _item.wrongNum++;
     _item.quizedAt = DateTime.now();
     DateTime dt = DateTime.now();
     _item.quizedAt = dt;
@@ -120,12 +121,7 @@ class QuizViewModel extends ChangeNotifier {
   }
 
   void updateFolder(DateTime time) {
-    _folder.quizedAt = time;
-    FolderRepository.updateWithModel(_folder);
-  }
-
-  void updateBook(DateTime time) {
-    _selectedBook.quizedAt = time;
-    BookRepository.updateWithModel(_selectedBook);
+    _selectedFolder.quizedAt = time;
+    FolderRepository.updateWithModel(_selectedFolder);
   }
 }

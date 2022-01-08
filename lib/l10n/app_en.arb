@@ -14,9 +14,11 @@
   "quizMode": "Mode",
   "quizModeDictation": "Dictation",
   "quizModeSelf": "Self mode",
-  "numberOfQuestion": "Questions",
+  "quizNum": "Questions",
   "numberOfCorrect": "Marks",
   "folderName": "Folder Name",
+  "createFolderMemuTitle": "Folder",
+  "createFolderNameHint": "Input folder name",
   "bookName": "Flashcard Name",
   "ok": "OK",
   "cancel": "Cancel",
@@ -38,10 +40,27 @@
   "deleteConfirmation": "Would you like to remove?",
   "deleteDone": "done",
   "createCardPageTitle": "Create a card",
+  "createCardMemuTitle": "Card",
   "privacyPolicy": "Privacy Policy",
   "privacyPolicyURL": "https://tkgapps.com/chocobanana/privacy/",
   "aboutApp": "About this app",
   "aboutAppURL": "https://tkgapps.com/chocobanana/aboutapp/",
   "dateTimeFormat": "yyyy-MM-dd HH:mm",
-  "answerHintText": "Enter your answer"
+  "answerHintText": "Enter your answer",
+  "quizOrder": "Order",
+  "quizOrderItems": "{key, plural, =0 {Random} =1 {Card Order} =2 {Quiz Date} other {Marks}}",
+  "@quizOrderItems": {
+    "placeholders": {
+        "key": {}
+    }
+  },
+  "quizOrderMethod": "Order Method",
+  "quizOrderMethodItems": "{key, plural, =0 {ASC} other {DESC}}",
+  "@quizOrderMethodItems": {
+    "placeholders": {
+        "key": {}
+    }
+  },
+  "createCardFrontHint": "Input front side word/phrase",
+  "createCardBackHint": "Input front side word/phrase"
 }
