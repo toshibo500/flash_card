@@ -167,7 +167,7 @@ class _FolderPage extends StatelessWidget {
           ),
         ]),
         floatingActionButton: Visibility(
-          visible: !_folderViweModel.hasSubFolders,
+          visible: _folderViweModel.hasCard,
           child: FloatingActionButton(
             onPressed: () async {
               await showModalBottomSheet<int>(

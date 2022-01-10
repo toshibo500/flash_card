@@ -99,7 +99,7 @@ class _FileListView extends State<FileListView> {
               Container(
                   alignment: Alignment.topLeft,
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  height: widget.viewModel.editMode ? 80 : 70,
+                  height: widget.viewModel.editMode ? 80 : 68,
                   child: SingleChildScrollView(
                       child: Text(text,
                           style: Theme.of(context).textTheme.headline5,
@@ -107,7 +107,7 @@ class _FileListView extends State<FileListView> {
               Visibility(
                   visible: !widget.viewModel.editMode,
                   child: SizedBox(
-                    height: 15,
+                    height: 20,
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -119,9 +119,8 @@ class _FileListView extends State<FileListView> {
                                   _tts.setLanguage(locale);
                                   _tts.speak(text);
                                 },
-                                iconSize: 16,
                                 alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                                padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
                                 color:
                                     Globals.buttonColor1, // Globals.iconColor2,
                                 icon: const Icon(Icons.volume_up_rounded)),

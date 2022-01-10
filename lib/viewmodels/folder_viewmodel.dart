@@ -27,6 +27,7 @@ class FolderViewModel extends ChangeNotifier {
   }
 
   bool get hasSubFolders => _folderList.isNotEmpty;
+  bool get hasCard => _cardList.isNotEmpty;
   bool get isEmptyFolder => _folderList.isEmpty && _cardList.isEmpty;
 
   bool get editMode => _editMode;
