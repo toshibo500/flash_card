@@ -88,6 +88,8 @@ class _QuizPage extends StatelessWidget {
                     alignment: Alignment.topLeft,
                     decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(8.0)),
                     ),
                     padding: const EdgeInsets.all(10),
                     height: 180,
@@ -193,17 +195,20 @@ class _QuizPage extends StatelessWidget {
             Visibility(
                 visible: true,
                 child: Container(
-                  width: 25,
-                  alignment: Alignment.topRight,
-                  margin: EdgeInsets.zero,
-                  child: IconButton(
-                      color: Theme.of(context).disabledColor,
-                      padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                      onPressed: () {
-                        _textCtr.text = '';
-                      },
-                      icon: const Icon(Icons.close_rounded)),
-                ))
+                    width: 25,
+                    alignment: Alignment.topRight,
+                    margin: EdgeInsets.zero,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                              color: Theme.of(context).disabledColor,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                              onPressed: () {
+                                _textCtr.text = '';
+                              },
+                              icon: const Icon(Icons.close_rounded)),
+                        ])))
           ],
         ),
       ),
@@ -211,6 +216,7 @@ class _QuizPage extends StatelessWidget {
           height: 40,
           alignment: Alignment.centerRight,
           child: IconButton(
+            iconSize: 32,
             onPressed: () async {
               int p = _textCtr.selection.start;
               String txt = await showSttDialog(
