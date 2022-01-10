@@ -8,7 +8,8 @@ import 'package:flip_card/flip_card.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
-import 'package:flutter_tts/flutter_tts.dart';
+// import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flash_card/utilities/tts.dart';
 
 class FileListView extends StatefulWidget {
   const FileListView({Key? key, required this.viewModel, this.nextPage = ""})
@@ -21,21 +22,12 @@ class FileListView extends StatefulWidget {
 }
 
 class _FileListView extends State<FileListView> {
-  late FlutterTts tts;
+  final _tts = Tts();
 
   @override
   void initState() {
-    initTts();
+    _tts.initTts();
     super.initState();
-  }
-
-  void initTts() async {
-    tts = FlutterTts();
-    await tts.setVolume(1.0);
-    await tts.setSpeechRate(0.4);
-    await tts.setSpeechRate(0.4);
-    await tts.setIosAudioCategory(IosTextToSpeechAudioCategory.playback,
-        [IosTextToSpeechAudioCategoryOptions.defaultToSpeaker]);
   }
 
   @override
@@ -124,8 +116,8 @@ class _FileListView extends State<FileListView> {
                             alignment: Alignment.centerRight,
                             child: IconButton(
                                 onPressed: () async {
-                                  await tts.setLanguage(locale);
-                                  await tts.speak(text);
+                                  _tts.setLanguage(locale);
+                                  _tts.speak(text);
                                 },
                                 iconSize: 16,
                                 alignment: Alignment.centerRight,

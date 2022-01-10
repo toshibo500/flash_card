@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/utilities/stt.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
@@ -31,13 +32,16 @@ class _SttDialog extends State<SttDialog> {
   }
 
   void onSttError(SpeechRecognitionError error) {
-    // ignore: avoid_print
-    // print('Received listener status: $error, listening: ${_stt.isListening}');
+    if (kDebugMode) {
+      print('Received listener status: $error, listening: ${_stt.isListening}');
+    }
   }
 
   void onSttStatus(String status) {
-    // ignore: avoid_print
-    // print('Received listener status: $status, listening: ${_stt.isListening}');
+    if (kDebugMode) {
+      print(
+          'Received listener status: $status, listening: ${_stt.isListening}');
+    }
     setState(() {
       if (status == 'done' && !_stt.isListening) {
         _level = 0.0;
@@ -55,9 +59,10 @@ class _SttDialog extends State<SttDialog> {
   }
 
   void resultListener(SpeechRecognitionResult result) {
-    // ignore: avoid_print
-    // print(
-    // 'Result listener final: ${result.finalResult}, words: ${result.recognizedWords}');
+    if (kDebugMode) {
+      print(
+          'Result listener final: ${result.finalResult}, words: ${result.recognizedWords}');
+    }
     if (mounted) {
       setState(() {
         _lastwords = result.recognizedWords;
@@ -83,8 +88,9 @@ class _SttDialog extends State<SttDialog> {
     setState(() {
       _level = level;
     });
-    // ignore: avoid_print
-    // print('sound level $_level');
+    if (kDebugMode) {
+      print('sound level $_level');
+    }
   }
 
   void stopListening() {

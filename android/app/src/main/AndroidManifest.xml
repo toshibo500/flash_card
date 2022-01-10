@@ -12,7 +12,7 @@
   </queries>
    <application
         android:label="Choco Banana"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
