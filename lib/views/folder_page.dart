@@ -18,7 +18,9 @@ class FolderPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => FolderViewModel(folder),
-      child: Scaffold(body: _FolderPage(pageTitle: folder.title)),
+      child: Scaffold(
+        body: _FolderPage(pageTitle: folder.title),
+      ),
     );
   }
 }

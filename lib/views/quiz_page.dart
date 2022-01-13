@@ -4,11 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:flash_card/viewmodels/quiz_viewmodel.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'dart:math' as math;
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flash_card/views/components/stt_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:flash_card/views/components/correct_popup_dialog.dart';
 
 class QuizPageParameters {
   QuizPageParameters(
@@ -239,15 +239,21 @@ class _QuizPage extends StatelessWidget {
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Globals.buttonColor2,
+              primary: Globals.incorrectColor,
               onPrimary: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: Text(
-              L10n.of(context)!.skip,
-              style: Globals.buttonTextStyle,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Globals().incorrectButtonIcon,
+                Text(
+                  L10n.of(context)!.skip,
+                  style: Globals.buttonTextStyle,
+                )
+              ],
             ),
             onPressed: () {
               viewmodel.wrongAnswer();
@@ -265,11 +271,13 @@ class _QuizPage extends StatelessWidget {
   void mark(BuildContext context, QuizViewModel viewmodel, String text) {
     text = text.toLowerCase().trim();
     if (text.compareTo(viewmodel.answer.toLowerCase().trim()) == 0) {
-      Fluttertoast.showToast(msg: L10n.of(context)!.correct);
+      // Fluttertoast.showToast(msg: L10n.of(context)!.correct);
       viewmodel.correctAnswer();
       if (!viewmodel.next()) {
         Navigator.of(context)
             .pushNamed('/quizResultPage', arguments: viewmodel.quiz.id);
+      } else {
+        CorrectPopupDialog().popup(context);
       }
     }
   }
@@ -283,16 +291,20 @@ class _QuizPage extends StatelessWidget {
             width: 130,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Globals.buttonColor2,
+                primary: Globals.incorrectColor,
                 onPrimary: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: Text(
-                L10n.of(context)!.incorrect,
-                style: Globals.buttonTextStyle,
-              ),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Globals().incorrectButtonIcon,
+                Text(
+                  L10n.of(context)!.incorrect,
+                  style: Globals.buttonTextStyle,
+                )
+              ]),
               onPressed: () {
                 viewmodel.wrongAnswer();
                 if (!viewmodel.next()) {
@@ -305,16 +317,20 @@ class _QuizPage extends StatelessWidget {
             width: 130,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Globals.buttonColor1,
+                primary: Globals.correctColor,
                 onPrimary: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: Text(
-                L10n.of(context)!.correct,
-                style: Globals.buttonTextStyle,
-              ),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Globals().correctButtonIcon,
+                Text(
+                  L10n.of(context)!.correct,
+                  style: Globals.buttonTextStyle,
+                )
+              ]),
               onPressed: () {
                 viewmodel.correctAnswer();
                 if (!viewmodel.next()) {

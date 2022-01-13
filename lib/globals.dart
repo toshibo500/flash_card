@@ -49,6 +49,23 @@ class Globals {
     _folderIcon = const Icon(Icons.folder_rounded, color: iconColor1);
     // カードアイコン
     _cardIcon = const Icon(Icons.style_rounded, color: iconColor2);
+    // 正解アイコン
+    _correctPopupIcon = const Icon(
+      Icons.check_circle_rounded,
+      color: correctColor,
+      size: 38,
+    );
+    // 解アイコン
+    _correctButtonIcon = const Icon(
+      Icons.check_rounded,
+      color: Colors.white,
+      size: 22,
+    ); // 不正解アイコン
+    _incorrectButtonIcon = const Icon(
+      Icons.clear_rounded,
+      color: Colors.white,
+      size: 22,
+    );
   }
 
   // チョコ色
@@ -76,6 +93,11 @@ class Globals {
   static const Color panelBtnForeColor2 = Colors.lightBlue;
   static const Color panelBtnForeColor3 = Colors.white;
 
+  // 正解色
+  static const Color correctColor = Colors.green;
+  // 不正解色
+  static const Color incorrectColor = Colors.red;
+
   // panelボタンスタイル
   static ButtonStyle panelbtnStyle = ElevatedButton.styleFrom(
       primary: panelBtnForeColor2,
@@ -94,6 +116,15 @@ class Globals {
   // カードアイコン
   late Icon _cardIcon;
   Icon get cardIcon => _cardIcon;
+  // 正解アイコン
+  late Icon _correctPopupIcon;
+  Icon get correctPopupIcon => _correctPopupIcon;
+  // 正解ボタンアイコン
+  late Icon _correctButtonIcon;
+  Icon get correctButtonIcon => _correctButtonIcon;
+  // 不正解ボタンアイコン
+  late Icon _incorrectButtonIcon;
+  Icon get incorrectButtonIcon => _incorrectButtonIcon;
 
   // テキストスタイル
   static const TextStyle titleTextStyle = TextStyle(
@@ -112,10 +143,10 @@ class Globals {
   );
   static const TextStyle buttonTextStyle = TextStyle(
     color: Colors.white,
-    fontWeight: FontWeight.w200,
+    fontWeight: FontWeight.w500,
     fontFamily: 'Roboto',
     letterSpacing: 1,
-    fontSize: 14.0,
+    fontSize: 15.0,
   );
   static ButtonStyle buttonStyle = ElevatedButton.styleFrom(
       primary: buttonColor1,
@@ -126,4 +157,7 @@ class Globals {
 
   static const TextStyle dataTableColumnStyle =
       TextStyle(fontStyle: FontStyle.italic, fontSize: 12);
+
+  static const TextStyle correctPpopUpStyle =
+      TextStyle(fontSize: 38, color: correctColor);
 }
