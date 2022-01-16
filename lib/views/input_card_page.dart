@@ -60,24 +60,12 @@ class _InputCardPage extends State<InputCardPage> {
       ),
       body: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        _buildTextField(
-            _textCtl[0],
-            L10n.of(context)!.cardFront,
-            // ignore: unnecessary_string_escapes
-            _langNames[0].replaceFirst(RegExp('\\(.*\\)'), ''),
+        _buildTextField(0, L10n.of(context)!.cardFront,
             L10n.of(context)!.createCardFrontHint),
-//            'Input word or phrase for front side of the card'),
-        Container(alignment: Alignment.centerRight, child: _buildMicIcon(0)),
-        _buildTextField(
-            _textCtl[1],
-            L10n.of(context)!.cardBack,
-            // ignore: unnecessary_string_escapes
-            _langNames[1].replaceFirst(RegExp('\\(.*\\)'), ''),
+        _buildTextField(1, L10n.of(context)!.cardBack,
             L10n.of(context)!.createCardBackHint),
-//            'Input word or phrase for back side of the card'),
-        Container(alignment: Alignment.centerRight, child: _buildMicIcon(1)),
         Container(
-            padding: const EdgeInsets.only(top: 20), child: _buildButtons()),
+            padding: const EdgeInsets.only(top: 30), child: _buildButtons()),
       ])),
     );
   }
@@ -110,6 +98,7 @@ class _InputCardPage extends State<InputCardPage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Container(
+                width: 100,
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop<bool>(context, false),
@@ -118,7 +107,7 @@ class _InputCardPage extends State<InputCardPage> {
                   style: Globals.buttonStyle,
                 )),
             Container(
-                width: 110,
+                width: 100,
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
                   style: Globals.buttonStyle,
@@ -145,8 +134,9 @@ class _InputCardPage extends State<InputCardPage> {
 
   Container _buildMicIcon(int index) {
     return Container(
-        width: 40,
-        height: 40,
+        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        width: 32,
+        height: 32,
         alignment: Alignment.center,
         child: IconButton(
           onPressed: () async {
@@ -156,48 +146,70 @@ class _InputCardPage extends State<InputCardPage> {
               _textCtl[index].text += txt;
             });
           },
+          iconSize: 32,
           icon: const Icon(Icons.mic_rounded),
           color: Colors.blue,
         ));
   }
 
-  Column _buildTextField(TextEditingController txtClt, String title,
-      String lang, String hintText) {
+  Column _buildTextField(int index, String title, String hintText) {
     return Column(
       children: <Widget>[
         Container(
             alignment: Alignment.topLeft,
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 Text(
                   title,
                   style: Globals.titleTextStyle,
                 ),
-                Text(
-                  lang,
-                  style: Globals.subtitleTextStyle,
+                // Text(
+                //   lang,
+                //   style: Globals.subtitleTextStyle,
+                // ),
+                TextButton(
+                  onPressed: () {},
+                  child: Text(
+                    _langNames[index],
+                  ),
                 ),
               ],
             )),
-        SizedBox(
-            child: TextField(
-          controller: txtClt,
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            hintText: hintText,
-            border: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.grey,
-              ),
+        Container(
+            margin: const EdgeInsets.fromLTRB(5, 0, 5, 20),
+            alignment: Alignment.topLeft,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: const BorderRadius.all(Radius.circular(8.0)),
             ),
-          ),
-          autofocus: true,
-          keyboardType: TextInputType.multiline,
-          maxLines: null,
-          minLines: 4,
-        ))
+            height: 180,
+            child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+              Expanded(
+                  child: SingleChildScrollView(
+                      child: TextField(
+                controller: _textCtl[index],
+                style: Globals.contentTextStyle,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                  hintText: hintText,
+                ),
+                maxLines: 100,
+                autofocus: true,
+                keyboardType: TextInputType.multiline,
+              ))),
+              Container(
+                  width: 35,
+                  alignment: Alignment.topLeft,
+                  margin: const EdgeInsets.fromLTRB(0, 0, 5, 10),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        _buildMicIcon(index),
+                      ]))
+            ]))
       ],
     );
   }

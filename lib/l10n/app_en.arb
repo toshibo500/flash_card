@@ -62,6 +62,6 @@
     }
   },
   "createCardFrontHint": "Input front side word/phrase",
-  "createCardBackHint": "Input front side word/phrase",
+  "createCardBackHint": "Input back side word/phrase",
   "correctPopUpText": "Correct!"
 }
