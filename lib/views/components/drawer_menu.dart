@@ -47,6 +47,8 @@ class _SideDrawer extends StatelessWidget {
                 ),
                 title: Text(L10n.of(context)!.settings),
                 onTap: () {
+                  // Drawerを閉じてから設定を開く
+                  Navigator.pop(context);
                   Navigator.of(context).pushNamed('/settingsPage');
                 },
               ),
@@ -55,6 +57,8 @@ class _SideDrawer extends StatelessWidget {
                     color: Globals.iconColor2),
                 title: Text(L10n.of(context)!.privacyPolcy),
                 onTap: () {
+                  // Drawerを閉じてから設定を開く
+                  Navigator.pop(context);
                   Navigator.of(context).pushNamed('/webViewPage',
                       arguments: WevViewPageParameters(
                           title: L10n.of(context)!.privacyPolcy,
@@ -68,6 +72,8 @@ class _SideDrawer extends StatelessWidget {
                 ),
                 title: Text(L10n.of(context)!.aboutApp),
                 onTap: () {
+                  // Drawerを閉じてから設定を開く
+                  Navigator.pop(context);
                   Navigator.of(context).pushNamed('/webViewPage',
                       arguments: WevViewPageParameters(
                           title: L10n.of(context)!.aboutApp,

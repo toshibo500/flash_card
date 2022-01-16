@@ -111,6 +111,9 @@ class _SettingsPage extends StatelessWidget {
                         context: context, items: _langItems);
                     if (key != null) {
                       _drawerMenuViewModel.preference.frontSideLang = key;
+                      // クイズページの表示用に名前も保存しておく
+                      _drawerMenuViewModel.preference.frontSideLangName =
+                          _langItems[key];
                       _drawerMenuViewModel
                           .update(_drawerMenuViewModel.preference);
                     }
@@ -131,6 +134,10 @@ class _SettingsPage extends StatelessWidget {
                         context: context, items: _langItems);
                     if (key != null) {
                       _drawerMenuViewModel.preference.backSideLang = key;
+                      // クイズページの表示用に名前も保存しておく
+                      _drawerMenuViewModel.preference.backSideLangName =
+                          _langItems[key];
+
                       _drawerMenuViewModel
                           .update(_drawerMenuViewModel.preference);
                     }

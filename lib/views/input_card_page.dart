@@ -18,6 +18,7 @@ class _InputCardPage extends State<InputCardPage> {
     TextEditingController(text: '')
   ];
   final List<String> _langIds = ['', ''];
+  final List<String> _langNames = ['', ''];
   late bool _isNew;
 
   @override
@@ -35,8 +36,12 @@ class _InputCardPage extends State<InputCardPage> {
 
   void initPreference() async {
     PreferenceRepository.get().then((value) {
-      _langIds[0] = value.frontSideLang!;
-      _langIds[1] = value.backSideLang!;
+      setState(() {
+        _langIds[0] = value.frontSideLang ?? '';
+        _langIds[1] = value.backSideLang ?? '';
+        _langNames[0] = value.frontSideLangName ?? '';
+        _langNames[1] = value.backSideLangName ?? '';
+      });
     });
   }
 
@@ -55,11 +60,19 @@ class _InputCardPage extends State<InputCardPage> {
       ),
       body: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        _buildTextField(_textCtl[0], L10n.of(context)!.cardFront,
+        _buildTextField(
+            _textCtl[0],
+            L10n.of(context)!.cardFront,
+            // ignore: unnecessary_string_escapes
+            _langNames[0].replaceFirst(RegExp('\\(.*\\)'), ''),
             L10n.of(context)!.createCardFrontHint),
 //            'Input word or phrase for front side of the card'),
         Container(alignment: Alignment.centerRight, child: _buildMicIcon(0)),
-        _buildTextField(_textCtl[1], L10n.of(context)!.cardBack,
+        _buildTextField(
+            _textCtl[1],
+            L10n.of(context)!.cardBack,
+            // ignore: unnecessary_string_escapes
+            _langNames[1].replaceFirst(RegExp('\\(.*\\)'), ''),
             L10n.of(context)!.createCardBackHint),
 //            'Input word or phrase for back side of the card'),
         Container(alignment: Alignment.centerRight, child: _buildMicIcon(1)),
@@ -148,16 +161,25 @@ class _InputCardPage extends State<InputCardPage> {
         ));
   }
 
-  Column _buildTextField(
-      TextEditingController txtClt, String title, String hintText) {
+  Column _buildTextField(TextEditingController txtClt, String title,
+      String lang, String hintText) {
     return Column(
       children: <Widget>[
         Container(
             alignment: Alignment.topLeft,
             padding: const EdgeInsets.all(10),
-            child: Text(
-              title,
-              style: Globals.titleTextStyle,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: Globals.titleTextStyle,
+                ),
+                Text(
+                  lang,
+                  style: Globals.subtitleTextStyle,
+                ),
+              ],
             )),
         SizedBox(
             child: TextField(

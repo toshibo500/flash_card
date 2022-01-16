@@ -39,13 +39,13 @@ class _FolderPage extends StatelessWidget {
     Widget _bottomPanel = Container(
       height: 100,
       alignment: Alignment.topCenter,
-      padding: const EdgeInsets.fromLTRB(10, 0, 10, 5),
+      padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
       color: Theme.of(context).backgroundColor,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Container(
-            width: 100,
+            width: 50,
             alignment: Alignment.centerLeft,
             child: IconButton(
               color: Globals.panelBtnForeColor1,
@@ -70,30 +70,7 @@ class _FolderPage extends StatelessWidget {
             ),
           ),
           Container(
-            width: 120,
-            alignment: Alignment.centerRight,
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              IconButton(
-                color: Globals.panelBtnForeColor3,
-                icon: const Icon(
-                  Icons.list_rounded,
-                  size: 45,
-                ),
-                onPressed: () {
-                  Navigator.of(context).pushNamed('/quizResultListPage',
-                      arguments: _folderViweModel.selectedFolder.id);
-                },
-              ),
-              Container(
-                padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-                child: Text(
-                  L10n.of(context)!.resultList,
-                  style: const TextStyle(
-                      color: Globals.panelBtnForeColor3, fontSize: 10),
-                ),
-              )
-            ]),
+            width: 50,
           ),
         ],
       ),
@@ -110,6 +87,18 @@ class _FolderPage extends StatelessWidget {
                 )
               : null,
           actions: [
+            Visibility(
+                visible: _folderViweModel.hasCard,
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.history_rounded,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/quizResultListPage',
+                        arguments: _folderViweModel.selectedFolder.id);
+                  },
+                  tooltip: L10n.of(context)!.resultList,
+                )),
             IconButton(
                 icon: Icon(_folderViweModel.editMode
                     ? Icons.done

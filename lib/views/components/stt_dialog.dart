@@ -124,7 +124,8 @@ class _SttDialog extends State<SttDialog> {
         contentPadding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(25.0))),
-        content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+        content: SingleChildScrollView(
+            child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
           Text(
             _stt.currentLocaleName,
             style: const TextStyle(fontSize: 12.0),
@@ -136,7 +137,7 @@ class _SttDialog extends State<SttDialog> {
           ),
           _buildMicIcon(),
           _buildConvertIcon()
-        ]),
+        ])),
         actionsAlignment: MainAxisAlignment.spaceAround,
         actions: [
           TextButton(

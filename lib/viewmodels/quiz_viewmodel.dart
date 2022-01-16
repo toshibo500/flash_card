@@ -54,10 +54,22 @@ class QuizViewModel extends ChangeNotifier {
         : _item.front;
   }
 
-  String get localeId {
+  String get questionLocaleId {
     return _preference.question == Globals.cardFrontKey
-        ? _preference.backSideLang!
-        : _preference.frontSideLang!;
+        ? _preference.frontSideLang ?? ''
+        : _preference.backSideLang ?? '';
+  }
+
+  String get answerLocaleId {
+    return _preference.question == Globals.cardFrontKey
+        ? _preference.backSideLang ?? ''
+        : _preference.frontSideLang ?? '';
+  }
+
+  String get answerLocaleName {
+    return _preference.question == Globals.cardFrontKey
+        ? _preference.backSideLangName ?? ''
+        : _preference.frontSideLangName ?? '';
   }
 
   Future<void> _getCardList(int? limit) async {

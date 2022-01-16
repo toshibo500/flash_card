@@ -74,19 +74,27 @@ class _FileListView extends State<FileListView> {
           // print(status);
         },
         front: _buildFlipCardContent(
-            front, widget.viewModel.preference.frontSideLang, index),
+          front,
+          widget.viewModel.preference.frontSideLang,
+          index,
+        ),
         back: _buildFlipCardContent(
-            back, widget.viewModel.preference.backSideLang, index),
+            back,
+            widget.viewModel.preference.backSideLang,
+            index,
+            Globals().cardBackSideColor),
       ),
     );
   }
 
-  Container _buildFlipCardContent(String text, String locale, int index) {
+  Container _buildFlipCardContent(String text, String locale, int index,
+      [Color? color]) {
     return Container(
       padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey),
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+        color: color,
       ),
       height: 100,
       child: Row(
@@ -102,7 +110,7 @@ class _FileListView extends State<FileListView> {
                   height: widget.viewModel.editMode ? 80 : 68,
                   child: SingleChildScrollView(
                       child: Text(text,
-                          style: Theme.of(context).textTheme.headline5,
+                          style: Globals().cardTextStye,
                           overflow: TextOverflow.clip))),
               Visibility(
                   visible: !widget.viewModel.editMode,
@@ -148,7 +156,7 @@ class _FileListView extends State<FileListView> {
           children: <Widget>[
             const Icon(
               Icons.check_circle_rounded,
-              color: Globals.iconColor2,
+              color: Globals.correctColor,
               size: 16.0,
             ),
             SizedBox(
@@ -156,8 +164,8 @@ class _FileListView extends State<FileListView> {
               child: Text(card.correctNum.toString()),
             ),
             const Icon(
-              Icons.not_interested_outlined,
-              color: Globals.iconColor3,
+              Icons.clear_rounded,
+              color: Globals.incorrectColor,
               size: 16.0,
             ),
             SizedBox(

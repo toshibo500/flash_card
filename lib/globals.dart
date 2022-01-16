@@ -66,7 +66,15 @@ class Globals {
       color: Colors.white,
       size: 22,
     );
+    // カード裏面色
+    cardBackSideColor = Theme.of(context).highlightColor;
+
+    // カードテキストスタイル
+    cardTextStye = Theme.of(context).textTheme.headline5!;
   }
+
+  // カードテキストスタイル
+  late TextStyle cardTextStye;
 
   // チョコ色
   static const Color chocoColor = Color(0xFF6c3524);
@@ -89,9 +97,12 @@ class Globals {
   static const Color floatingBtnBackColor = chocoColor;
   static const Color floatingBtnForeColor = bananaColor;
   // panelボタン色
-  static const Color panelBtnForeColor1 = Colors.white;
+  static const Color panelBtnForeColor1 = Colors.lightBlue;
   static const Color panelBtnForeColor2 = Colors.lightBlue;
   static const Color panelBtnForeColor3 = Colors.white;
+
+  // カード裏色
+  late Color cardBackSideColor;
 
   // 正解色
   static const Color correctColor = Colors.green;
@@ -101,10 +112,11 @@ class Globals {
   // panelボタンスタイル
   static ButtonStyle panelbtnStyle = ElevatedButton.styleFrom(
       primary: panelBtnForeColor2,
+      fixedSize: const Size(230, 40),
       textStyle: const TextStyle(fontWeight: FontWeight.w600),
       // onPrimary: panelBtnForeColor2,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(20),
       ));
 
   // フォルダアイコン
@@ -133,6 +145,15 @@ class Globals {
     fontFamily: 'Roboto',
     letterSpacing: 1,
     fontSize: 18.0,
+  );
+  // テキストスタイル
+  static const TextStyle subtitleTextStyle = TextStyle(
+    //color: Colors.black54,
+    fontWeight: FontWeight.w500,
+    color: Colors.black54,
+    fontFamily: 'Roboto',
+    letterSpacing: 1,
+    fontSize: 16.0,
   );
   static const TextStyle contentTextStyle = TextStyle(
 //    color: Colors.black,
