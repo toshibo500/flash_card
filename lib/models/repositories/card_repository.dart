@@ -7,7 +7,11 @@ class CardRepository {
 
   static Future<CardModel?> create(
       String folderId, String front, String back, int sequence,
-      [int? quizNum, int? correctNum, DateTime? quizedAt]) async {
+      {int? quizNum,
+      int? correctNum,
+      DateTime? quizedAt,
+      String? frontLang,
+      String? backLang}) async {
     final row = CardModel(
         DateTime.now().millisecondsSinceEpoch.toString(),
         folderId,
@@ -16,8 +20,11 @@ class CardRepository {
         sequence,
         quizNum ?? 0,
         correctNum ?? 0,
-        quizedAt);
+        quizedAt,
+        frontLang,
+        backLang);
     final db = await instance.database;
+    //print(row.toJson());
     final int res = await db.insert(CardModel.tableName, row.toJson());
     return res > 0 ? row : null;
   }

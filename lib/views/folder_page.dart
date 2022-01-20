@@ -123,7 +123,8 @@ class _FolderPage extends StatelessWidget {
                     next = await Navigator.of(context)
                         .pushNamed('/inputCardPage', arguments: card) as bool;
                     if (card.front != '') {
-                      _folderViweModel.addCard(card.front, card.back);
+                      _folderViweModel.addCard(
+                          card.front, card.back, card.frontLang, card.backLang);
                     }
                   }
                 }

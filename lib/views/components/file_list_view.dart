@@ -73,6 +73,8 @@ class _FileListView extends State<FileListView> {
         onFlipDone: (status) {
           // print(status);
         },
+
+        音声がカードごとのロケールで再生されない。 引数をidexとback or forntだけに変更。
         front: _buildFlipCardContent(
           front,
           widget.viewModel.preference.frontSideLang,
@@ -333,13 +335,7 @@ class _FileListView extends State<FileListView> {
       onPressed: () async {
         await Navigator.of(context).pushNamed('/inputCardPage', arguments: card)
             as bool;
-        widget.viewModel.updateCard(
-          index: index,
-          folderId: card.folderId,
-          front: card.front,
-          back: card.back,
-          sequence: card.sequence,
-        );
+        widget.viewModel.updateCard(index: index, card: card);
       },
     );
   }

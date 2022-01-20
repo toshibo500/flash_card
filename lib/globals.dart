@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/models/card_model.dart';
+import 'package:flash_card/utilities/stt.dart';
 
 class Globals {
   Globals._();
@@ -39,6 +40,10 @@ class Globals {
   };
   Map<int, String> get quizOrderMethodItems => _quizOrderMethodItems;
 
+  // 言語リストを取得
+  final Map<String, String> _langItems = {};
+  Map<String, String> get langItems => _langItems;
+
   void initGlobals(BuildContext context) {
     var l10n = L10n.of(context)!;
     _frontAndBackItems[cardFrontKey] = l10n.cardFront;
@@ -71,6 +76,14 @@ class Globals {
 
     // カードテキストスタイル
     cardTextStye = Theme.of(context).textTheme.headline5!;
+
+    // 言語リストを取得
+    Stt _stt = Stt();
+    _stt.initSpeechState().then((value) {
+      for (var e in _stt.localeNames) {
+        _langItems[e.localeId] = e.name;
+      }
+    });
   }
 
   // カードテキストスタイル

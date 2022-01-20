@@ -6,7 +6,7 @@ import 'package:flash_card/models/quiz_model.dart';
 
 class DbProvider {
   static const _dbFileName = 'flashcard.db';
-  static const _dbCurrentVersion = 2;
+  static const _dbCurrentVersion = 3;
 
   DbProvider._();
   static final DbProvider instance = DbProvider._();
@@ -27,7 +27,7 @@ class DbProvider {
   Future<void> _onOpen(Database db) async {
     // ignore: avoid_print
     // db.rawQuery("select * from sqlite_master;").then((value) => print(value));
-    // db.rawQuery("select * from cards;").then((value) => print(value));
+    // db.rawQuery("select * from cards order by sequence desc;").then((value) => print(value));
   }
 
   Future<void> _createTable(Database db, int version) async {
@@ -179,6 +179,12 @@ class DbProvider {
           "6"
           ");",
     ],
+    3: [
+      "ALTER TABLE ${CardModel.tableName} "
+          "ADD ${CardModel.colFrontLang} TEXT;",
+      "ALTER TABLE ${CardModel.tableName} "
+          "ADD ${CardModel.colBackLang} TEXT;"
+    ]
   };
 
   Future<void> _upgradeTable(

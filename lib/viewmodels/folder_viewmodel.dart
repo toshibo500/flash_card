@@ -121,9 +121,11 @@ class FolderViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addCard(String front, String back) async {
+  void addCard(
+      String front, String back, String? frontLang, String? backLang) async {
     CardModel? item = await CardRepository.create(
-        _selectedFolder.id, front, back, _cardList.length + 1);
+        _selectedFolder.id, front, back, _cardList.length + 1,
+        frontLang: frontLang, backLang: backLang);
     if (item != null) {
       _cardList.add(item);
       notifyListeners();
@@ -138,18 +140,10 @@ class FolderViewModel extends ChangeNotifier {
     }
   }
 
-  void updateCard(
-      {required int index,
-      String? folderId,
-      required String front,
-      required String back,
-      required int sequence}) async {
-    String _id = _cardList[index].id;
-    String _folderId = folderId ?? _cardList[index].folderId;
-    CardModel row = CardModel(_id, _folderId, front, back, sequence);
-    int res = await CardRepository.update(row);
+  void updateCard({required int index, required CardModel card}) async {
+    int res = await CardRepository.update(card);
     if (res > 0) {
-      _cardList[index] = row;
+      _cardList[index] = card;
       notifyListeners();
     }
   }

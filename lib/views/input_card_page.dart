@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'components/select_bottom_sheet.dart';
+
 class InputCardPage extends StatefulWidget {
   const InputCardPage({Key? key, required this.card}) : super(key: key);
   final CardModel card;
@@ -18,7 +20,6 @@ class _InputCardPage extends State<InputCardPage> {
     TextEditingController(text: '')
   ];
   final List<String> _langIds = ['', ''];
-  final List<String> _langNames = ['', ''];
   late bool _isNew;
 
   @override
@@ -26,7 +27,11 @@ class _InputCardPage extends State<InputCardPage> {
     super.initState();
     _textCtl[0].text = widget.card.front;
     _textCtl[1].text = widget.card.back;
-    initPreference();
+    _langIds[0] = widget.card.frontLang ?? '';
+    _langIds[1] = widget.card.backLang ?? '';
+    if (_langIds[0].isEmpty || _langIds[1].isEmpty) {
+      initPreference();
+    }
   }
 
   @override
@@ -39,8 +44,6 @@ class _InputCardPage extends State<InputCardPage> {
       setState(() {
         _langIds[0] = value.frontSideLang ?? '';
         _langIds[1] = value.backSideLang ?? '';
-        _langNames[0] = value.frontSideLangName ?? '';
-        _langNames[1] = value.backSideLangName ?? '';
       });
     });
   }
@@ -114,6 +117,8 @@ class _InputCardPage extends State<InputCardPage> {
                   onPressed: () {
                     widget.card.front = _textCtl[0].text;
                     widget.card.back = _textCtl[1].text;
+                    widget.card.frontLang = _langIds[0];
+                    widget.card.backLang = _langIds[1];
                     Navigator.pop<bool>(context, false);
                   },
                   child: Text(
@@ -171,9 +176,17 @@ class _InputCardPage extends State<InputCardPage> {
                 //   style: Globals.subtitleTextStyle,
                 // ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    String? key = await showSelectBottomSheet(
+                        context: context, items: Globals().langItems);
+                    if (key != null) {
+                      setState(() {
+                        _langIds[index] = key;
+                      });
+                    }
+                  },
                   child: Text(
-                    _langNames[index],
+                    Globals().langItems[_langIds[index]] ?? '',
                   ),
                 ),
               ],
