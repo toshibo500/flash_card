@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import 'components/select_bottom_sheet.dart';
+
 class InputCardPage extends StatefulWidget {
   const InputCardPage({Key? key, required this.card}) : super(key: key);
   final CardModel card;
@@ -25,7 +27,11 @@ class _InputCardPage extends State<InputCardPage> {
     super.initState();
     _textCtl[0].text = widget.card.front;
     _textCtl[1].text = widget.card.back;
-    initPreference();
+    _langIds[0] = widget.card.frontLang ?? '';
+    _langIds[1] = widget.card.backLang ?? '';
+    if (_langIds[0].isEmpty || _langIds[1].isEmpty) {
+      initPreference();
+    }
   }
 
   @override
@@ -35,8 +41,10 @@ class _InputCardPage extends State<InputCardPage> {
 
   void initPreference() async {
     PreferenceRepository.get().then((value) {
-      _langIds[0] = value.frontSideLang!;
-      _langIds[1] = value.backSideLang!;
+      setState(() {
+        _langIds[0] = value.frontSideLang ?? '';
+        _langIds[1] = value.backSideLang ?? '';
+      });
     });
   }
 
@@ -55,14 +63,12 @@ class _InputCardPage extends State<InputCardPage> {
       ),
       body: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        _buildTextField(_textCtl[0], L10n.of(context)!.cardFront, ''),
-//            'Input word or phrase for front side of the card'),
-        Container(alignment: Alignment.centerRight, child: _buildMicIcon(0)),
-        _buildTextField(_textCtl[1], L10n.of(context)!.cardBack, ''),
-//            'Input word or phrase for back side of the card'),
-        Container(alignment: Alignment.centerRight, child: _buildMicIcon(1)),
+        _buildTextField(0, L10n.of(context)!.cardFront,
+            L10n.of(context)!.createCardFrontHint),
+        _buildTextField(1, L10n.of(context)!.cardBack,
+            L10n.of(context)!.createCardBackHint),
         Container(
-            padding: const EdgeInsets.only(top: 20), child: _buildButtons()),
+            padding: const EdgeInsets.only(top: 30), child: _buildButtons()),
       ])),
     );
   }
@@ -95,6 +101,7 @@ class _InputCardPage extends State<InputCardPage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Container(
+                width: 100,
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
                   onPressed: () => Navigator.pop<bool>(context, false),
@@ -103,13 +110,15 @@ class _InputCardPage extends State<InputCardPage> {
                   style: Globals.buttonStyle,
                 )),
             Container(
-                width: 110,
+                width: 100,
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
                   style: Globals.buttonStyle,
                   onPressed: () {
                     widget.card.front = _textCtl[0].text;
                     widget.card.back = _textCtl[1].text;
+                    widget.card.frontLang = _langIds[0];
+                    widget.card.backLang = _langIds[1];
                     Navigator.pop<bool>(context, false);
                   },
                   child: Text(
@@ -130,8 +139,9 @@ class _InputCardPage extends State<InputCardPage> {
 
   Container _buildMicIcon(int index) {
     return Container(
-        width: 40,
-        height: 40,
+        margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+        width: 32,
+        height: 32,
         alignment: Alignment.center,
         child: IconButton(
           onPressed: () async {
@@ -141,39 +151,78 @@ class _InputCardPage extends State<InputCardPage> {
               _textCtl[index].text += txt;
             });
           },
+          iconSize: 32,
           icon: const Icon(Icons.mic_rounded),
           color: Colors.blue,
         ));
   }
 
-  Column _buildTextField(
-      TextEditingController txtClt, String title, String hintText) {
+  Column _buildTextField(int index, String title, String hintText) {
     return Column(
       children: <Widget>[
         Container(
             alignment: Alignment.topLeft,
-            padding: const EdgeInsets.all(10),
-            child: Text(
-              title,
-              style: Globals.titleTextStyle,
+            padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(
+                  title,
+                  style: Globals.titleTextStyle,
+                ),
+                // Text(
+                //   lang,
+                //   style: Globals.subtitleTextStyle,
+                // ),
+                TextButton(
+                  onPressed: () async {
+                    String? key = await showSelectBottomSheet(
+                        context: context, items: Globals().langItems);
+                    if (key != null) {
+                      setState(() {
+                        _langIds[index] = key;
+                      });
+                    }
+                  },
+                  child: Text(
+                    Globals().langItems[_langIds[index]] ?? '',
+                  ),
+                ),
+              ],
             )),
-        SizedBox(
-            child: TextField(
-          controller: txtClt,
-          decoration: InputDecoration(
-            contentPadding: const EdgeInsets.all(8),
-            hintText: hintText,
-            border: const OutlineInputBorder(
-              borderSide: BorderSide(
-                color: Colors.grey,
-              ),
+        Container(
+            margin: const EdgeInsets.fromLTRB(5, 0, 5, 20),
+            alignment: Alignment.topLeft,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: const BorderRadius.all(Radius.circular(8.0)),
             ),
-          ),
-          autofocus: true,
-          keyboardType: TextInputType.multiline,
-          maxLines: null,
-          minLines: 4,
-        ))
+            height: 180,
+            child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+              Expanded(
+                  child: SingleChildScrollView(
+                      child: TextField(
+                controller: _textCtl[index],
+                style: Globals.contentTextStyle,
+                decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                  hintText: hintText,
+                ),
+                maxLines: 100,
+                autofocus: true,
+                keyboardType: TextInputType.multiline,
+              ))),
+              Container(
+                  width: 35,
+                  alignment: Alignment.topLeft,
+                  margin: const EdgeInsets.fromLTRB(0, 0, 5, 10),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        _buildMicIcon(index),
+                      ]))
+            ]))
       ],
     );
   }

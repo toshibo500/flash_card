@@ -1,17 +1,24 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 
 class Stt {
   bool _hasSpeech = false;
-  final bool _logEvents = false;
+  final bool _logEvents = kDebugMode;
   double minSoundLevel = 20;
   double maxSoundLevel = -20;
   String _currentLocaleId = '';
   // ignore: unused_field
   List<LocaleName> localeNames = [];
   final SpeechToText _speech = SpeechToText();
+
+  // デバイス判定
+  bool get isIOS => !kIsWeb && Platform.isIOS;
+  bool get isAndroid => !kIsWeb && Platform.isAndroid;
+  bool get isWeb => kIsWeb;
 
   Stt._();
   static final Stt instance = Stt._();
@@ -41,13 +48,37 @@ class Stt {
         debugLogging: false,
       );
       if (_hasSpeech) {
-        localeNames = await _speech.locales();
+        // localeはiOSに合わせる
+        localeNames = _convertLocaleIds(await _speech.locales());
+//        localeNames = await _speech.locales();
         var systemLocale = await _speech.systemLocale();
-        _currentLocaleId = systemLocale?.localeId ?? '';
+        // localeはiOSに合わせる
+        if (systemLocale == null) {
+          _currentLocaleId = '';
+        } else {
+          _currentLocaleId = _convertLocaleIdToiOS(systemLocale).localeId;
+        }
       }
     }
     _speech.errorListener = onError;
     _speech.statusListener = onStatus;
+  }
+
+  List<LocaleName> _convertLocaleIds(List<LocaleName> locales) {
+    if (isAndroid) {
+      return locales.map((e) => _convertLocaleIdToiOS(e)).toList();
+    } else {
+      return locales;
+    }
+  }
+
+  LocaleName _convertLocaleIdToiOS(LocaleName locale) {
+    return LocaleName(
+        locale.localeId.replaceFirst(RegExp('_'), '-'), locale.name);
+  }
+
+  String _convertLocaleIdToAndroid(String localeId) {
+    return localeId.replaceFirst(RegExp('-'), '_');
   }
 
   Future<void> startListening(
@@ -65,7 +96,10 @@ class Stt {
         listenFor: const Duration(seconds: 30),
         pauseFor: const Duration(seconds: 30),
         partialResults: true,
-        localeId: _currentLocaleId,
+        // アプリではiOS形式で統一して保持するため、deviceがAndroidの場合はstart直前にAndroidに戻す
+        localeId: isAndroid
+            ? _convertLocaleIdToAndroid(_currentLocaleId)
+            : _currentLocaleId,
         onSoundLevelChange: onSoundLevelChange,
         cancelOnError: true,
         listenMode: ListenMode.deviceDefault);

@@ -6,24 +6,25 @@ class FolderRepository {
   static DbProvider instance = DbProvider.instance;
 
   static Future<FolderModel?> create(
-      String title, String summary, int sequence) async {
+      String parentId, String title, String summary, int sequence) async {
     final row = FolderModel(DateTime.now().millisecondsSinceEpoch.toString(),
-        title, summary, sequence);
+        parentId, title, summary, sequence);
     final db = await instance.database;
     final int res = await db.insert(FolderModel.tableName, row.toJson());
     return res > 0 ? row : null;
   }
 
-  static Future<int> update(
-      String id, String title, String summary, int sequence) async {
+  static Future<int> update(String id, String parentId, String title,
+      String summary, int sequence) async {
     final db = await instance.database;
     return await db.rawUpdate(
         'UPDATE ${FolderModel.tableName} SET '
+        '${FolderModel.colParentId} = ?,'
         '${FolderModel.colTitle} = ?,'
         '${FolderModel.colSummary} = ?,'
         '${FolderModel.colSequence} = ? '
         'WHERE id = ?',
-        [title, summary, sequence, id]);
+        [parentId, title, summary, sequence, id]);
   }
 
   static Future<int> updateWithModel(FolderModel row) async {
@@ -39,11 +40,12 @@ class FolderRepository {
       for (FolderModel row in rows) {
         cnt += await txn.rawUpdate(
             'UPDATE ${FolderModel.tableName} SET '
+            '${FolderModel.colParentId} = ?,'
             '${FolderModel.colTitle} = ?,'
             '${FolderModel.colSummary} = ?,'
             '${FolderModel.colSequence} = ? '
             'WHERE id = ?',
-            [row.title, row.summary, row.sequence, row.id]);
+            [row.parentId, row.title, row.summary, row.sequence, row.id]);
       }
     });
     return cnt;
@@ -55,9 +57,14 @@ class FolderRepository {
         .rawDelete('DELETE FROM ${FolderModel.tableName} WHERE id = ?', [id]);
   }
 
-  static Future<List<FolderModel>> get([String id = '']) async {
+  static Future<List<FolderModel>> get(
+      {String id = '', String parentId = ''}) async {
     final Database db = await instance.database;
-    String where = id != '' ? "WHERE ${FolderModel.colId} = '$id'" : '';
+    String where = "WHERE 1=1";
+    if (id.isNotEmpty) where += " AND ${FolderModel.colId} = '$id'";
+    if (parentId.isNotEmpty) {
+      where += " AND ${FolderModel.colParentId} = '$parentId'";
+    }
     final rows =
         await db.rawQuery('SELECT * FROM ${FolderModel.tableName} $where');
     if (rows.isEmpty) return [];
@@ -67,8 +74,12 @@ class FolderRepository {
   }
 
   static Future<FolderModel?> getById(String id) async {
-    List<FolderModel> list = await get(id);
+    List<FolderModel> list = await get(id: id);
     return list.isEmpty ? null : list[0];
+  }
+
+  static Future<List<FolderModel>> getByParentId(String parentId) async {
+    return await get(parentId: parentId);
   }
 
   static Future<List<FolderModel>> getAll() async {

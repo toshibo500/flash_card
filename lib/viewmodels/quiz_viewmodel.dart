@@ -2,31 +2,25 @@ import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/repositories/quiz_repository.dart';
 import 'package:flash_card/models/quiz_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flash_card/models/book_model.dart';
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/repositories/card_repository.dart';
 import 'package:flash_card/models/preference_model.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
 import 'package:flash_card/globals.dart';
-import 'package:flash_card/models/repositories/book_repository.dart';
 import 'package:flash_card/models/repositories/folder_repository.dart';
 
 class QuizViewModel extends ChangeNotifier {
-  BookModel _selectedBook = BookModel('', '', '', '', 0);
+  FolderModel _selectedFolder = FolderModel('', '', '', '', 0);
   late List<CardModel> _cardList = [];
   int _index = 0;
   late CardModel _item = CardModel('', '', '', '', 0);
   int _quizNum = 50;
   late QuizModel _quiz;
-  FolderModel _folder = FolderModel('', '', '', 0);
   PreferenceModel _preference = PreferenceModel();
 
-  QuizViewModel(BookModel selectedBook, int quizNum) {
-    this.selectedBook = selectedBook;
+  QuizViewModel(FolderModel selectedFolder, int quizNum) {
+    this.selectedFolder = selectedFolder;
     _quizNum = quizNum;
-    FolderRepository.getById(selectedBook.folderId).then((value) {
-      _folder = value!;
-    });
     getPreference().then((value) {
       startQuiz();
     });
@@ -43,9 +37,9 @@ class QuizViewModel extends ChangeNotifier {
     _preference = await PreferenceRepository.get();
   }
 
-  get selectedBook => _selectedBook;
-  set selectedBook(book) {
-    _selectedBook = book;
+  get selectedFolder => _selectedFolder;
+  set selectedFolder(folder) {
+    _selectedFolder = folder;
   }
 
   String get question {
@@ -60,10 +54,22 @@ class QuizViewModel extends ChangeNotifier {
         : _item.front;
   }
 
-  String get localeId {
+  String get questionLang {
     return _preference.question == Globals.cardFrontKey
-        ? _preference.backSideLang!
-        : _preference.frontSideLang!;
+        ? _item.frontLang ?? _preference.frontSideLang ?? ''
+        : _item.backLang ?? _preference.backSideLang ?? '';
+  }
+
+  String get answerLang {
+    return _preference.question == Globals.cardFrontKey
+        ? _item.backLang ?? _preference.backSideLang ?? ''
+        : _item.frontLang ?? _preference.frontSideLang ?? '';
+  }
+
+  String get answerLocaleName {
+    return _preference.question == Globals.cardFrontKey
+        ? _preference.backSideLangName ?? ''
+        : _preference.frontSideLangName ?? '';
   }
 
   Future<void> _getCardList(int? limit) async {
@@ -72,7 +78,7 @@ class QuizViewModel extends ChangeNotifier {
         Globals().quizOrderMethodItems[_preference.quizOrderMethod];
 
     _cardList = await CardRepository.getList(
-        bookId: _selectedBook.id,
+        folderId: _selectedFolder.id,
         orderBy: orderBy!,
         orderMethod: _preference.quizOrder == Globals.quizOrderRandom
             ? ''
@@ -81,7 +87,7 @@ class QuizViewModel extends ChangeNotifier {
   }
 
   void startQuiz() {
-    QuizRepository.create(_selectedBook.id, DateTime.now()).then((value) {
+    QuizRepository.create(_selectedFolder.id, DateTime.now()).then((value) {
       _quiz = value!;
     });
     _getCardList(_quizNum).then((value) {
@@ -99,7 +105,6 @@ class QuizViewModel extends ChangeNotifier {
     _quiz.endedAt = dt;
     QuizRepository.update(_quiz);
     updateFolder(dt);
-    updateBook(dt);
 
     _index++;
     if (isEnded) {
@@ -128,12 +133,7 @@ class QuizViewModel extends ChangeNotifier {
   }
 
   void updateFolder(DateTime time) {
-    _folder.quizedAt = time;
-    FolderRepository.updateWithModel(_folder);
-  }
-
-  void updateBook(DateTime time) {
-    _selectedBook.quizedAt = time;
-    BookRepository.updateWithModel(_selectedBook);
+    _selectedFolder.quizedAt = time;
+    FolderRepository.updateWithModel(_selectedFolder);
   }
 }

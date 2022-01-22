@@ -1,11 +1,10 @@
-import 'package:flash_card/models/book_model.dart';
+import 'package:flash_card/models/folder_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:flash_card/views/folder_page.dart';
-import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/viewmodels/folder_viewmodel.dart';
 import 'folder_page_test.mocks.dart';
 
@@ -33,7 +32,7 @@ void main() {
       home: ChangeNotifierProvider(
         create: (_) => ModelContainer(model: model),
         child: FolderPage(
-          folder: FolderModel('00001', 'TOEIC600', '', 0),
+          folder: FolderModel('00001', '00000', 'TOEIC600', '', 0),
         ),
       ),
     );
@@ -41,13 +40,13 @@ void main() {
 
   testWidgets('FolderPage', (WidgetTester tester) async {
     // arrange
-    BookModel book1 = BookModel(
+    FolderModel folder1 = FolderModel(
         '00001', '00001', 'Food', '', 0, DateTime(2021, 12, 28, 13, 00, 00));
-    book1.cards = [];
+    folder1.cards = [];
 
-    List<BookModel> bookList = [book1];
+    List<FolderModel> folderList = [folder1];
 
-    when(model.items).thenAnswer((_) => bookList);
+    when(model.folderItems).thenAnswer((_) => folderList);
 
     // act
     await tester.pumpWidget(app!);

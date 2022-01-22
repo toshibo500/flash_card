@@ -19,67 +19,28 @@ class SettingsPage extends StatelessWidget {
 }
 
 class _SettingsPage extends StatelessWidget {
-//  final Map<String, String> _langItems = {};
-  final List<DropdownMenuItem<int>> _questionItems = [];
-  final List<DropdownMenuItem<int>> _quizModeItems = [];
-  final List<DropdownMenuItem<int>> _quizNum = [];
-
-  _SettingsPage({Key? key}) : super(key: key) {
-    Globals().frontAndBackItems.forEach((key, value) {
-      // PreferenceModel.frontAndBackItems.forEach((key, value) {
-      _questionItems.add(DropdownMenuItem(
-        child: Text(
-          value,
-          style: const TextStyle(fontSize: 16.0),
-        ),
-        value: key,
-      ));
-    });
-
-    Globals().quizModeItems.forEach((key, value) {
-      // PreferenceModel.quizModeItems.forEach((key, value) {
-      _quizModeItems.add(DropdownMenuItem(
-        child: Text(
-          value,
-          style: const TextStyle(fontSize: 16.0),
-        ),
-        value: key,
-      ));
-    });
-    List.generate(100, (index) {
-      _quizNum.add(DropdownMenuItem(
-        child: Text(index.toString()),
-        value: index,
-      ));
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     var _drawerMenuViewModel = Provider.of<SettingsViewModel>(context);
     final Map<String, String> _langItems = _drawerMenuViewModel.langItems;
-    // 並び順用のDropdownMenuItemを生成。contextがいるのでここで生成する。
-    List<DropdownMenuItem<int>> _quizOrderItems = [];
+
+    // 並び順用のMapを生成。contextがいるのでここで生成する。
+    final Map<int, String> _quizOrderItems = {};
     Globals().quizOrderItems.forEach((key, value) {
-      _quizOrderItems.add(DropdownMenuItem(
-        child: Text(
-          L10n.of(context)!.quizOrderItems(key),
-          style: const TextStyle(fontSize: 16.0),
-        ),
-        value: key,
-      ));
+      _quizOrderItems[key] = L10n.of(context)!.quizOrderItems(key);
     });
-    // 並び替え方法用のDropdownMenuItemを生成。contextがいるのでここで生成する。
-    final List<DropdownMenuItem<int>> _quizOrderMethodItems = [];
+
+    // 並び替え方法用のMapを生成。contextがいるのでここで生成する。
+    final Map<int, String> _quizOrderMethodItems = {};
     Globals().quizOrderMethodItems.forEach((key, value) {
-      _quizOrderMethodItems.add(DropdownMenuItem(
-        child: Text(
-          L10n.of(context)!.quizOrderMethodItems(key),
-          style: const TextStyle(fontSize: 16.0),
-        ),
-        value: key,
-      ));
+      _quizOrderMethodItems[key] = L10n.of(context)!.quizOrderMethodItems(key);
     });
+
+    // 問題数用のmap
+    Map<int, String> _nummap = {};
+    for (int i = 1; i <= 100; i++) {
+      _nummap[i] = i.toString();
+    }
 
     return Scaffold(
         backgroundColor: Globals.backgroundColor,
@@ -108,9 +69,15 @@ class _SettingsPage extends StatelessWidget {
                           '')),
                   onPressed: (context) async {
                     String? key = await showSelectBottomSheet(
-                        context: context, items: _langItems);
+                        context: context,
+                        items: _langItems,
+                        checkedItemKey:
+                            _drawerMenuViewModel.preference.frontSideLang);
                     if (key != null) {
                       _drawerMenuViewModel.preference.frontSideLang = key;
+                      // クイズページの表示用に名前も保存しておく
+                      _drawerMenuViewModel.preference.frontSideLangName =
+                          _langItems[key];
                       _drawerMenuViewModel
                           .update(_drawerMenuViewModel.preference);
                     }
@@ -128,9 +95,16 @@ class _SettingsPage extends StatelessWidget {
                           '')),
                   onPressed: (context) async {
                     String? key = await showSelectBottomSheet(
-                        context: context, items: _langItems);
+                        context: context,
+                        items: _langItems,
+                        checkedItemKey:
+                            _drawerMenuViewModel.preference.backSideLang);
                     if (key != null) {
                       _drawerMenuViewModel.preference.backSideLang = key;
+                      // クイズページの表示用に名前も保存しておく
+                      _drawerMenuViewModel.preference.backSideLangName =
+                          _langItems[key];
+
                       _drawerMenuViewModel
                           .update(_drawerMenuViewModel.preference);
                     }
@@ -147,16 +121,22 @@ class _SettingsPage extends StatelessWidget {
                     color: Globals.iconColor1,
                   ),
                   title: L10n.of(context)!.question,
-                  trailing: DropdownButton<int>(
-                    underline: DropdownButtonHideUnderline(child: Container()),
-                    value: _drawerMenuViewModel.preference.question,
-                    items: _questionItems,
-                    onChanged: (value) {
-                      _drawerMenuViewModel.preference.question = value!;
+                  trailing: SizedBox(
+                      child: Text(Globals().frontAndBackItems[
+                              _drawerMenuViewModel.preference.question] ??
+                          '')),
+                  onPressed: (context) async {
+                    int? key = await showSelectBottomSheet(
+                        context: context,
+                        items: Globals().frontAndBackItems,
+                        checkedItemKey:
+                            _drawerMenuViewModel.preference.question);
+                    if (key != null) {
+                      _drawerMenuViewModel.preference.question = key;
                       _drawerMenuViewModel
                           .update(_drawerMenuViewModel.preference);
-                    },
-                  ),
+                    }
+                  },
                 ),
                 SettingsTile(
                   leading: const Icon(
@@ -164,16 +144,22 @@ class _SettingsPage extends StatelessWidget {
                     color: Globals.iconColor2,
                   ),
                   title: L10n.of(context)!.quizMode,
-                  trailing: DropdownButton<int>(
-                    value: _drawerMenuViewModel.preference.quizMode,
-                    underline: DropdownButtonHideUnderline(child: Container()),
-                    items: _quizModeItems,
-                    onChanged: (value) {
-                      _drawerMenuViewModel.preference.quizMode = value!;
+                  trailing: SizedBox(
+                      child: Text(Globals().quizModeItems[
+                              _drawerMenuViewModel.preference.quizMode] ??
+                          '')),
+                  onPressed: (context) async {
+                    int? key = await showSelectBottomSheet(
+                        context: context,
+                        items: Globals().quizModeItems,
+                        checkedItemKey:
+                            _drawerMenuViewModel.preference.quizMode);
+                    if (key != null) {
+                      _drawerMenuViewModel.preference.quizMode = key;
                       _drawerMenuViewModel
                           .update(_drawerMenuViewModel.preference);
-                    },
-                  ),
+                    }
+                  },
                 ),
                 SettingsTile(
                   leading: const Icon(
@@ -181,16 +167,21 @@ class _SettingsPage extends StatelessWidget {
                     color: Globals.iconColor3,
                   ),
                   title: L10n.of(context)!.quizNum,
-                  trailing: DropdownButton<int>(
-                    value: _drawerMenuViewModel.preference.quizNum,
-                    underline: DropdownButtonHideUnderline(child: Container()),
-                    items: _quizNum,
-                    onChanged: (value) {
-                      _drawerMenuViewModel.preference.quizNum = value!;
+                  trailing: SizedBox(
+                      child: Text(
+                          _drawerMenuViewModel.preference.quizNum.toString())),
+                  onPressed: (context) async {
+                    int? key = await showSelectBottomSheet(
+                        context: context,
+                        items: _quizOrderItems,
+                        checkedItemKey:
+                            _drawerMenuViewModel.preference.quizNum);
+                    if (key != null) {
+                      _drawerMenuViewModel.preference.quizNum = key;
                       _drawerMenuViewModel
                           .update(_drawerMenuViewModel.preference);
-                    },
-                  ),
+                    }
+                  },
                 ),
                 SettingsTile(
                   leading: const Icon(
@@ -198,16 +189,22 @@ class _SettingsPage extends StatelessWidget {
                     color: Globals.iconColor1,
                   ),
                   title: L10n.of(context)!.quizOrder,
-                  trailing: DropdownButton<int>(
-                    value: _drawerMenuViewModel.preference.quizOrder,
-                    underline: DropdownButtonHideUnderline(child: Container()),
-                    items: _quizOrderItems,
-                    onChanged: (value) {
-                      _drawerMenuViewModel.preference.quizOrder = value!;
+                  trailing: SizedBox(
+                      child: Text(_quizOrderItems[
+                              _drawerMenuViewModel.preference.quizOrder] ??
+                          '')),
+                  onPressed: (context) async {
+                    int? key = await showSelectBottomSheet(
+                        context: context,
+                        items: _quizOrderItems,
+                        checkedItemKey:
+                            _drawerMenuViewModel.preference.quizOrder);
+                    if (key != null) {
+                      _drawerMenuViewModel.preference.quizOrder = key;
                       _drawerMenuViewModel
                           .update(_drawerMenuViewModel.preference);
-                    },
-                  ),
+                    }
+                  },
                 ),
                 SettingsTile(
                   enabled: !_drawerMenuViewModel.isRandom,
@@ -216,18 +213,22 @@ class _SettingsPage extends StatelessWidget {
                     color: Globals.iconColor2,
                   ),
                   title: L10n.of(context)!.quizOrderMethod,
-                  trailing: DropdownButton<int>(
-                    value: _drawerMenuViewModel.preference.quizOrderMethod,
-                    underline: DropdownButtonHideUnderline(child: Container()),
-                    items: _drawerMenuViewModel.isRandom
-                        ? null
-                        : _quizOrderMethodItems,
-                    onChanged: (value) {
-                      _drawerMenuViewModel.preference.quizOrderMethod = value!;
+                  trailing: SizedBox(
+                      child: Text(_quizOrderMethodItems[_drawerMenuViewModel
+                              .preference.quizOrderMethod] ??
+                          '')),
+                  onPressed: (context) async {
+                    int? key = await showSelectBottomSheet(
+                        context: context,
+                        items: _quizOrderMethodItems,
+                        checkedItemKey:
+                            _drawerMenuViewModel.preference.quizOrderMethod);
+                    if (key != null) {
+                      _drawerMenuViewModel.preference.quizOrderMethod = key;
                       _drawerMenuViewModel
                           .update(_drawerMenuViewModel.preference);
-                    },
-                  ),
+                    }
+                  },
                 ),
               ],
             ),

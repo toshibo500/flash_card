@@ -4,7 +4,7 @@
 
 import 'dart:ui' as _i4;
 
-import 'package:flash_card/models/book_model.dart' as _i3;
+import 'package:flash_card/models/folder_model.dart' as _i3;
 import 'package:flash_card/viewmodels/folder_viewmodel.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -26,9 +26,9 @@ class MockFolderViewModel extends _i1.Mock implements _i2.FolderViewModel {
   }
 
   @override
-  List<_i3.BookModel> get items =>
+  List<_i3.FolderModel> get folderItems =>
       (super.noSuchMethod(Invocation.getter(#items),
-          returnValue: <_i3.BookModel>[]) as List<_i3.BookModel>);
+          returnValue: <_i3.FolderModel>[]) as List<_i3.FolderModel>);
   @override
   bool get editMode =>
       (super.noSuchMethod(Invocation.getter(#editMode), returnValue: false)
@@ -46,35 +46,35 @@ class MockFolderViewModel extends _i1.Mock implements _i2.FolderViewModel {
       (super.noSuchMethod(Invocation.getter(#hasListeners), returnValue: false)
           as bool);
   @override
-  void add(String? title, String? summary) =>
+  void addFolder(String? title, String? summary) =>
       super.noSuchMethod(Invocation.method(#add, [title, summary]),
           returnValueForMissingStub: null);
   @override
-  void remove(int? index) =>
+  void removeFolder(int? index) =>
       super.noSuchMethod(Invocation.method(#remove, [index]),
           returnValueForMissingStub: null);
   @override
-  void update(
+  void updateFolder(
           {int? index,
-          String? folderId,
+          String? parentId,
           String? title,
           String? summary,
           int? sequence}) =>
       super.noSuchMethod(
           Invocation.method(#update, [], {
             #index: index,
-            #folderId: folderId,
+            #folderId: parentId,
             #title: title,
             #summary: summary,
             #sequence: sequence
           }),
           returnValueForMissingStub: null);
   @override
-  void getAll(String? folderId) =>
+  void getAllFolder(String? folderId) =>
       super.noSuchMethod(Invocation.method(#getAll, [folderId]),
           returnValueForMissingStub: null);
   @override
-  void reorder(int? oldIndex, int? newIndex) =>
+  void reorderFolder(int? oldIndex, int? newIndex) =>
       super.noSuchMethod(Invocation.method(#reorder, [oldIndex, newIndex]),
           returnValueForMissingStub: null);
   @override

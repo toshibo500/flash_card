@@ -1,19 +1,20 @@
-import 'package:flash_card/models/book_model.dart';
+import 'package:flash_card/models/folder_model.dart';
+import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/viewmodels/quiz_viewmodel.dart';
-import 'package:expansion_widget/expansion_widget.dart';
-import 'dart:math' as math;
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flash_card/views/components/stt_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
+import 'package:flash_card/views/components/correct_popup_dialog.dart';
+import 'package:flip_card/flip_card.dart';
+import 'package:flash_card/utilities/tts.dart';
 
 class QuizPageParameters {
   QuizPageParameters(
-      {required this.book, required this.quizNum, required this.quizMode});
-  BookModel book;
+      {required this.folder, required this.quizNum, required this.quizMode});
+  FolderModel folder;
   int quizNum;
   int quizMode;
 }
@@ -24,7 +25,7 @@ class QuizPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => QuizViewModel(param.book, param.quizNum),
+      create: (context) => QuizViewModel(param.folder, param.quizNum),
       child: Scaffold(body: _QuizPage(param: param)),
     );
   }
@@ -35,12 +36,14 @@ class _QuizPage extends StatelessWidget {
   final QuizPageParameters param;
   final TextEditingController _textCtr = TextEditingController(text: "");
   final FocusNode _textNode1 = FocusNode();
+  final FlipCardController _controller = FlipCardController();
+  final _tts = Tts();
 
   @override
   Widget build(BuildContext context) {
-    bool _answerExpanded = false;
     QuizViewModel _quizViweModel = Provider.of<QuizViewModel>(context);
     _textCtr.clear();
+    _tts.initTts();
 
     // キーボードに done アクション追加
     KeyboardActionsConfig _keyboardActionConfig = KeyboardActionsConfig(
@@ -54,7 +57,7 @@ class _QuizPage extends StatelessWidget {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(param.book.title),
+          title: Text(param.folder.title),
           backgroundColor: Globals.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
@@ -73,73 +76,103 @@ class _QuizPage extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          L10n.of(context)!.question,
-                          style: Globals.titleTextStyle,
+                        Row(
+                          children: [
+                            Text(
+                              L10n.of(context)!.question,
+                              style: Globals.titleTextStyle,
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+/*                             Text(
+                              '${_quizViweModel.index + 1}/${_quizViweModel.items.length}',
+                              style: Globals.titleTextStyle,
+                            ), */
+                          ],
                         ),
                         Text(
                           '${_quizViweModel.index + 1}/${_quizViweModel.items.length}',
-                          style: Globals.titleTextStyle,
+                          style: Globals.subtitleTextStyle,
                         ),
                       ],
                     ),
                   ),
-                  Container(
-                    alignment: Alignment.topLeft,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    padding: const EdgeInsets.all(10),
-                    height: 200,
-                    child: SingleChildScrollView(
-                      child: Text(
-                        _quizViweModel.question,
-                        style: Globals.contentTextStyle,
-                      ),
-                    ),
-                  ),
+                  _buildFlipCard(
+                      _quizViweModel.question,
+                      _quizViweModel.questionLang,
+                      _quizViweModel.answer,
+                      _quizViweModel.answerLang,
+                      _quizViweModel.index),
                   _buildAnswerArea(context, _quizViweModel, param.quizMode),
-                  ExpansionWidget(
-                      initiallyExpanded: false,
-                      onSaveState: (value) => _answerExpanded = value,
-                      onRestoreState: () => _answerExpanded,
-                      duration: const Duration(microseconds: 0),
-                      titleBuilder: (double animationValue, _, bool isExpaned,
-                          toogleFunction) {
-                        return InkWell(
-                            onTap: () => toogleFunction(animated: true),
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                      child: Text(
-                                    L10n.of(context)!.answer,
-                                    style: Globals.titleTextStyle,
-                                  )),
-                                  Transform.rotate(
-                                    angle: math.pi * animationValue / 2,
-                                    child:
-                                        const Icon(Icons.arrow_right, size: 40),
-                                    alignment: Alignment.center,
-                                  )
-                                ],
-                              ),
-                            ));
-                      },
-                      content: Container(
-                        width: double.infinity,
-                        color: Theme.of(context).backgroundColor,
-                        padding: const EdgeInsets.all(20),
-                        child: Text(
-                          _quizViweModel.answer,
-                          style: Globals.contentTextStyle,
-                        ),
-                      )),
                 ],
               ),
             )));
+  }
+
+  Widget _buildFlipCard(String front, String frontLocale, String back,
+      String backLocal, int index) {
+    return Card(
+      key: Key('$index'),
+      child: FlipCard(
+        controller: _controller,
+        direction: FlipDirection.VERTICAL,
+        speed: 300,
+        onFlipDone: (status) {
+          // print(status);
+        },
+        front: _buildFlipCardContent(
+          front,
+          frontLocale,
+        ),
+        back:
+            _buildFlipCardContent(back, backLocal, Globals().cardBackSideColor),
+      ),
+    );
+  }
+
+  Container _buildFlipCardContent(String text, String locale, [Color? color]) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey),
+        borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+        color: color,
+      ),
+      height: 180,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Expanded(
+              child: Container(
+                  alignment: Alignment.topLeft,
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  height: 168,
+                  child: SingleChildScrollView(
+                      child: Text(text,
+                          style: Globals().cardTextStye,
+                          overflow: TextOverflow.clip)))),
+          Container(
+              width: 35,
+              alignment: Alignment.topLeft,
+              margin: EdgeInsets.zero,
+              child:
+                  Column(mainAxisAlignment: MainAxisAlignment.end, children: [
+                IconButton(
+                    iconSize: 32,
+                    onPressed: () async {
+                      await _tts.setLanguage(locale);
+                      await _tts.speak(text);
+                    },
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                    color: Globals.buttonColor1, // Globals.iconColor2,
+                    icon: const Icon(Icons.volume_up_rounded)),
+              ]))
+        ],
+      ),
+    );
   }
 
   Widget _buildAnswerArea(
@@ -161,16 +194,24 @@ class _QuizPage extends StatelessWidget {
               L10n.of(context)!.quizModeDictation,
               style: Globals.titleTextStyle,
             ),
+            Text(
+              viewmodel.answerLocaleName
+                  // ignore: unnecessary_string_escapes
+                  .replaceFirst(RegExp('\\(.*\\)'), ''),
+              style: Globals.subtitleTextStyle,
+            ),
           ],
         ),
       ),
       Container(
+        margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
         alignment: Alignment.topLeft,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
+          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
         ),
         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-        height: 200,
+        height: 180,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -193,55 +234,64 @@ class _QuizPage extends StatelessWidget {
             Visibility(
                 visible: true,
                 child: Container(
-                  width: 25,
-                  alignment: Alignment.topRight,
-                  margin: EdgeInsets.zero,
-                  child: IconButton(
-                      color: Theme.of(context).disabledColor,
-                      padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                      onPressed: () {
-                        _textCtr.text = '';
-                      },
-                      icon: const Icon(Icons.close_rounded)),
-                ))
+                    width: 35,
+                    alignment: Alignment.topLeft,
+                    margin: EdgeInsets.zero,
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                              color: Theme.of(context).disabledColor,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                              onPressed: () {
+                                _textCtr.text = '';
+                              },
+                              icon: const Icon(Icons.close_rounded)),
+                          IconButton(
+                            iconSize: 32,
+                            padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                            onPressed: () async {
+                              int p = _textCtr.selection.start;
+                              String txt = await showSttDialog(
+                                  context: context,
+                                  localeId: viewmodel.answerLang);
+                              if (p >= 0) {
+                                _textCtr.text = _textCtr.text.substring(0, p) +
+                                    txt +
+                                    _textCtr.text.substring(p);
+                              } else {
+                                _textCtr.text += txt;
+                              }
+                              mark(context, viewmodel, _textCtr.text);
+                            },
+                            icon: const Icon(Icons.mic_rounded),
+                            color: Colors.blue,
+                          ),
+                        ])))
           ],
         ),
       ),
       Container(
-          height: 40,
-          alignment: Alignment.centerRight,
-          child: IconButton(
-            onPressed: () async {
-              int p = _textCtr.selection.start;
-              String txt = await showSttDialog(
-                  context: context, localeId: viewmodel.localeId);
-              if (p >= 0) {
-                _textCtr.text = _textCtr.text.substring(0, p) +
-                    txt +
-                    _textCtr.text.substring(p);
-              } else {
-                _textCtr.text += txt;
-              }
-              mark(context, viewmodel, _textCtr.text);
-            },
-            icon: const Icon(Icons.mic_rounded),
-            color: Colors.blue,
-          )),
-      Container(
         alignment: Alignment.center,
-        height: 80,
+        height: 100,
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              primary: Globals.buttonColor2,
+              primary: Globals.incorrectColor,
               onPrimary: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
             ),
-            child: Text(
-              L10n.of(context)!.skip,
-              style: Globals.buttonTextStyle,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Globals().incorrectButtonIcon,
+                Text(
+                  L10n.of(context)!.skip,
+                  style: Globals.buttonTextStyle,
+                )
+              ],
             ),
             onPressed: () {
               viewmodel.wrongAnswer();
@@ -259,11 +309,13 @@ class _QuizPage extends StatelessWidget {
   void mark(BuildContext context, QuizViewModel viewmodel, String text) {
     text = text.toLowerCase().trim();
     if (text.compareTo(viewmodel.answer.toLowerCase().trim()) == 0) {
-      Fluttertoast.showToast(msg: L10n.of(context)!.correct);
+      // Fluttertoast.showToast(msg: L10n.of(context)!.correct);
       viewmodel.correctAnswer();
       if (!viewmodel.next()) {
         Navigator.of(context)
             .pushNamed('/quizResultPage', arguments: viewmodel.quiz.id);
+      } else {
+        CorrectPopupDialog().popup(context);
       }
     }
   }
@@ -277,16 +329,20 @@ class _QuizPage extends StatelessWidget {
             width: 130,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Globals.buttonColor2,
+                primary: Globals.incorrectColor,
                 onPrimary: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: Text(
-                L10n.of(context)!.incorrect,
-                style: Globals.buttonTextStyle,
-              ),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Globals().incorrectButtonIcon,
+                Text(
+                  L10n.of(context)!.incorrect,
+                  style: Globals.buttonTextStyle,
+                )
+              ]),
               onPressed: () {
                 viewmodel.wrongAnswer();
                 if (!viewmodel.next()) {
@@ -299,16 +355,20 @@ class _QuizPage extends StatelessWidget {
             width: 130,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Globals.buttonColor1,
+                primary: Globals.correctColor,
                 onPrimary: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              child: Text(
-                L10n.of(context)!.correct,
-                style: Globals.buttonTextStyle,
-              ),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Globals().correctButtonIcon,
+                Text(
+                  L10n.of(context)!.correct,
+                  style: Globals.buttonTextStyle,
+                )
+              ]),
               onPressed: () {
                 viewmodel.correctAnswer();
                 if (!viewmodel.next()) {
