@@ -54,16 +54,16 @@ class QuizViewModel extends ChangeNotifier {
         : _item.front;
   }
 
-  String get questionLocaleId {
+  String get questionLang {
     return _preference.question == Globals.cardFrontKey
-        ? _preference.frontSideLang ?? ''
-        : _preference.backSideLang ?? '';
+        ? _item.frontLang ?? _preference.frontSideLang ?? ''
+        : _item.backLang ?? _preference.backSideLang ?? '';
   }
 
-  String get answerLocaleId {
+  String get answerLang {
     return _preference.question == Globals.cardFrontKey
-        ? _preference.backSideLang ?? ''
-        : _preference.frontSideLang ?? '';
+        ? _item.backLang ?? _preference.backSideLang ?? ''
+        : _item.frontLang ?? _preference.frontSideLang ?? '';
   }
 
   String get answerLocaleName {

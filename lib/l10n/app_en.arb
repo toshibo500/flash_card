@@ -4,8 +4,8 @@
   "drawer": "Choco Banana",
   "settings": "Settings",
   "voiceInput": "Voice Input",
-  "cardFront": "Front side",
-  "cardBack": "Back side",
+  "cardFront": "Front",
+  "cardBack": "Back",
   "quiz": "Quiz",
   "quizStart": "Start QUIZ",
   "privacyPolcy": "Privacy Policy",
@@ -14,7 +14,7 @@
   "quizMode": "Mode",
   "quizModeDictation": "Dictation",
   "quizModeSelf": "Self mode",
-  "quizNum": "Questions",
+  "quizNum": "Question Count",
   "numberOfCorrect": "Marks",
   "folderName": "Folder Name",
   "createFolderMemuTitle": "Folder",
@@ -47,8 +47,8 @@
   "aboutAppURL": "https://tkgapps.com/chocobanana/aboutapp/",
   "dateTimeFormat": "yyyy-MM-dd HH:mm",
   "answerHintText": "Enter your answer",
-  "quizOrder": "Order",
-  "quizOrderItems": "{key, plural, =0 {Random} =1 {Card Order} =2 {Quiz Date} other {Marks}}",
+  "quizOrder": "Order By",
+  "quizOrderItems": "{key, plural, =0 {Random} =1 {Card Order} =2 {Quized Date} other {Mark Count}}",
   "@quizOrderItems": {
     "placeholders": {
         "key": {}

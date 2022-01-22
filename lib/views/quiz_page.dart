@@ -100,9 +100,9 @@ class _QuizPage extends StatelessWidget {
                   ),
                   _buildFlipCard(
                       _quizViweModel.question,
-                      _quizViweModel.questionLocaleId,
+                      _quizViweModel.questionLang,
                       _quizViweModel.answer,
-                      _quizViweModel.answerLocaleId,
+                      _quizViweModel.answerLang,
                       _quizViweModel.index),
                   _buildAnswerArea(context, _quizViweModel, param.quizMode),
                 ],
@@ -162,8 +162,8 @@ class _QuizPage extends StatelessWidget {
                 IconButton(
                     iconSize: 32,
                     onPressed: () async {
-                      _tts.setLanguage(locale);
-                      _tts.speak(text);
+                      await _tts.setLanguage(locale);
+                      await _tts.speak(text);
                     },
                     alignment: Alignment.centerRight,
                     padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
@@ -254,7 +254,7 @@ class _QuizPage extends StatelessWidget {
                               int p = _textCtr.selection.start;
                               String txt = await showSttDialog(
                                   context: context,
-                                  localeId: viewmodel.answerLocaleId);
+                                  localeId: viewmodel.answerLang);
                               if (p >= 0) {
                                 _textCtr.text = _textCtr.text.substring(0, p) +
                                     txt +

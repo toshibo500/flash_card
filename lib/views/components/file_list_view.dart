@@ -57,14 +57,14 @@ class _FileListView extends State<FileListView> {
       });
     } else {
       widget.viewModel.cardItems.asMap().forEach((int index, var item) {
-        tiles.add(_buildFlipCard(item.front, item.back, index));
+        tiles.add(_buildFlipCard(index));
       });
     }
 
     return tiles;
   }
 
-  Widget _buildFlipCard(String front, String back, int index) {
+  Widget _buildFlipCard(int index) {
     return Card(
       key: Key('$index'),
       child: FlipCard(
@@ -73,24 +73,24 @@ class _FileListView extends State<FileListView> {
         onFlipDone: (status) {
           // print(status);
         },
-
-        音声がカードごとのロケールで再生されない。 引数をidexとback or forntだけに変更。
-        front: _buildFlipCardContent(
-          front,
-          widget.viewModel.preference.frontSideLang,
-          index,
-        ),
-        back: _buildFlipCardContent(
-            back,
-            widget.viewModel.preference.backSideLang,
-            index,
-            Globals().cardBackSideColor),
+        front: _buildFlipCardContent(index, Globals.cardFrontKey),
+        back: _buildFlipCardContent(index, Globals.cardBackKey),
       ),
     );
   }
 
-  Container _buildFlipCardContent(String text, String locale, int index,
-      [Color? color]) {
+  Container _buildFlipCardContent(int index, int frontback) {
+    String text, lang;
+    Color? color;
+    CardModel card = widget.viewModel.cardItems[index];
+    if (frontback == Globals.cardFrontKey) {
+      text = card.front;
+      lang = card.frontLang ?? widget.viewModel.preference.frontSideLang;
+    } else {
+      text = card.back;
+      lang = card.backLang ?? widget.viewModel.preference.backSideLang;
+      color = Globals().cardBackSideColor;
+    }
     return Container(
       padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
       decoration: BoxDecoration(
@@ -126,8 +126,8 @@ class _FileListView extends State<FileListView> {
                             alignment: Alignment.centerRight,
                             child: IconButton(
                                 onPressed: () async {
-                                  _tts.setLanguage(locale);
-                                  _tts.speak(text);
+                                  await _tts.setLanguage(lang);
+                                  await _tts.speak(text);
                                 },
                                 alignment: Alignment.centerRight,
                                 padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),

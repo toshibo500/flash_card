@@ -163,10 +163,10 @@ class Globals {
   static const TextStyle subtitleTextStyle = TextStyle(
     //color: Colors.black54,
     fontWeight: FontWeight.w500,
-    color: Colors.black54,
+//    color: Colors.black54,
     fontFamily: 'Roboto',
     letterSpacing: 1,
-    fontSize: 16.0,
+    fontSize: 15.0,
   );
   static const TextStyle contentTextStyle = TextStyle(
 //    color: Colors.black,
