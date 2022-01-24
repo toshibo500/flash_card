@@ -4,6 +4,7 @@ import 'package:flash_card/views/components/stt_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 
 import 'components/select_bottom_sheet.dart';
 
@@ -21,6 +22,8 @@ class _InputCardPage extends State<InputCardPage> {
   ];
   final List<String> _langIds = ['', ''];
   late bool _isNew;
+  final FocusNode _textNode1 = FocusNode();
+  final FocusNode _textNode2 = FocusNode();
 
   @override
   void initState() {
@@ -51,6 +54,18 @@ class _InputCardPage extends State<InputCardPage> {
   @override
   Widget build(BuildContext context) {
     _isNew = widget.card.id == '' ? true : false;
+
+    // キーボードに done, 上下 アクション追加
+    KeyboardActionsConfig _keyboardActionConfig = KeyboardActionsConfig(
+      keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
+      keyboardBarColor: Theme.of(context).disabledColor,
+      nextFocus: true,
+      actions: [
+        KeyboardActionsItem(focusNode: _textNode1),
+        KeyboardActionsItem(focusNode: _textNode2),
+      ],
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text(L10n.of(context)!.createCardPageTitle),
@@ -61,15 +76,18 @@ class _InputCardPage extends State<InputCardPage> {
         ),
         actions: const [],
       ),
-      body: SingleChildScrollView(
-          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-        _buildTextField(0, L10n.of(context)!.cardFront,
-            L10n.of(context)!.createCardFrontHint),
-        _buildTextField(1, L10n.of(context)!.cardBack,
-            L10n.of(context)!.createCardBackHint),
-        Container(
-            padding: const EdgeInsets.only(top: 30), child: _buildButtons()),
-      ])),
+      body: KeyboardActions(
+          config: _keyboardActionConfig,
+          child: SingleChildScrollView(
+              child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+            _buildTextField(0, L10n.of(context)!.cardFront,
+                L10n.of(context)!.createCardFrontHint),
+            _buildTextField(1, L10n.of(context)!.cardBack,
+                L10n.of(context)!.createCardBackHint),
+            Container(
+                padding: const EdgeInsets.only(top: 30),
+                child: _buildButtons()),
+          ]))),
     );
   }
 
@@ -145,10 +163,17 @@ class _InputCardPage extends State<InputCardPage> {
         alignment: Alignment.center,
         child: IconButton(
           onPressed: () async {
+            int p = _textCtl[index].selection.start;
             String txt = await showSttDialog(
                 context: context, localeId: _langIds[index]);
             setState(() {
-              _textCtl[index].text += txt;
+              if (p >= 0) {
+                _textCtl[index].text = _textCtl[index].text.substring(0, p) +
+                    txt +
+                    _textCtl[index].text.substring(p);
+              } else {
+                _textCtl[index].text += txt;
+              }
             });
           },
           iconSize: 32,
@@ -171,10 +196,6 @@ class _InputCardPage extends State<InputCardPage> {
                   title,
                   style: Globals.titleTextStyle,
                 ),
-                // Text(
-                //   lang,
-                //   style: Globals.subtitleTextStyle,
-                // ),
                 TextButton(
                   onPressed: () async {
                     String? key = await showSelectBottomSheet(
@@ -201,18 +222,19 @@ class _InputCardPage extends State<InputCardPage> {
             height: 180,
             child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               Expanded(
-                  child: SingleChildScrollView(
-                      child: TextField(
+                  child: TextField(
+                focusNode: index == 0 ? _textNode1 : _textNode2,
                 controller: _textCtl[index],
                 style: Globals.contentTextStyle,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 8),
+                  border: InputBorder.none,
                   hintText: hintText,
                 ),
                 maxLines: 100,
-                autofocus: true,
+                autofocus: false,
                 keyboardType: TextInputType.multiline,
-              ))),
+              )),
               Container(
                   width: 35,
                   alignment: Alignment.topLeft,
