@@ -335,7 +335,9 @@ class _FileListView extends State<FileListView> {
       onPressed: () async {
         await Navigator.of(context).pushNamed('/inputCardPage', arguments: card)
             as bool;
-        widget.viewModel.updateCard(index: index, card: card);
+        if (card.front != '' && card.back != '') {
+          widget.viewModel.updateCard(index: index, card: card);
+        }
       },
     );
   }

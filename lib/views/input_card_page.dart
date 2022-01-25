@@ -22,8 +22,8 @@ class _InputCardPage extends State<InputCardPage> {
   ];
   final List<String> _langIds = ['', ''];
   late bool _isNew;
-  final FocusNode _textNode1 = FocusNode();
-  final FocusNode _textNode2 = FocusNode();
+  late FocusNode _textNode1;
+  late FocusNode _textNode2;
 
   @override
   void initState() {
@@ -35,10 +35,14 @@ class _InputCardPage extends State<InputCardPage> {
     if (_langIds[0].isEmpty || _langIds[1].isEmpty) {
       initPreference();
     }
+    _textNode1 = FocusNode();
+    _textNode2 = FocusNode();
   }
 
   @override
   void dispose() {
+    _textNode1.dispose();
+    _textNode2.dispose();
     super.dispose();
   }
 
@@ -91,6 +95,18 @@ class _InputCardPage extends State<InputCardPage> {
     );
   }
 
+  bool _validation() {
+    if (_textCtl[0].text.isEmpty) {
+      _textNode1.requestFocus();
+      return false;
+    }
+    if (_textCtl[1].text.isEmpty) {
+      _textNode2.requestFocus();
+      return false;
+    }
+    return true;
+  }
+
   Row _buildButtons() {
     Widget nextButton = Expanded(
         flex: 3,
@@ -101,6 +117,7 @@ class _InputCardPage extends State<InputCardPage> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
+                      if (!_validation()) return;
                       widget.card.front = _textCtl[0].text;
                       widget.card.back = _textCtl[1].text;
                       Navigator.pop<bool>(context, true);
@@ -133,6 +150,7 @@ class _InputCardPage extends State<InputCardPage> {
                 child: ElevatedButton(
                   style: Globals.buttonStyle,
                   onPressed: () {
+                    if (!_validation()) return;
                     widget.card.front = _textCtl[0].text;
                     widget.card.back = _textCtl[1].text;
                     widget.card.frontLang = _langIds[0];
