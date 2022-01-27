@@ -194,4 +194,10 @@ class Globals {
 
   static const TextStyle correctPpopUpStyle =
       TextStyle(fontSize: 38, color: correctColor);
+
+  // キーボードのアクションアイテムボタン
+  static const TextStyle keyboardTextButtonStyle = TextStyle(
+    color: Colors.black87,
+    fontSize: 16.0,
+  );
 }
