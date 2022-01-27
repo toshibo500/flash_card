@@ -55,6 +55,29 @@ class _InputCardPage extends State<InputCardPage> {
     });
   }
 
+  TextButton _keyboardTextbutton(String text, Function()? onPressed) {
+    return TextButton(
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: Globals.keyboardTextButtonStyle,
+      ),
+    );
+  }
+
+  // キーボードアクション
+  Widget _keyboardActionItems(int index) {
+    return SizedBox(
+        height: 40,
+        child:
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+          _keyboardTextbutton('Save&Next', _nextOnPressd),
+          _keyboardTextbutton('Cancel', _cancelOnPressd),
+          _keyboardTextbutton('Save', _saveOnPressd),
+          _buildMicIcon(index, 24, Colors.black87)
+        ]));
+  }
+
   @override
   Widget build(BuildContext context) {
     _isNew = widget.card.id == '' ? true : false;
@@ -65,8 +88,18 @@ class _InputCardPage extends State<InputCardPage> {
       keyboardBarColor: Theme.of(context).disabledColor,
       nextFocus: true,
       actions: [
-        KeyboardActionsItem(focusNode: _textNode1),
-        KeyboardActionsItem(focusNode: _textNode2),
+        KeyboardActionsItem(
+          focusNode: _textNode1,
+          footerBuilder: (_) => PreferredSize(
+              child: _keyboardActionItems(0),
+              preferredSize: const Size.fromHeight(40)),
+        ),
+        KeyboardActionsItem(
+          focusNode: _textNode2,
+          footerBuilder: (_) => PreferredSize(
+              child: _keyboardActionItems(1),
+              preferredSize: const Size.fromHeight(40)),
+        ),
       ],
     );
 
@@ -107,7 +140,29 @@ class _InputCardPage extends State<InputCardPage> {
     return true;
   }
 
+  // nextボタン押下時
+  void _nextOnPressd() {
+    if (!_validation()) return;
+    widget.card.front = _textCtl[0].text;
+    widget.card.back = _textCtl[1].text;
+    Navigator.pop<bool>(context, true);
+  }
+
+  // Cancelボタン押下時
+  void _cancelOnPressd() => Navigator.pop<bool>(context, false);
+
+  // saveボタン押下時
+  void _saveOnPressd() {
+    if (!_validation()) return;
+    widget.card.front = _textCtl[0].text;
+    widget.card.back = _textCtl[1].text;
+    widget.card.frontLang = _langIds[0];
+    widget.card.backLang = _langIds[1];
+    Navigator.pop<bool>(context, false);
+  }
+
   Row _buildButtons() {
+    // Nextボタン
     Widget nextButton = Expanded(
         flex: 3,
         child: Container(
@@ -116,12 +171,7 @@ class _InputCardPage extends State<InputCardPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      if (!_validation()) return;
-                      widget.card.front = _textCtl[0].text;
-                      widget.card.back = _textCtl[1].text;
-                      Navigator.pop<bool>(context, true);
-                    },
+                    onPressed: _nextOnPressd,
                     child: Text(
                       L10n.of(context)!.next,
                       style: Globals.buttonTextStyle,
@@ -135,28 +185,23 @@ class _InputCardPage extends State<InputCardPage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+            // Cancelボタン
             Container(
                 width: 100,
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
-                  onPressed: () => Navigator.pop<bool>(context, false),
+                  onPressed: _cancelOnPressd,
                   child: Text(L10n.of(context)!.cancel,
                       style: Globals.buttonTextStyle),
                   style: Globals.buttonStyle,
                 )),
+            // Saveボタン
             Container(
                 width: 100,
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
                   style: Globals.buttonStyle,
-                  onPressed: () {
-                    if (!_validation()) return;
-                    widget.card.front = _textCtl[0].text;
-                    widget.card.back = _textCtl[1].text;
-                    widget.card.frontLang = _langIds[0];
-                    widget.card.backLang = _langIds[1];
-                    Navigator.pop<bool>(context, false);
-                  },
+                  onPressed: _saveOnPressd,
                   child: Text(
                     L10n.of(context)!.save,
                     style: Globals.buttonTextStyle,
@@ -173,31 +218,36 @@ class _InputCardPage extends State<InputCardPage> {
     );
   }
 
-  Container _buildMicIcon(int index) {
+  Container _buildTextFieldMicIcon(int index) {
     return Container(
         margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
         width: 32,
         height: 32,
         alignment: Alignment.center,
-        child: IconButton(
-          onPressed: () async {
-            int p = _textCtl[index].selection.start;
-            String txt = await showSttDialog(
-                context: context, localeId: _langIds[index]);
-            setState(() {
-              if (p >= 0) {
-                _textCtl[index].text = _textCtl[index].text.substring(0, p) +
-                    txt +
-                    _textCtl[index].text.substring(p);
-              } else {
-                _textCtl[index].text += txt;
-              }
-            });
-          },
-          iconSize: 32,
-          icon: const Icon(Icons.mic_rounded),
-          color: Colors.blue,
-        ));
+        child: _buildMicIcon(index));
+  }
+
+  IconButton _buildMicIcon(int index,
+      [double iconSize = 32, Color color = Colors.blue]) {
+    return IconButton(
+      onPressed: () async {
+        int p = _textCtl[index].selection.start;
+        String txt =
+            await showSttDialog(context: context, localeId: _langIds[index]);
+        setState(() {
+          if (p >= 0) {
+            _textCtl[index].text = _textCtl[index].text.substring(0, p) +
+                txt +
+                _textCtl[index].text.substring(p);
+          } else {
+            _textCtl[index].text += txt;
+          }
+        });
+      },
+      iconSize: iconSize,
+      icon: const Icon(Icons.mic_rounded),
+      color: color,
+    );
   }
 
   Column _buildTextField(int index, String title, String hintText) {
@@ -205,7 +255,7 @@ class _InputCardPage extends State<InputCardPage> {
       children: <Widget>[
         Container(
             alignment: Alignment.topLeft,
-            padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+            padding: const EdgeInsets.fromLTRB(5, 5, 10, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               mainAxisSize: MainAxisSize.max,
@@ -237,7 +287,7 @@ class _InputCardPage extends State<InputCardPage> {
               border: Border.all(color: Colors.grey),
               borderRadius: const BorderRadius.all(Radius.circular(8.0)),
             ),
-            height: 180,
+            height: 150,
             child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
               Expanded(
                   child: TextField(
@@ -260,7 +310,7 @@ class _InputCardPage extends State<InputCardPage> {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        _buildMicIcon(index),
+                        _buildTextFieldMicIcon(index),
                       ]))
             ]))
       ],
