@@ -173,7 +173,7 @@ class _SettingsPage extends StatelessWidget {
                   onPressed: (context) async {
                     int? key = await showSelectBottomSheet(
                         context: context,
-                        items: _quizOrderItems,
+                        items: _nummap,
                         checkedItemKey:
                             _drawerMenuViewModel.preference.quizNum);
                     if (key != null) {
