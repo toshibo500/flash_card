@@ -11,6 +11,9 @@ import 'package:flash_card/views/settings_page.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
+import 'package:flash_card/views/account/account_page.dart';
+import 'package:flash_card/views/account/sign_in_page.dart';
+import 'package:flash_card/views/account/sign_up_page.dart';
 
 void main() {
   //向き指定
@@ -74,6 +77,15 @@ class MyApp extends StatelessWidget {
         }
         if (settings.name == '/settingsPage') {
           return MaterialPageRoute(builder: (context) => const SettingsPage());
+        }
+        if (settings.name == '/accountPage') {
+          return MaterialPageRoute(builder: (context) => const AccountPage());
+        }
+        if (settings.name == '/signInPage') {
+          return MaterialPageRoute(builder: (context) => const SignInPage());
+        }
+        if (settings.name == '/signUpPage') {
+          return MaterialPageRoute(builder: (context) => const SignUpPage());
         }
         return null;
       },

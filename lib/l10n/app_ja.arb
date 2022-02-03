@@ -53,5 +53,8 @@
     "quizOrderMethodItems": "{key, plural, =0 {昇順} other {降順}}",
     "createCardFrontHint": "表面を入力してください",
     "createCardBackHint": "裏面を入力してください",
-    "correctPopUpText": "Correct!"
+    "correctPopUpText": "Correct!",
+    "account": "ユーザー",
+    "signIn": "ログイン",
+    "signUp": "会員登録"
     }

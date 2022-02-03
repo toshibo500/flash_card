@@ -42,6 +42,18 @@ class _SideDrawer extends StatelessWidget {
                   )),
               ListTile(
                 leading: const Icon(
+                  Icons.account_circle_rounded,
+                  color: Globals.iconColor3,
+                ),
+                title: Text(L10n.of(context)!.account),
+                onTap: () {
+                  // Drawerを閉じてから設定を開く
+                  Navigator.pop(context);
+                  Navigator.of(context).pushNamed('/accountPage');
+                },
+              ),
+              ListTile(
+                leading: const Icon(
                   Icons.settings_rounded,
                   color: Globals.iconColor1,
                 ),
@@ -49,7 +61,7 @@ class _SideDrawer extends StatelessWidget {
                 onTap: () {
                   // Drawerを閉じてから設定を開く
                   Navigator.pop(context);
-                  Navigator.of(context).pushNamed('/settingsPage');
+                  Navigator.of(context).pushNamed('/settingPage');
                 },
               ),
               ListTile(

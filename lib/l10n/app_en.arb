@@ -63,5 +63,8 @@
   },
   "createCardFrontHint": "Input front side word/phrase",
   "createCardBackHint": "Input back side word/phrase",
-  "correctPopUpText": "Correct!"
+  "correctPopUpText": "Correct!",
+  "account": "User",
+  "signIn": "Sign in",
+  "signUp": "Sign Up"
 }
