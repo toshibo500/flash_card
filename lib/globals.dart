@@ -1,3 +1,4 @@
+import 'package:flash_card/models/auth_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/models/card_model.dart';
@@ -8,6 +9,9 @@ class Globals {
   static final Globals _instance = Globals._();
 
   factory Globals() => _instance;
+
+  // ログインユーザー情報
+  AuthModel? authInfo;
 
   // カードの表裏マスタ
   static const int cardFrontKey = 0;

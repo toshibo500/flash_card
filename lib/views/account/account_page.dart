@@ -1,4 +1,7 @@
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flash_card/viewmodels/settings_viewmodel.dart';
+import 'package:settings_ui/settings_ui.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
 
@@ -7,76 +10,67 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => SettingsViewModel(),
+      child: Scaffold(body: _AccountPage()),
+    );
+  }
+}
+
+class _AccountPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Globals.backgroundColor,
         appBar: AppBar(
-          title: Text(L10n.of(context)!.signIn),
+          title: Text(L10n.of(context)!.account),
           backgroundColor: Globals.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
-            onPressed: () => Navigator.pop<bool>(context, false),
+            onPressed: () => {Navigator.of(context).pop()},
           ),
-          actions: const [],
         ),
-        body: Padding(
-            padding: const EdgeInsets.all(10),
-            child: ListView(
-              children: <Widget>[
-                Container(
-                    height: 50,
-                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: ElevatedButton(
-                      child: const Text('Login with Google'),
-                      onPressed: () {},
-                    )),
-                Container(
-                    height: 50,
-                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: ElevatedButton(
-                      child: const Text('Login with Facebook'),
-                      onPressed: () {},
-                    )),
-                Container(
-                    height: 50,
-                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: ElevatedButton(
-                      child: const Text('Login with Twitter'),
-                      onPressed: () {},
-                    )),
-                const Divider(
-                  thickness: 3,
-                  height: 50,
-                  indent: 20,
-                  endIndent: 20,
-                ),
-                Container(
-                    height: 50,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    child: ElevatedButton(
-                      child: const Text('Login with e-mail'),
-                      onPressed: () {
-                        Navigator.of(context).pushNamed('/signInPage');
-                      },
-                    )),
-                Row(
-                  children: <Widget>[
-                    const Text('Does not have account?'),
-                    TextButton(
-                      child: const Text(
-                        'Sign up',
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      onPressed: () {
-                        //signup screen
-                        Navigator.of(context).pushNamed('/signUpPage');
-                      },
-                    )
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.center,
+        body: SettingsList(
+          sections: [
+            SettingsSection(
+              title: L10n.of(context)!.account,
+              tiles: [
+                /*
+                SettingsTile(
+                    title: L10n.of(context)!.profile,
+                    leading: const Icon(
+                      Icons.account_circle_rounded,
+                      color: Globals.iconColor1,
+                    ),
+                    onPressed: (context) async {}),
+                */
+                SettingsTile(
+                  title: L10n.of(context)!.password,
+                  leading: const Icon(
+                    Icons.password_rounded,
+                    color: Globals.iconColor2,
+                  ),
+                  onPressed: (context) {
+                    Navigator.of(context).pushNamed('/passwordPage');
+                  },
                 ),
               ],
-            )));
+            ),
+            SettingsSection(
+              tiles: [
+                SettingsTile(
+                    title: L10n.of(context)!.signOut,
+                    leading: const Icon(
+                      Icons.logout_rounded,
+                      color: Globals.iconColor3,
+                    ),
+                    onPressed: (context) async {
+                      Globals().authInfo = null;
+                      Navigator.popUntil(context, ModalRoute.withName('/'));
+                    }),
+              ],
+            ),
+          ],
+        ));
   }
 }

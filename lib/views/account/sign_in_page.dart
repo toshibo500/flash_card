@@ -1,3 +1,8 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flash_card/models/auth_model.dart';
+import 'package:flash_card/models/repositories/auth_repository.dart';
+import 'package:flash_card/views/components/error_text.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
@@ -9,6 +14,22 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPage extends State<SignInPage> {
+  String _email = ""; // 入力されたメールアドレス
+  String _password = ""; // 入力されたパスワード
+  String errorCode = '';
+  String errorMessage = '';
+  bool errorVisible = false;
+
+  @override
+  void initState() {
+    initFireBase();
+    super.initState();
+  }
+
+  void initFireBase() async {
+    await Firebase.initializeApp();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,50 +48,82 @@ class _SignInPage extends State<SignInPage> {
               children: <Widget>[
                 Container(
                   padding: const EdgeInsets.all(10),
-                  child: const TextField(
+                  child: TextField(
+                    onChanged: (String value) => _email = value,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'User Name',
+                      border: const OutlineInputBorder(),
+                      labelText: L10n.of(context)!.emailAddress,
                     ),
                   ),
                 ),
                 Container(
                   padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: const TextField(
-                    obscureText: true,
+                  child: TextField(
+                    onChanged: (String value) => _password = value,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: 'Password',
+                      border: const OutlineInputBorder(),
+                      labelText: L10n.of(context)!.password,
                     ),
                   ),
                 ),
-                TextButton(
-                  onPressed: () {
-                    //forgot password screen
-                  },
-                  child: const Text(
-                    'Forgot Password',
+                Visibility(
+                  visible: errorVisible,
+                  child: ErrorText(
+                    code: errorCode,
+                    message: errorMessage,
                   ),
                 ),
                 Container(
                     height: 50,
+                    margin: const EdgeInsets.fromLTRB(0, 50, 0, 0),
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: ElevatedButton(
-                      child: const Text('Login'),
-                      onPressed: () {},
+                      style: Globals.buttonStyle,
+                      child: Text(
+                        L10n.of(context)!.signIn,
+                        style: Globals.buttonTextStyle,
+                      ),
+                      onPressed: () async {
+                        errorVisible = false;
+                        try {
+                          AuthModel auth =
+                              AuthModel(email: _email, password: _password);
+                          await AuthRepository().signIn(auth);
+                          if (kDebugMode) {
+                            print(auth.id);
+                          }
+                          Globals().authInfo = auth;
+                          Navigator.popUntil(context, ModalRoute.withName('/'));
+                        } on AuthException catch (e) {
+                          setState(() {
+                            errorVisible = true;
+                            errorCode = e.code;
+                            errorMessage = e.message;
+                          });
+                        }
+                      },
                     )),
+                Container(
+                  margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
+                  child: TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      L10n.of(context)!.forgotPassword,
+                    ),
+                  ),
+                ),
                 Row(
                   children: <Widget>[
-                    const Text('Does not have account?'),
+                    Text(L10n.of(context)!.notHaveAccount),
                     TextButton(
-                      child: const Text(
-                        'Sign in',
-                        style: TextStyle(fontSize: 20),
+                      child: Text(
+                        L10n.of(context)!.signUp,
+                        style: const TextStyle(fontSize: 18),
                       ),
                       onPressed: () {
                         //signup screen
-                        Navigator.pop<bool>(context, false);
-                        Navigator.of(context).pushNamed('/signUpPage');
+                        Navigator.of(context)
+                            .pushReplacementNamed('/signUpPage');
                       },
                     )
                   ],

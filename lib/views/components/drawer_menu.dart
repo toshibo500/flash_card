@@ -45,11 +45,14 @@ class _SideDrawer extends StatelessWidget {
                   Icons.account_circle_rounded,
                   color: Globals.iconColor3,
                 ),
-                title: Text(L10n.of(context)!.account),
+                title: Text(
+                    Globals().authInfo?.email ?? L10n.of(context)!.account),
                 onTap: () {
                   // Drawerを閉じてから設定を開く
                   Navigator.pop(context);
-                  Navigator.of(context).pushNamed('/accountPage');
+                  Navigator.of(context).pushNamed(Globals().authInfo != null
+                      ? '/accountPage'
+                      : '/signInMethodPage');
                 },
               ),
               ListTile(
@@ -61,7 +64,7 @@ class _SideDrawer extends StatelessWidget {
                 onTap: () {
                   // Drawerを閉じてから設定を開く
                   Navigator.pop(context);
-                  Navigator.of(context).pushNamed('/settingPage');
+                  Navigator.of(context).pushNamed('/settingsPage');
                 },
               ),
               ListTile(

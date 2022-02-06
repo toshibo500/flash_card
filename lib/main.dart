@@ -14,6 +14,8 @@ import 'package:flash_card/globals.dart';
 import 'package:flash_card/views/account/account_page.dart';
 import 'package:flash_card/views/account/sign_in_page.dart';
 import 'package:flash_card/views/account/sign_up_page.dart';
+import 'package:flash_card/views/account/sign_in_method.dart';
+import 'package:flash_card/views/account/pawssword_page.dart';
 
 void main() {
   //向き指定
@@ -86,6 +88,13 @@ class MyApp extends StatelessWidget {
         }
         if (settings.name == '/signUpPage') {
           return MaterialPageRoute(builder: (context) => const SignUpPage());
+        }
+        if (settings.name == '/signInMethodPage') {
+          return MaterialPageRoute(
+              builder: (context) => const SignInMethodPage());
+        }
+        if (settings.name == '/passwordPage') {
+          return MaterialPageRoute(builder: (context) => const PasswordPage());
         }
         return null;
       },
