@@ -80,6 +80,7 @@
   "emailAddress": "E-mail address",
   "forgotPassword": "Forgot Password",
   "notHaveAccount": "Does not have account?",
+  "restPassword": "Rest password",
   "invalidEmail": "",
   "wrongPassword": "",
   "userNotFound": "",
@@ -91,5 +92,6 @@
   "missingEmail":"",
   "signUpDoneMsg": "your account has been registerd.",
   "passwordChangedMsg": "your password has been changed.",
-  "passwordNotMatch": "new password does not match."
+  "passwordNotMatch": "new password does not match.",
+  "passwordRestMailSent": "email with instructions to reset your password has been sent."
 }

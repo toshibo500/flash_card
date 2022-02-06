@@ -70,7 +70,7 @@
     "emailAddress": "メールアドレス",
     "forgotPassword": "パスワードを忘れました",
     "notHaveAccount": "アカウントをお持ちでない方は",
-  
+    "restPassword": "パスワードをリセット",
     "invalidEmail": "メールアドレスが間違っています。",
     "wrongPassword": "パスワードが間違っています。",
     "userNotFound": "このアカウントは存在しません。",
@@ -82,5 +82,6 @@
     "missingEmail":"メールアドレスは必須です。",
     "signUpDoneMsg": "会員登録が完了しました。",
     "passwordChangedMsg": "パスワードが変更されました。",
-    "passwordNotMatch": "新しいパスワードが一致しません。"
+    "passwordNotMatch": "新しいパスワードが一致しません。",
+    "passwordRestMailSent": "リセットメールを送信しました。メールの内容に従って操作してください。"
 }

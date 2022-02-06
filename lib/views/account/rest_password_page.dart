@@ -1,21 +1,19 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flash_card/models/auth_model.dart';
 import 'package:flash_card/models/repositories/auth_repository.dart';
 import 'package:flash_card/views/components/error_text.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
+import 'package:flash_card/views/components/alert_dialog.dart';
 
-class SignInPage extends StatefulWidget {
-  const SignInPage({Key? key}) : super(key: key);
+class RestPasswordPage extends StatefulWidget {
+  const RestPasswordPage({Key? key}) : super(key: key);
   @override
-  _SignInPage createState() => _SignInPage();
+  _RestPasswordPage createState() => _RestPasswordPage();
 }
 
-class _SignInPage extends State<SignInPage> {
+class _RestPasswordPage extends State<RestPasswordPage> {
   String _email = ""; // 入力されたメールアドレス
-  String _password = ""; // 入力されたパスワード
   String errorCode = '';
   String errorMessage = '';
   bool errorVisible = false;
@@ -34,7 +32,7 @@ class _SignInPage extends State<SignInPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(L10n.of(context)!.signIn),
+          title: Text(L10n.of(context)!.restPassword),
           backgroundColor: Globals.backgroundColor,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_outlined),
@@ -56,16 +54,6 @@ class _SignInPage extends State<SignInPage> {
                     ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: TextField(
-                    onChanged: (String value) => _password = value,
-                    decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      labelText: L10n.of(context)!.password,
-                    ),
-                  ),
-                ),
                 Visibility(
                   visible: errorVisible,
                   child: ErrorText(
@@ -80,20 +68,17 @@ class _SignInPage extends State<SignInPage> {
                     child: ElevatedButton(
                       style: Globals.buttonStyle,
                       child: Text(
-                        L10n.of(context)!.signIn,
+                        L10n.of(context)!.restPassword,
                         style: Globals.buttonTextStyle,
                       ),
                       onPressed: () async {
                         errorVisible = false;
                         try {
-                          AuthModel auth =
-                              AuthModel(email: _email, password: _password);
-                          await AuthRepository().signIn(auth);
-                          if (kDebugMode) {
-                            print(auth.id);
-                          }
-                          Globals().authInfo = auth;
-                          Navigator.popUntil(context, ModalRoute.withName('/'));
+                          await AuthRepository().restPassword(email: _email);
+                          showAlertDialog(
+                            context: context,
+                            text: L10n.of(context)!.passwordRestMailSent,
+                          );
                         } on AuthException catch (e) {
                           setState(() {
                             errorVisible = true;
@@ -103,34 +88,6 @@ class _SignInPage extends State<SignInPage> {
                         }
                       },
                     )),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pushNamed('/restPasswordPage');
-                    },
-                    child: Text(
-                      L10n.of(context)!.forgotPassword,
-                    ),
-                  ),
-                ),
-                Row(
-                  children: <Widget>[
-                    Text(L10n.of(context)!.notHaveAccount),
-                    TextButton(
-                      child: Text(
-                        L10n.of(context)!.signUp,
-                        style: const TextStyle(fontSize: 18),
-                      ),
-                      onPressed: () {
-                        //signup screen
-                        Navigator.of(context)
-                            .pushReplacementNamed('/signUpPage');
-                      },
-                    )
-                  ],
-                  mainAxisAlignment: MainAxisAlignment.center,
-                ),
               ],
             )));
   }

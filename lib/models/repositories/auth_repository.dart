@@ -67,6 +67,23 @@ class AuthRepository {
       throw AuthException(code: 'undefind', message: e.toString());
     }
   }
+
+  Future<void> restPassword({required String email}) async {
+    // パスワードリセット
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      if (kDebugMode) {
+        print(e.code);
+      }
+      throw AuthException(code: e.code, message: e.message);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      throw AuthException(code: 'undefind', message: e.toString());
+    }
+  }
 }
 
 class AuthException implements Exception {

@@ -75,7 +75,7 @@ class _SignUpPage extends State<SignUpPage> {
                 ),
                 Container(
                     height: 50,
-                    margin: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                    margin: const EdgeInsets.fromLTRB(0, 30, 0, 0),
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     child: ElevatedButton(
                       style: Globals.buttonStyle,
