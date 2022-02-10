@@ -93,5 +93,7 @@
   "signUpDoneMsg": "your account has been registerd.",
   "passwordChangedMsg": "your password has been changed.",
   "passwordNotMatch": "new password does not match.",
-  "passwordRestMailSent": "email with instructions to reset your password has been sent."
+  "passwordRestMailSent": "email with instructions to reset your password has been sent.",
+  "signinCanceld": "Signing in has been canceled.",
+  "signingIn": "Signing in..."
 }

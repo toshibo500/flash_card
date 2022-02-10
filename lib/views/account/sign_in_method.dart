@@ -1,3 +1,4 @@
+import 'package:flash_card/models/auth_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
@@ -31,7 +32,10 @@ class SignInMethodPage extends StatelessWidget {
                         style: Globals.buttonTextStyle,
                       ),
                       style: Globals.buttonStyle,
-                      onPressed: () {},
+                      onPressed: () async {
+                        Navigator.of(context).pushNamed('/singleSignOnPage',
+                            arguments: LoginMethod.google);
+                      },
                     )),
                 Container(
                     height: 50,

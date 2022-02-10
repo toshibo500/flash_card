@@ -83,5 +83,7 @@
     "signUpDoneMsg": "会員登録が完了しました。",
     "passwordChangedMsg": "パスワードが変更されました。",
     "passwordNotMatch": "新しいパスワードが一致しません。",
-    "passwordRestMailSent": "リセットメールを送信しました。メールの内容に従って操作してください。"
+    "passwordRestMailSent": "リセットメールを送信しました。メールの内容に従って操作してください。",
+    "signinCanceld": "ログインがキャンセルされました。",
+    "signingIn": "ログインしています..."
 }

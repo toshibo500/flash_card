@@ -1,6 +1,7 @@
 import 'package:flash_card/models/auth_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthRepository {
   Future<dynamic> signUp(AuthModel auth) async {
@@ -83,6 +84,30 @@ class AuthRepository {
       }
       throw AuthException(code: 'undefind', message: e.toString());
     }
+  }
+
+  static final googleLogin = GoogleSignIn(scopes: [
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ]);
+
+  Future<dynamic> googleSignIn(AuthModel authModel) async {
+    // Google認証
+    GoogleSignInAccount? signinAccount = await googleLogin.signIn();
+    if (signinAccount == null) {
+      throw AuthException(code: 'signinCanceled', message: '');
+    }
+    GoogleSignInAuthentication auth = await signinAccount.authentication;
+    final OAuthCredential credential = GoogleAuthProvider.credential(
+      idToken: auth.idToken,
+      accessToken: auth.accessToken,
+    );
+    User? user =
+        (await FirebaseAuth.instance.signInWithCredential(credential)).user;
+    authModel.id = user!.uid;
+    authModel.email = user.email ?? '';
+
+    return user;
   }
 }
 

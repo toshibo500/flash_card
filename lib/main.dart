@@ -1,3 +1,4 @@
+import 'package:flash_card/models/auth_model.dart';
 import 'package:flash_card/models/card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/models/folder_model.dart';
@@ -17,6 +18,7 @@ import 'package:flash_card/views/account/sign_up_page.dart';
 import 'package:flash_card/views/account/sign_in_method.dart';
 import 'package:flash_card/views/account/password_page.dart';
 import 'package:flash_card/views/account/rest_password_page.dart';
+import 'package:flash_card/views/account/single_sign_on_page.dart';
 
 void main() {
   //向き指定
@@ -100,6 +102,12 @@ class MyApp extends StatelessWidget {
         if (settings.name == '/restPasswordPage') {
           return MaterialPageRoute(
               builder: (context) => const RestPasswordPage());
+        }
+        if (settings.name == '/singleSignOnPage') {
+          return MaterialPageRoute(
+              builder: (context) => SingleSignOnPage(
+                    loginMethod: settings.arguments as LoginMethod,
+                  ));
         }
         return null;
       },

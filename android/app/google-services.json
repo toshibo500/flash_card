@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "789033550204-c10puo7igklghvsjei52q05gcr3t2r14.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tkgapps.ChocoBanana",
+            "certificate_hash": "c89dccfcad33aab605dcffb6ef160a5c5dda02eb"
+          }
+        },
+        {
           "client_id": "789033550204-h52g4c0593bgdi1fqakdvf0pl9ou8q7g.apps.googleusercontent.com",
           "client_type": 3
         }

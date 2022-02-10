@@ -42,6 +42,9 @@ class ErrorText extends StatelessWidget {
       case 'password-not-match':
         result = L10n.of(context)!.passwordNotMatch;
         break;
+      case 'signinCanceled':
+        result = L10n.of(context)!.signinCanceld;
+        break;
     }
     if (result.isEmpty) result = message;
 
