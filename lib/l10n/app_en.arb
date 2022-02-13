@@ -95,5 +95,14 @@
   "passwordNotMatch": "new password does not match.",
   "passwordRestMailSent": "email with instructions to reset your password has been sent.",
   "signinCanceld": "Signing in has been canceled.",
-  "signingIn": "Signing in..."
+  "signingIn": "Signing in...",
+  "backup": "Backup",
+  "backupData": "Backup data",
+  "restoreData": "Restore data",
+  "lastUpdatedAt": "Last updated at {date}",
+  "@lastUpdatedAt": {
+    "placeholders": {
+        "date": {}
+    }
+  }
 }

@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flash_card/models/auth_model.dart';
-import 'package:flash_card/models/repositories/auth_repository.dart';
+import 'package:flash_card/models/user_model.dart';
+import 'package:flash_card/models/repositories/user_repository.dart';
 import 'package:flash_card/views/components/alert_dialog.dart';
 import 'package:flash_card/views/components/error_text.dart';
 import 'package:flutter/foundation.dart';
@@ -95,15 +95,15 @@ class _PasswordPage extends State<PasswordPage> {
                         errorVisible = false;
                         try {
                           _valiation();
-                          AuthModel auth = AuthModel(
-                              email: Globals().authInfo?.email ?? '',
+                          UserModel userModl = UserModel(
+                              email: Globals().userInfo?.email ?? '',
                               password: _oldPassword);
-                          await AuthRepository().updatePassword(
-                              auth: auth, newPassword: _newPassword);
+                          await UserRepository().updatePassword(
+                              userModel: userModl, newPassword: _newPassword);
                           if (kDebugMode) {
-                            print(auth.id);
+                            print(userModl.id);
                           }
-                          Globals().authInfo = auth;
+                          Globals().userInfo = userModl;
                           showAlertDialog(
                             context: context,
                             text: L10n.of(context)!.passwordChangedMsg,

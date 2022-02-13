@@ -1,3 +1,4 @@
+import 'package:flash_card/models/repositories/user_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/viewmodels/settings_viewmodel.dart';
@@ -65,7 +66,8 @@ class _AccountPage extends StatelessWidget {
                       color: Globals.iconColor3,
                     ),
                     onPressed: (context) async {
-                      Globals().authInfo = null;
+                      UserRepository().signOut();
+                      Globals().userInfo = null;
                       Navigator.popUntil(context, ModalRoute.withName('/'));
                     }),
               ],

@@ -41,17 +41,34 @@ class _SideDrawer extends StatelessWidget {
                     ),
                   )),
               ListTile(
-                leading: const Icon(
+                leading: Icon(
                   Icons.account_circle_rounded,
-                  color: Globals.iconColor3,
+                  color: Globals().userInfo == null
+                      ? Globals.iconColor3
+                      : Globals.iconColor2,
                 ),
-                title: Text(
-                    Globals().authInfo?.email ?? L10n.of(context)!.account),
+                title: Text(Globals().userInfo?.displayName ??
+                    L10n.of(context)!.account),
                 onTap: () {
                   // Drawerを閉じてから設定を開く
                   Navigator.pop(context);
-                  Navigator.of(context).pushNamed(Globals().authInfo != null
+                  Navigator.of(context).pushNamed(Globals().userInfo != null
                       ? '/accountPage'
+                      : '/signInMethodPage');
+                },
+              ),
+              ListTile(
+                enabled: true,
+                leading: const Icon(
+                  Icons.backup_rounded,
+                  color: Globals.iconColor3,
+                ),
+                title: Text(L10n.of(context)!.backup),
+                onTap: () {
+                  // Drawerを閉じてから設定を開く
+                  Navigator.pop(context);
+                  Navigator.of(context).pushNamed(Globals().userInfo != null
+                      ? '/backupPage'
                       : '/signInMethodPage');
                 },
               ),

@@ -1,5 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flash_card/models/repositories/auth_repository.dart';
+import 'package:flash_card/models/repositories/user_repository.dart';
 import 'package:flash_card/views/components/error_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -74,7 +74,7 @@ class _RestPasswordPage extends State<RestPasswordPage> {
                       onPressed: () async {
                         errorVisible = false;
                         try {
-                          await AuthRepository().restPassword(email: _email);
+                          await UserRepository().restPassword(email: _email);
                           showAlertDialog(
                             context: context,
                             text: L10n.of(context)!.passwordRestMailSent,

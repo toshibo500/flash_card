@@ -1,4 +1,4 @@
-import 'package:flash_card/models/auth_model.dart';
+import 'package:flash_card/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
@@ -37,7 +37,7 @@ class SignInMethodPage extends StatelessWidget {
                             arguments: LoginMethod.google);
                       },
                     )),
-                Container(
+/*                 Container(
                     height: 50,
                     margin: const EdgeInsets.fromLTRB(0, 20, 0, 0),
                     padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -60,7 +60,7 @@ class SignInMethodPage extends StatelessWidget {
                         style: Globals.buttonTextStyle,
                       ),
                       onPressed: () {},
-                    )),
+                    )), */
                 const Divider(
                   thickness: 3,
                   height: 50,

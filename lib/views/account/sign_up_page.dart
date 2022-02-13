@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flash_card/models/auth_model.dart';
+import 'package:flash_card/models/user_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
-import 'package:flash_card/models/repositories/auth_repository.dart';
+import 'package:flash_card/models/repositories/user_repository.dart';
 import 'package:flash_card/views/components/error_text.dart';
 import 'package:flash_card/views/components/alert_dialog.dart';
 
@@ -86,13 +86,13 @@ class _SignUpPage extends State<SignUpPage> {
                       onPressed: () async {
                         errorVisible = false;
                         try {
-                          AuthModel auth =
-                              AuthModel(email: newEmail, password: newPassword);
-                          await AuthRepository().signUp(auth);
+                          UserModel auth =
+                              UserModel(email: newEmail, password: newPassword);
+                          await UserRepository().signUp(auth);
                           if (kDebugMode) {
                             print(auth.id);
                           }
-                          Globals().authInfo = auth;
+                          Globals().userInfo = auth;
                           showAlertDialog(
                               context: context,
                               text: L10n.of(context)!.signUpDoneMsg,

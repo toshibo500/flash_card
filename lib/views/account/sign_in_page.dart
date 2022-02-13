@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flash_card/models/auth_model.dart';
-import 'package:flash_card/models/repositories/auth_repository.dart';
+import 'package:flash_card/models/user_model.dart';
+import 'package:flash_card/models/repositories/user_repository.dart';
 import 'package:flash_card/views/components/error_text.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -86,13 +86,13 @@ class _SignInPage extends State<SignInPage> {
                       onPressed: () async {
                         errorVisible = false;
                         try {
-                          AuthModel auth =
-                              AuthModel(email: _email, password: _password);
-                          await AuthRepository().signIn(auth);
+                          UserModel auth =
+                              UserModel(email: _email, password: _password);
+                          await UserRepository().signIn(auth);
                           if (kDebugMode) {
                             print(auth.id);
                           }
-                          Globals().authInfo = auth;
+                          Globals().userInfo = auth;
                           Navigator.popUntil(context, ModalRoute.withName('/'));
                         } on AuthException catch (e) {
                           setState(() {

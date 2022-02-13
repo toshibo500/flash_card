@@ -1,4 +1,4 @@
-import 'package:flash_card/models/auth_model.dart';
+import 'package:flash_card/models/user_model.dart';
 import 'package:flash_card/models/card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/models/folder_model.dart';
@@ -19,6 +19,9 @@ import 'package:flash_card/views/account/sign_in_method.dart';
 import 'package:flash_card/views/account/password_page.dart';
 import 'package:flash_card/views/account/rest_password_page.dart';
 import 'package:flash_card/views/account/single_sign_on_page.dart';
+import 'package:flash_card/models/repositories/user_repository.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flash_card/views/backup_page.dart';
 
 void main() {
   //向き指定
@@ -109,6 +112,9 @@ class MyApp extends StatelessWidget {
                     loginMethod: settings.arguments as LoginMethod,
                   ));
         }
+        if (settings.name == '/backupPage') {
+          return MaterialPageRoute(builder: (context) => const BackupPage());
+        }
         return null;
       },
     );
@@ -122,11 +128,56 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    initFireBase();
+
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  void initFireBase() async {
+    await Firebase.initializeApp();
+  }
+
+  @override
+  void dispose() {
+    // print("dispose");
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // print("stete = $state");
+    switch (state) {
+      case AppLifecycleState.inactive:
+        // print('非アクティブになったときの処理');
+        break;
+      case AppLifecycleState.paused:
+        // print('停止されたときの処理');
+        break;
+      case AppLifecycleState.resumed:
+        // print('再開されたときの処理');
+        break;
+      case AppLifecycleState.detached:
+        // print('破棄されたときの処理');
+        break;
+    }
+  }
+
+  // ログイン状態取得
+  void _getUserInfo() async {
+    Globals().userInfo = await UserRepository.get();
+  }
+
   @override
   Widget build(BuildContext context) {
     // Global変数初期化
     Globals().initGlobals(context);
+    // ログイン状態取得
+    _getUserInfo();
     // return const Scaffold(body: FolderListPage());
     return FolderPage(
         folder: FolderModel(

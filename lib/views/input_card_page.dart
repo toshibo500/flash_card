@@ -187,7 +187,7 @@ class _InputCardPage extends State<InputCardPage> {
           children: [
             // Cancelボタン
             Container(
-                width: 100,
+                width: 120,
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
                   onPressed: _cancelOnPressd,
@@ -197,7 +197,7 @@ class _InputCardPage extends State<InputCardPage> {
                 )),
             // Saveボタン
             Container(
-                width: 100,
+                width: 110,
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
                   style: Globals.buttonStyle,

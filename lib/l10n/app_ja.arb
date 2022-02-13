@@ -85,5 +85,9 @@
     "passwordNotMatch": "新しいパスワードが一致しません。",
     "passwordRestMailSent": "リセットメールを送信しました。メールの内容に従って操作してください。",
     "signinCanceld": "ログインがキャンセルされました。",
-    "signingIn": "ログインしています..."
+    "signingIn": "ログインしています...",
+    "backup": "バックアップ",
+    "backupData": "バックアップを作成する",
+    "restoreData": "バックアップから復元する",
+    "lastUpdatedAt": "最終バックアップ日時: {date}"
 }

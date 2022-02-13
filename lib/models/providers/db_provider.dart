@@ -3,10 +3,11 @@ import 'package:path/path.dart';
 import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/quiz_model.dart';
+import 'package:flash_card/models/user_model.dart';
 
 class DbProvider {
   static const _dbFileName = 'flashcard.db';
-  static const _dbCurrentVersion = 3;
+  static const _dbCurrentVersion = 4;
 
   DbProvider._();
   static final DbProvider instance = DbProvider._();
@@ -184,6 +185,17 @@ class DbProvider {
           "ADD ${CardModel.colFrontLang} TEXT;",
       "ALTER TABLE ${CardModel.tableName} "
           "ADD ${CardModel.colBackLang} TEXT;"
+    ],
+    4: [
+      "CREATE TABLE ${UserModel.tableName} ("
+          "${UserModel.colId} TEXT PRIMARY KEY,"
+          "${UserModel.colEmail} TEXT,"
+          "${UserModel.colPassword} TEXT,"
+          "${UserModel.colDisplayName} TEXT,"
+          "${UserModel.colLoginMethod} INTEGER,"
+          "${UserModel.colToken} TEXT,"
+          "${UserModel.colSignedInAt} TEXT"
+          ");"
     ]
   };
 

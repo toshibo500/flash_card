@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flash_card/models/auth_model.dart';
-import 'package:flash_card/models/repositories/auth_repository.dart';
+import 'package:flash_card/models/user_model.dart';
+import 'package:flash_card/models/repositories/user_repository.dart';
 import 'package:flash_card/views/components/error_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -46,9 +46,9 @@ class _SingleSignOnPage extends State<SingleSignOnPage> {
   }
 
   Future<void> _googleSSO() async {
-    AuthModel auth = AuthModel(loginMethod: LoginMethod.google);
-    await AuthRepository().googleSignIn(auth);
-    Globals().authInfo = auth;
+    UserModel auth = UserModel(loginMethod: LoginMethod.google);
+    await UserRepository().googleSignIn(auth);
+    Globals().userInfo = auth;
   }
 
   @override
