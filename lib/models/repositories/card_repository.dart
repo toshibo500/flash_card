@@ -38,7 +38,7 @@ class CardRepository {
   static Future<int> bulkUpdate(List<CardModel> rows) async {
     final db = await instance.database;
     int cnt = 0;
-    db.transaction((txn) async {
+    await db.transaction((txn) async {
       for (CardModel row in rows) {
         cnt += await txn.rawUpdate(
             'UPDATE ${CardModel.tableName} SET '
@@ -101,5 +101,17 @@ class CardRepository {
         'SELECT * FROM ${CardModel.tableName} $where ORDER BY RANDOM() LIMIT $limit');
     if (rows.isEmpty) return [];
     return rows.map((json) => CardModel.fromJson(json)).toList();
+  }
+
+  static Future<int> restore(List<CardModel> rows) async {
+    final db = await instance.database;
+    int cnt = 0;
+    await db.transaction((txn) async {
+      await txn.rawDelete('DELETE FROM ${CardModel.tableName}');
+      for (CardModel row in rows) {
+        cnt += await txn.insert(CardModel.tableName, row.toJson());
+      }
+    });
+    return cnt;
   }
 }

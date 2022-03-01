@@ -36,7 +36,7 @@ class FolderRepository {
   static Future<int> bulkUpdate(List<FolderModel> rows) async {
     final db = await instance.database;
     int cnt = 0;
-    db.transaction((txn) async {
+    await db.transaction((txn) async {
       for (FolderModel row in rows) {
         cnt += await txn.rawUpdate(
             'UPDATE ${FolderModel.tableName} SET '
@@ -84,5 +84,17 @@ class FolderRepository {
 
   static Future<List<FolderModel>> getAll() async {
     return await get();
+  }
+
+  static Future<int> restore(List<FolderModel> rows) async {
+    final db = await instance.database;
+    int cnt = 0;
+    await db.transaction((txn) async {
+      await txn.rawDelete('DELETE FROM ${FolderModel.tableName}');
+      for (FolderModel row in rows) {
+        cnt += await txn.insert(FolderModel.tableName, row.toJson());
+      }
+    });
+    return cnt;
   }
 }

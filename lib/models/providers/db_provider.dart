@@ -4,10 +4,11 @@ import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/quiz_model.dart';
 import 'package:flash_card/models/user_model.dart';
+import 'package:flash_card/models/cache_model.dart';
 
 class DbProvider {
   static const _dbFileName = 'flashcard.db';
-  static const _dbCurrentVersion = 4;
+  static const _dbCurrentVersion = 5;
 
   DbProvider._();
   static final DbProvider instance = DbProvider._();
@@ -15,6 +16,7 @@ class DbProvider {
   static Database? _database;
 
   Future<Database> get database async => _database ??= await _initDb();
+  String get path => _database!.path;
 
   Future<Database> _initDb() async {
     String path = join(await getDatabasesPath(), _dbFileName);
@@ -58,7 +60,7 @@ class DbProvider {
         "${QuizModel.colStartedAt} TEXT,"
         "${QuizModel.colEndedAt} TEXT"
         ")");
-    _upgradeTable(db, 1, version);
+    await _upgradeTable(db, 1, version);
     return;
   }
 
@@ -195,6 +197,13 @@ class DbProvider {
           "${UserModel.colLoginMethod} INTEGER,"
           "${UserModel.colToken} TEXT,"
           "${UserModel.colSignedInAt} TEXT"
+          ");"
+    ],
+    5: [
+      "CREATE TABLE ${CacheModel.tableName} ("
+          "${CacheModel.colKey} TEXT PRIMARY KEY,"
+          "${CacheModel.colValue} TEXT,"
+          "${CacheModel.colCreatedAt} TEXT"
           ");"
     ]
   };

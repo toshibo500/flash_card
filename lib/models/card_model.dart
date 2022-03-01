@@ -1,4 +1,6 @@
-class CardModel {
+import 'package:flash_card/models/model.dart';
+
+class CardModel implements Model {
   static const String tableName = 'cards';
   static const String colId = 'id';
   static const String colFolderId = 'folderId';
@@ -49,12 +51,45 @@ class CardModel {
   }
 
   @override
+  factory CardModel.fromList(List<dynamic> list) {
+    return CardModel(
+      list[0] as String,
+      list[1] as String,
+      list[2] as String,
+      list[3] as String,
+      list[4] != '' ? int.parse(list[4]) : 0,
+      list[5] != '' ? int.parse(list[5]) : 0,
+      list[6] != '' ? int.parse(list[6]) : 0,
+      list[7] != '' ? DateTime.parse(list[7]).toLocal() : null,
+      list[8] as String,
+      list[9] as String,
+    );
+  }
+
+  @override
   String toString() {
     return '{$id, $folderId, $front, $back, $sequence,'
         ' $correctNum, $wrongNum, $quizedAt,'
         ' $frontLang, $backLang}';
   }
 
+  @override
+  List<dynamic> toList() {
+    return [
+      id,
+      folderId,
+      front,
+      back,
+      sequence,
+      correctNum,
+      wrongNum,
+      quizedAt?.toUtc().toIso8601String() ?? '',
+      frontLang,
+      backLang
+    ];
+  }
+
+  @override
   Map<String, dynamic> toJson() => {
         colId: id,
         colFolderId: folderId,

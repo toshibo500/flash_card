@@ -1,3 +1,4 @@
+import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:flash_card/models/repositories/user_repository.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
@@ -66,9 +67,17 @@ class _AccountPage extends StatelessWidget {
                       color: Globals.iconColor3,
                     ),
                     onPressed: (context) async {
-                      UserRepository().signOut();
-                      Globals().userInfo = null;
-                      Navigator.popUntil(context, ModalRoute.withName('/'));
+                      if (await confirm(
+                        context,
+                        title: null,
+                        content: Text(L10n.of(context)!.signOutConfirmation),
+                        textOK: Text(L10n.of(context)!.ok),
+                        textCancel: Text(L10n.of(context)!.cancel),
+                      )) {
+                        UserRepository().signOut();
+                        Globals().userInfo = null;
+                        Navigator.popUntil(context, ModalRoute.withName('/'));
+                      }
                     }),
               ],
             ),

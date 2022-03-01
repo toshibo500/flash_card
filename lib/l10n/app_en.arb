@@ -104,5 +104,11 @@
     "placeholders": {
         "date": {}
     }
-  }
+  },
+  "backupConfirmation": "Would you like to create a backup data?",
+  "resotreConfirmation": "Would you like to restore a backup data?",
+  "signOutConfirmation": "Would you like to sign out?",
+  "backupDone": "the process is successfully completed.",
+  "restoreDone": "the process is successfully completed.",
+  "errorDialogTitle": "Error"
 }

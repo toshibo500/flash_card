@@ -106,6 +106,9 @@ class Globals {
   static const Color iconColor2 = Colors.lightBlue;
   // アイコン色 3
   static const Color iconColor3 = Color(0xFFBCAAA4);
+  // アイコン色 エラー
+  static const Color iconColorError = Colors.red;
+
   // ボタン色 1
   static const Color buttonColor1 = Colors.lightBlue;
   // ボタン色 2

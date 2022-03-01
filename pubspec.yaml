@@ -57,6 +57,10 @@ dependencies:
   firebase_auth: ^1.1.1
   google_sign_in: ^5.2.3
   encrypt: ^5.0.1
+  firebase_storage: ^8.0.5
+  csv: ^5.0.1
+  flutter_archive: ^4.1.1
+  cloud_firestore: ^3.1.10
 
 dev_dependencies:
   flutter_test:

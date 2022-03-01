@@ -89,5 +89,11 @@
     "backup": "バックアップ",
     "backupData": "バックアップを作成する",
     "restoreData": "バックアップから復元する",
-    "lastUpdatedAt": "最終バックアップ日時: {date}"
+    "lastUpdatedAt": "最終バックアップ日時: {date}",
+    "backupConfirmation": "バックアップを作成しますか?",
+    "resotreConfirmation": "バックアップから復元しますか? この操作は戻せません。",
+    "signOutConfirmation": "ログアウトしますか?",
+    "backupDone": "バックアップの作成が完了しました。",
+    "restoreDone": "バックアップからの復元が完了しました。",
+    "errorDialogTitle": "Error"
 }
