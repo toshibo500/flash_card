@@ -44,6 +44,9 @@ class Globals {
   final Map<String, String> _langItems = {};
   Map<String, String> get langItems => _langItems;
 
+  // 画面の幅
+  late double screenSizeWidth;
+
   void initGlobals(BuildContext context) {
     var l10n = L10n.of(context)!;
     _frontAndBackItems[cardFrontKey] = l10n.cardFront;
@@ -84,6 +87,8 @@ class Globals {
         _langItems[e.localeId] = e.name;
       }
     });
+    // 画面サイズ
+    screenSizeWidth = MediaQuery.of(context).size.width;
   }
 
   // カードテキストスタイル

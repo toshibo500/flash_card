@@ -67,6 +67,7 @@ class _FileListView extends State<FileListView> {
   Widget _buildFlipCard(int index) {
     return Card(
       key: Key('$index'),
+      shadowColor: Colors.transparent,
       child: FlipCard(
         direction: FlipDirection.VERTICAL,
         speed: 300,
