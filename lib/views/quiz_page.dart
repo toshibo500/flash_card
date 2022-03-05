@@ -41,11 +41,29 @@ class _QuizPage extends StatelessWidget {
   final double _cardHeight = 180;
   final _scrollController = ScrollController();
 
+  TextButton _keyboardTextbutton(String text, Function()? onPressed) {
+    return TextButton(
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: Globals.keyboardTextButtonStyle,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     QuizViewModel _quizViweModel = Provider.of<QuizViewModel>(context);
     _textCtr.clear();
     _tts.initTts();
+
+    // キーボードアクション
+    Widget _keyboardActionItems = SizedBox(
+        height: 40,
+        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          _buildMicIcon(context, _quizViweModel, 24, Colors.black87),
+          _keyboardTextbutton('Done', FocusScope.of(context).unfocus),
+        ]));
 
     // キーボードに done アクション追加
     KeyboardActionsConfig _keyboardActionConfig = KeyboardActionsConfig(
@@ -53,7 +71,13 @@ class _QuizPage extends StatelessWidget {
       keyboardBarColor: Theme.of(context).disabledColor,
       nextFocus: false,
       actions: [
-        KeyboardActionsItem(focusNode: _textNode1),
+        KeyboardActionsItem(
+          displayActionBar: false, // 標準のバーを非表示にしてフッターのみ表示
+          footerBuilder: (_) => PreferredSize(
+              child: _keyboardActionItems,
+              preferredSize: const Size.fromHeight(40)),
+          focusNode: _textNode1,
+        ),
       ],
     );
 
@@ -312,6 +336,7 @@ class _QuizPage extends StatelessWidget {
   IconButton _buildMicIcon(BuildContext context, QuizViewModel viewmodel,
       [double iconSize = 32, Color color = Colors.blue]) {
     return IconButton(
+      padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
       onPressed: () async {
         int p = _textCtr.selection.start;
         String txt = await showSttDialog(
