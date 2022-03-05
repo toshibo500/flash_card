@@ -1,3 +1,4 @@
+import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/folder_model.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,8 @@ class _QuizPage extends StatelessWidget {
   final FocusNode _textNode1 = FocusNode();
   final FlipCardController _controller = FlipCardController();
   final _tts = Tts();
+  final double _cardHeight = 180;
+  final _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -98,12 +101,22 @@ class _QuizPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  _buildFlipCard(
-                      _quizViweModel.question,
-                      _quizViweModel.questionLang,
-                      _quizViweModel.answer,
-                      _quizViweModel.answerLang,
-                      _quizViweModel.index),
+                  SizedBox(
+                      height: _cardHeight,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        physics: const NeverScrollableScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _quizViweModel.items.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return _buildFlipCard(
+                              _quizViweModel.getQuestionByIndex(index),
+                              _quizViweModel.getQuestionLangByIndex(index),
+                              _quizViweModel.getAnswerByIndex(index),
+                              _quizViweModel.getAnswerLangByIndex(index),
+                              _quizViweModel.index);
+                        },
+                      )),
                   _buildAnswerArea(context, _quizViweModel, param.quizMode),
                 ],
               ),
@@ -112,34 +125,38 @@ class _QuizPage extends StatelessWidget {
 
   Widget _buildFlipCard(String front, String frontLocale, String back,
       String backLocal, int index) {
-    return Card(
-      key: Key('$index'),
-      child: FlipCard(
-        controller: _controller,
-        direction: FlipDirection.VERTICAL,
-        speed: 300,
-        onFlipDone: (status) {
-          // print(status);
-        },
-        front: _buildFlipCardContent(
-          front,
-          frontLocale,
-        ),
-        back:
-            _buildFlipCardContent(back, backLocal, Globals().cardBackSideColor),
-      ),
-    );
+    return SizedBox(
+        width: Globals().screenSizeWidth,
+        child: Card(
+          key: Key('$index'),
+          shadowColor: Colors.transparent,
+          child: FlipCard(
+            controller: _controller,
+            direction: FlipDirection.VERTICAL,
+            speed: 300,
+            onFlipDone: (status) {
+              // print(status);
+            },
+            front: _buildFlipCardContent(
+              front,
+              frontLocale,
+            ),
+            back: _buildFlipCardContent(
+                back, backLocal, Globals().cardBackSideColor),
+          ),
+        ));
   }
 
   Container _buildFlipCardContent(String text, String locale, [Color? color]) {
     return Container(
       padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: Colors.grey, width: 1.5),
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
         color: color,
       ),
-      height: 180,
+      height: _cardHeight,
+      margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
@@ -186,7 +203,7 @@ class _QuizPage extends StatelessWidget {
     return Column(children: [
       Container(
         alignment: Alignment.topLeft,
-        padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
+        padding: const EdgeInsets.fromLTRB(15, 30, 15, 5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -204,14 +221,14 @@ class _QuizPage extends StatelessWidget {
         ),
       ),
       Container(
-        margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+        margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         alignment: Alignment.topLeft,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
-          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+          // borderRadius: const BorderRadius.all(Radius.circular(8.0)),
         ),
         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-        height: 180,
+        height: _cardHeight,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -298,6 +315,8 @@ class _QuizPage extends StatelessWidget {
               if (!viewmodel.next()) {
                 Navigator.of(context)
                     .pushNamed('/quizResultPage', arguments: viewmodel.quiz.id);
+              } else {
+                _scrollToIndex(viewmodel.index);
               }
             },
           )
@@ -316,6 +335,7 @@ class _QuizPage extends StatelessWidget {
             .pushNamed('/quizResultPage', arguments: viewmodel.quiz.id);
       } else {
         CorrectPopupDialog().popup(context);
+        _scrollToIndex(viewmodel.index);
       }
     }
   }
@@ -348,6 +368,8 @@ class _QuizPage extends StatelessWidget {
                 if (!viewmodel.next()) {
                   Navigator.of(context).pushNamed('/quizResultPage',
                       arguments: viewmodel.quiz.id);
+                } else {
+                  _scrollToIndex(viewmodel.index);
                 }
               },
             )),
@@ -374,10 +396,17 @@ class _QuizPage extends StatelessWidget {
                 if (!viewmodel.next()) {
                   Navigator.of(context).pushNamed('/quizResultPage',
                       arguments: viewmodel.quiz.id);
+                } else {
+                  _scrollToIndex(viewmodel.index);
                 }
               },
             ))
       ]),
     );
+  }
+
+  void _scrollToIndex(int index) {
+    _scrollController.animateTo(Globals().screenSizeWidth * index,
+        duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
   }
 }
