@@ -1,4 +1,3 @@
-import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/folder_model.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
