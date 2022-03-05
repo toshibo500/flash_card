@@ -129,6 +129,7 @@ class _QuizPage extends StatelessWidget {
         child: Card(
           key: Key('$index'),
           shadowColor: Colors.transparent,
+          color: Colors.transparent,
           child: FlipCard(
             controller: _controller,
             direction: FlipDirection.VERTICAL,
@@ -263,25 +264,9 @@ class _QuizPage extends StatelessWidget {
                                 _textCtr.text = '';
                               },
                               icon: const Icon(Icons.close_rounded)),
-                          IconButton(
-                            iconSize: 32,
-                            padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                            onPressed: () async {
-                              int p = _textCtr.selection.start;
-                              String txt = await showSttDialog(
-                                  context: context,
-                                  localeId: viewmodel.answerLang);
-                              if (p >= 0) {
-                                _textCtr.text = _textCtr.text.substring(0, p) +
-                                    txt +
-                                    _textCtr.text.substring(p);
-                              } else {
-                                _textCtr.text += txt;
-                              }
-                              mark(context, viewmodel, _textCtr.text);
-                            },
-                            icon: const Icon(Icons.mic_rounded),
-                            color: Colors.blue,
+                          _buildMicIcon(
+                            context,
+                            viewmodel,
                           ),
                         ])))
           ],
@@ -322,6 +307,27 @@ class _QuizPage extends StatelessWidget {
         ]),
       )
     ]);
+  }
+
+  IconButton _buildMicIcon(BuildContext context, QuizViewModel viewmodel,
+      [double iconSize = 32, Color color = Colors.blue]) {
+    return IconButton(
+      onPressed: () async {
+        int p = _textCtr.selection.start;
+        String txt = await showSttDialog(
+            context: context, localeId: viewmodel.answerLang);
+        if (p >= 0) {
+          _textCtr.text =
+              _textCtr.text.substring(0, p) + txt + _textCtr.text.substring(p);
+        } else {
+          _textCtr.text += txt;
+        }
+        mark(context, viewmodel, _textCtr.text);
+      },
+      iconSize: iconSize,
+      icon: const Icon(Icons.mic_rounded),
+      color: color,
+    );
   }
 
   void mark(BuildContext context, QuizViewModel viewmodel, String text) {

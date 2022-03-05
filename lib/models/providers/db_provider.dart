@@ -57,7 +57,7 @@ class DbProvider {
         "${QuizModel.colStartedAt} TEXT,"
         "${QuizModel.colEndedAt} TEXT"
         ")");
-    _upgradeTable(db, 1, version);
+    await _upgradeTable(db, 1, version);
     return;
   }
 
