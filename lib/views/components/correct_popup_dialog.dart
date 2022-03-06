@@ -18,9 +18,10 @@ class CorrectPopupDialog {
                 child: Align(
                     alignment: Alignment.center,
                     child: Container(
-                        alignment: Alignment.center,
-                        height: 100.0,
+                        alignment: Alignment.topCenter,
+                        height: Globals().screenSizeHeight,
                         width: 200.0,
+                        padding: const EdgeInsets.fromLTRB(0, 150, 0, 0),
                         color: Colors.transparent,
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

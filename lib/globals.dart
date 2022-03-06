@@ -46,6 +46,8 @@ class Globals {
 
   // 画面の幅
   late double screenSizeWidth;
+  // 画面の高さ
+  late double screenSizeHeight;
 
   void initGlobals(BuildContext context) {
     var l10n = L10n.of(context)!;
@@ -89,6 +91,7 @@ class Globals {
     });
     // 画面サイズ
     screenSizeWidth = MediaQuery.of(context).size.width;
+    screenSizeHeight = MediaQuery.of(context).size.height;
   }
 
   // カードテキストスタイル
