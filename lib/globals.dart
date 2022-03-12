@@ -9,6 +9,9 @@ class Globals {
 
   factory Globals() => _instance;
 
+  // rootフォルダid
+  static const String rootFolderId = '00000000000000000';
+
   // カードの表裏マスタ
   static const int cardFrontKey = 0;
   static const int cardBackKey = 1;

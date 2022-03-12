@@ -3,6 +3,7 @@ import 'package:path/path.dart';
 import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/quiz_model.dart';
+import 'package:flash_card/globals.dart';
 
 class DbProvider {
   static const _dbFileName = 'flashcard.db';
@@ -69,7 +70,7 @@ class DbProvider {
           "${FolderModel.colTitle},"
           "${FolderModel.colSummary}"
           ") VALUES("
-          "'00000000000000000',"
+          "'${Globals.rootFolderId}',"
           "0,"
           "'root',"
           "''"
@@ -83,7 +84,7 @@ class DbProvider {
           ") VALUES("
           "'00000000000000001',"
           "0,"
-          "'00000000000000000',"
+          "'${Globals.rootFolderId}',"
           "'Food',"
           "''"
           ");",
@@ -94,7 +95,7 @@ class DbProvider {
           "${CardModel.colBack},"
           "${CardModel.colSequence}"
           ") VALUES("
-          "'00000000000000000',"
+          "'${Globals.rootFolderId}',"
           "'00000000000000001',"
           "'Chocolate',"
           "'チョコレート',"

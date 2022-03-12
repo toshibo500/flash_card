@@ -57,7 +57,10 @@ class _FileListView extends State<FileListView> {
       });
     } else {
       widget.viewModel.cardItems.asMap().forEach((int index, var item) {
-        tiles.add(_buildFlipCard(index));
+        // フォルダを移動した後は表示しないようにチェックする
+        if (item.folderId == widget.viewModel.selectedFolder.id) {
+          tiles.add(_buildFlipCard(index));
+        }
       });
     }
 
@@ -316,7 +319,7 @@ class _FileListView extends State<FileListView> {
             context: context,
             dialogTitle: L10n.of(context)!.folderName,
             title: text);
-        if (title != "") {
+        if (title.isNotEmpty) {
           int seq = widget.viewModel.folderItems[index].sequence;
           widget.viewModel.updateFolder(
             index: index,

@@ -36,7 +36,7 @@ dependencies:
   sqflite: any
   path_provider: any
   flip_card: any
-  speech_to_text: ^5.4.2
+  speech_to_text: ^5.4.3
   blinking_text: ^1.0.1+2
   expansion_widget: ^0.0.3
   intl: ^0.17.0

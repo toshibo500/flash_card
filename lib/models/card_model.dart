@@ -12,7 +12,7 @@ class CardModel {
   static const String colBackLang = 'backLang';
 
   final String id;
-  final String folderId;
+  String folderId;
   String front;
   String back;
   final int sequence;
