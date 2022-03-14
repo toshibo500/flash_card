@@ -96,6 +96,6 @@ class _MyHomePageState extends State<MyHomePage> {
     // return const Scaffold(body: FolderListPage());
     return FolderPage(
         folder: FolderModel(
-            '00000000000000000', '', L10n.of(context)!.appTitle, '', 0));
+            Globals.rootFolderId, '', L10n.of(context)!.appTitle, '', 0));
   }
 }

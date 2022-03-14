@@ -9,6 +9,9 @@ class Globals {
 
   factory Globals() => _instance;
 
+  // rootフォルダid
+  static const String rootFolderId = '00000000000000000';
+
   // カードの表裏マスタ
   static const int cardFrontKey = 0;
   static const int cardBackKey = 1;
@@ -44,6 +47,11 @@ class Globals {
   final Map<String, String> _langItems = {};
   Map<String, String> get langItems => _langItems;
 
+  // 画面の幅
+  late double screenSizeWidth;
+  // 画面の高さ
+  late double screenSizeHeight;
+
   void initGlobals(BuildContext context) {
     var l10n = L10n.of(context)!;
     _frontAndBackItems[cardFrontKey] = l10n.cardFront;
@@ -76,6 +84,9 @@ class Globals {
 
     // カードテキストスタイル
     cardTextStye = Theme.of(context).textTheme.headline5!;
+    cardTextStyeEditMode = TextStyle(
+        color: Theme.of(context).disabledColor,
+        fontSize: cardTextStye.fontSize);
 
     // 言語リストを取得
     Stt _stt = Stt();
@@ -84,10 +95,14 @@ class Globals {
         _langItems[e.localeId] = e.name;
       }
     });
+    // 画面サイズ
+    screenSizeWidth = MediaQuery.of(context).size.width;
+    screenSizeHeight = MediaQuery.of(context).size.height;
   }
 
   // カードテキストスタイル
   late TextStyle cardTextStye;
+  late TextStyle cardTextStyeEditMode;
 
   // チョコ色
   static const Color chocoColor = Color(0xFF6c3524);

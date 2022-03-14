@@ -112,7 +112,7 @@ class _FolderPage extends StatelessWidget {
                   String title = await showInputTitleDialog(
                       context: context,
                       dialogTitle: L10n.of(context)!.folderName);
-                  if (title != "") {
+                  if (title.isNotEmpty) {
                     _folderViweModel.addFolder(title, '');
                   }
                 } else {

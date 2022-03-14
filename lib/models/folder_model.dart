@@ -15,11 +15,12 @@ class FolderModel {
   final String summary;
   final int sequence;
   late DateTime? quizedAt;
+  late bool? hasChild; // フォルダー選択画面のみで利用
 
   List<CardModel> cards = [];
 
   FolderModel(this.id, this.parentId, this.title, this.summary, this.sequence,
-      [this.quizedAt]);
+      [this.quizedAt, this.hasChild]);
 
   factory FolderModel.fromJson(dynamic json) {
     return FolderModel(

@@ -6,7 +6,10 @@ import 'package:flash_card/models/repositories/preference_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
 
+import '../models/folder_model.dart';
+import '../models/repositories/folder_repository.dart';
 import 'components/select_bottom_sheet.dart';
+import 'components/select_folder_dialog.dart';
 
 class InputCardPage extends StatefulWidget {
   const InputCardPage({Key? key, required this.card}) : super(key: key);
@@ -28,6 +31,7 @@ class _InputCardPage extends State<InputCardPage> {
   @override
   void initState() {
     super.initState();
+    _isNew = widget.card.id == '' ? true : false;
     _textCtl[0].text = widget.card.front;
     _textCtl[1].text = widget.card.back;
     _langIds[0] = widget.card.frontLang ?? '';
@@ -37,6 +41,7 @@ class _InputCardPage extends State<InputCardPage> {
     }
     _textNode1 = FocusNode();
     _textNode2 = FocusNode();
+    getFolder(widget.card.folderId);
   }
 
   @override
@@ -51,6 +56,16 @@ class _InputCardPage extends State<InputCardPage> {
       setState(() {
         _langIds[0] = value.frontSideLang ?? '';
         _langIds[1] = value.backSideLang ?? '';
+      });
+    });
+  }
+
+  late FolderModel _folder = FolderModel('', '', '', '', 0);
+  void getFolder(String folderId) {
+    // フォルダを取得
+    FolderRepository.getById(folderId).then((value) {
+      setState(() {
+        _folder = value!;
       });
     });
   }
@@ -80,8 +95,6 @@ class _InputCardPage extends State<InputCardPage> {
 
   @override
   Widget build(BuildContext context) {
-    _isNew = widget.card.id == '' ? true : false;
-
     // キーボードに done, 上下 アクション追加
     KeyboardActionsConfig _keyboardActionConfig = KeyboardActionsConfig(
       keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
@@ -117,6 +130,7 @@ class _InputCardPage extends State<InputCardPage> {
           config: _keyboardActionConfig,
           child: SingleChildScrollView(
               child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+            _isNew ? Container() : _buildCard(_folder), // 編集時のみフォルダ変更可能
             _buildTextField(0, L10n.of(context)!.cardFront,
                 L10n.of(context)!.createCardFrontHint),
             _buildTextField(1, L10n.of(context)!.cardBack,
@@ -161,6 +175,63 @@ class _InputCardPage extends State<InputCardPage> {
     Navigator.pop<bool>(context, false);
   }
 
+  Widget _buildCard(FolderModel folder) {
+    return Column(children: <Widget>[
+      Container(
+          alignment: Alignment.topLeft,
+          padding: const EdgeInsets.fromLTRB(5, 5, 10, 0),
+          child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(
+                  L10n.of(context)!.folderName,
+                  style: Globals.titleTextStyle,
+                ),
+              ])),
+      Card(
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(color: Colors.grey, width: 0.7),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[_buildListTile(folder)]),
+      )
+    ]);
+  }
+
+  Widget _buildListTile(FolderModel folder) {
+    String text = folder.title;
+    Icon icon = Globals().folderIcon; // フォルダアイコン
+    return SizedBox(
+        height: 45,
+        child: ListTile(
+          dense: true,
+          title: Row(children: [
+            icon,
+            const SizedBox(
+              width: 10,
+            ),
+            Text(
+              text,
+              style: const TextStyle(fontSize: 16),
+            )
+          ]),
+          onTap: () async {
+            String folderId = await showSelectFolderDialog(
+              context: context,
+              parentFolderId: folder.parentId,
+              selectedFolderId: folder.id,
+            );
+            if (folderId.isNotEmpty) {
+              getFolder(folderId);
+              widget.card.folderId = folderId;
+            }
+          },
+        ));
+  }
+
   Row _buildButtons() {
     // Nextボタン
     Widget nextButton = Expanded(
@@ -187,7 +258,7 @@ class _InputCardPage extends State<InputCardPage> {
           children: [
             // Cancelボタン
             Container(
-                width: 100,
+                width: 120,
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
                   onPressed: _cancelOnPressd,
@@ -197,7 +268,7 @@ class _InputCardPage extends State<InputCardPage> {
                 )),
             // Saveボタン
             Container(
-                width: 100,
+                width: 110,
                 padding: const EdgeInsets.only(right: 5),
                 child: ElevatedButton(
                   style: Globals.buttonStyle,

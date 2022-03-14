@@ -38,6 +38,18 @@ class _QuizPage extends StatelessWidget {
   final FocusNode _textNode1 = FocusNode();
   final FlipCardController _controller = FlipCardController();
   final _tts = Tts();
+  final double _cardHeight = 180;
+  final _scrollController = ScrollController();
+
+  TextButton _keyboardTextbutton(String text, Function()? onPressed) {
+    return TextButton(
+      onPressed: onPressed,
+      child: Text(
+        text,
+        style: Globals.keyboardTextButtonStyle,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,13 +57,27 @@ class _QuizPage extends StatelessWidget {
     _textCtr.clear();
     _tts.initTts();
 
+    // キーボードアクション
+    Widget _keyboardActionItems = SizedBox(
+        height: 40,
+        child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+          _buildMicIcon(context, _quizViweModel, 24, Colors.black87),
+          _keyboardTextbutton('Done', FocusScope.of(context).unfocus),
+        ]));
+
     // キーボードに done アクション追加
     KeyboardActionsConfig _keyboardActionConfig = KeyboardActionsConfig(
       keyboardActionsPlatform: KeyboardActionsPlatform.ALL,
       keyboardBarColor: Theme.of(context).disabledColor,
       nextFocus: false,
       actions: [
-        KeyboardActionsItem(focusNode: _textNode1),
+        KeyboardActionsItem(
+          displayActionBar: false, // 標準のバーを非表示にしてフッターのみ表示
+          footerBuilder: (_) => PreferredSize(
+              child: _keyboardActionItems,
+              preferredSize: const Size.fromHeight(40)),
+          focusNode: _textNode1,
+        ),
       ],
     );
 
@@ -98,12 +124,22 @@ class _QuizPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  _buildFlipCard(
-                      _quizViweModel.question,
-                      _quizViweModel.questionLang,
-                      _quizViweModel.answer,
-                      _quizViweModel.answerLang,
-                      _quizViweModel.index),
+                  SizedBox(
+                      height: _cardHeight,
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        physics: const NeverScrollableScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _quizViweModel.items.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return _buildFlipCard(
+                              _quizViweModel.getQuestionByIndex(index),
+                              _quizViweModel.getQuestionLangByIndex(index),
+                              _quizViweModel.getAnswerByIndex(index),
+                              _quizViweModel.getAnswerLangByIndex(index),
+                              _quizViweModel.index);
+                        },
+                      )),
                   _buildAnswerArea(context, _quizViweModel, param.quizMode),
                 ],
               ),
@@ -112,34 +148,39 @@ class _QuizPage extends StatelessWidget {
 
   Widget _buildFlipCard(String front, String frontLocale, String back,
       String backLocal, int index) {
-    return Card(
-      key: Key('$index'),
-      child: FlipCard(
-        controller: _controller,
-        direction: FlipDirection.VERTICAL,
-        speed: 300,
-        onFlipDone: (status) {
-          // print(status);
-        },
-        front: _buildFlipCardContent(
-          front,
-          frontLocale,
-        ),
-        back:
-            _buildFlipCardContent(back, backLocal, Globals().cardBackSideColor),
-      ),
-    );
+    return SizedBox(
+        width: Globals().screenSizeWidth,
+        child: Card(
+          key: Key('$index'),
+          shadowColor: Colors.transparent,
+          color: Colors.transparent,
+          child: FlipCard(
+            controller: _controller,
+            direction: FlipDirection.VERTICAL,
+            speed: 300,
+            onFlipDone: (status) {
+              // print(status);
+            },
+            front: _buildFlipCardContent(
+              front,
+              frontLocale,
+            ),
+            back: _buildFlipCardContent(
+                back, backLocal, Globals().cardBackSideColor),
+          ),
+        ));
   }
 
   Container _buildFlipCardContent(String text, String locale, [Color? color]) {
     return Container(
       padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
+        border: Border.all(color: Colors.grey, width: 1.5),
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
         color: color,
       ),
-      height: 180,
+      height: _cardHeight,
+      margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.min,
@@ -186,7 +227,7 @@ class _QuizPage extends StatelessWidget {
     return Column(children: [
       Container(
         alignment: Alignment.topLeft,
-        padding: const EdgeInsets.fromLTRB(15, 10, 15, 5),
+        padding: const EdgeInsets.fromLTRB(15, 30, 15, 5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -204,14 +245,14 @@ class _QuizPage extends StatelessWidget {
         ),
       ),
       Container(
-        margin: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+        margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
         alignment: Alignment.topLeft,
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey),
-          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+          // borderRadius: const BorderRadius.all(Radius.circular(8.0)),
         ),
         padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
-        height: 180,
+        height: _cardHeight,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -247,25 +288,9 @@ class _QuizPage extends StatelessWidget {
                                 _textCtr.text = '';
                               },
                               icon: const Icon(Icons.close_rounded)),
-                          IconButton(
-                            iconSize: 32,
-                            padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                            onPressed: () async {
-                              int p = _textCtr.selection.start;
-                              String txt = await showSttDialog(
-                                  context: context,
-                                  localeId: viewmodel.answerLang);
-                              if (p >= 0) {
-                                _textCtr.text = _textCtr.text.substring(0, p) +
-                                    txt +
-                                    _textCtr.text.substring(p);
-                              } else {
-                                _textCtr.text += txt;
-                              }
-                              mark(context, viewmodel, _textCtr.text);
-                            },
-                            icon: const Icon(Icons.mic_rounded),
-                            color: Colors.blue,
+                          _buildMicIcon(
+                            context,
+                            viewmodel,
                           ),
                         ])))
           ],
@@ -298,12 +323,36 @@ class _QuizPage extends StatelessWidget {
               if (!viewmodel.next()) {
                 Navigator.of(context)
                     .pushNamed('/quizResultPage', arguments: viewmodel.quiz.id);
+              } else {
+                _scrollToIndex(viewmodel.index);
               }
             },
           )
         ]),
       )
     ]);
+  }
+
+  IconButton _buildMicIcon(BuildContext context, QuizViewModel viewmodel,
+      [double iconSize = 32, Color color = Colors.blue]) {
+    return IconButton(
+      padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+      onPressed: () async {
+        int p = _textCtr.selection.start;
+        String txt = await showSttDialog(
+            context: context, localeId: viewmodel.answerLang);
+        if (p >= 0) {
+          _textCtr.text =
+              _textCtr.text.substring(0, p) + txt + _textCtr.text.substring(p);
+        } else {
+          _textCtr.text += txt;
+        }
+        mark(context, viewmodel, _textCtr.text);
+      },
+      iconSize: iconSize,
+      icon: const Icon(Icons.mic_rounded),
+      color: color,
+    );
   }
 
   void mark(BuildContext context, QuizViewModel viewmodel, String text) {
@@ -316,6 +365,7 @@ class _QuizPage extends StatelessWidget {
             .pushNamed('/quizResultPage', arguments: viewmodel.quiz.id);
       } else {
         CorrectPopupDialog().popup(context);
+        _scrollToIndex(viewmodel.index);
       }
     }
   }
@@ -348,6 +398,8 @@ class _QuizPage extends StatelessWidget {
                 if (!viewmodel.next()) {
                   Navigator.of(context).pushNamed('/quizResultPage',
                       arguments: viewmodel.quiz.id);
+                } else {
+                  _scrollToIndex(viewmodel.index);
                 }
               },
             )),
@@ -374,10 +426,17 @@ class _QuizPage extends StatelessWidget {
                 if (!viewmodel.next()) {
                   Navigator.of(context).pushNamed('/quizResultPage',
                       arguments: viewmodel.quiz.id);
+                } else {
+                  _scrollToIndex(viewmodel.index);
                 }
               },
             ))
       ]),
     );
+  }
+
+  void _scrollToIndex(int index) {
+    _scrollController.animateTo(Globals().screenSizeWidth * index,
+        duration: const Duration(milliseconds: 200), curve: Curves.easeIn);
   }
 }

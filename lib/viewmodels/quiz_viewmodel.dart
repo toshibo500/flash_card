@@ -48,10 +48,22 @@ class QuizViewModel extends ChangeNotifier {
         : _item.back;
   }
 
+  String getQuestionByIndex(int index) {
+    return _preference.question == Globals.cardFrontKey
+        ? _cardList[index].front
+        : _cardList[index].back;
+  }
+
   String get answer {
     return _preference.question == Globals.cardFrontKey
         ? _item.back
         : _item.front;
+  }
+
+  String getAnswerByIndex(int index) {
+    return _preference.question == Globals.cardFrontKey
+        ? _cardList[index].back
+        : _cardList[index].front;
   }
 
   String get questionLang {
@@ -60,10 +72,22 @@ class QuizViewModel extends ChangeNotifier {
         : _item.backLang ?? _preference.backSideLang ?? '';
   }
 
+  String getQuestionLangByIndex(int index) {
+    return _preference.question == Globals.cardFrontKey
+        ? _cardList[index].frontLang ?? _preference.frontSideLang ?? ''
+        : _cardList[index].backLang ?? _preference.backSideLang ?? '';
+  }
+
   String get answerLang {
     return _preference.question == Globals.cardFrontKey
         ? _item.backLang ?? _preference.backSideLang ?? ''
         : _item.frontLang ?? _preference.frontSideLang ?? '';
+  }
+
+  String getAnswerLangByIndex(int index) {
+    return _preference.question == Globals.cardFrontKey
+        ? _cardList[index].backLang ?? _preference.backSideLang ?? ''
+        : _cardList[index].frontLang ?? _preference.frontSideLang ?? '';
   }
 
   String get answerLocaleName {
