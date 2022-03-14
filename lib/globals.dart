@@ -84,6 +84,9 @@ class Globals {
 
     // カードテキストスタイル
     cardTextStye = Theme.of(context).textTheme.headline5!;
+    cardTextStyeEditMode = TextStyle(
+        color: Theme.of(context).disabledColor,
+        fontSize: cardTextStye.fontSize);
 
     // 言語リストを取得
     Stt _stt = Stt();
@@ -99,6 +102,7 @@ class Globals {
 
   // カードテキストスタイル
   late TextStyle cardTextStye;
+  late TextStyle cardTextStyeEditMode;
 
   // チョコ色
   static const Color chocoColor = Color(0xFF6c3524);

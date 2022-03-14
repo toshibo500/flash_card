@@ -74,6 +74,7 @@ class _FileListView extends State<FileListView> {
       child: FlipCard(
         direction: FlipDirection.VERTICAL,
         speed: 300,
+        flipOnTouch: !widget.viewModel.editMode,
         onFlipDone: (status) {
           // print(status);
         },
@@ -116,7 +117,9 @@ class _FileListView extends State<FileListView> {
                   height: widget.viewModel.editMode ? 80 : 68,
                   child: SingleChildScrollView(
                       child: Text(text,
-                          style: Globals().cardTextStye,
+                          style: widget.viewModel.editMode
+                              ? Globals().cardTextStyeEditMode
+                              : Globals().cardTextStye,
                           overflow: TextOverflow.clip))),
               Visibility(
                   visible: !widget.viewModel.editMode,
@@ -233,7 +236,7 @@ class _FileListView extends State<FileListView> {
       ),
       enabled: !widget.viewModel.editMode,
       onTap: () {
-        if (widget.nextPage != "") {
+        if (!widget.viewModel.editMode && widget.nextPage.isNotEmpty) {
           Navigator.of(context)
               .pushNamed(widget.nextPage, arguments: item)
               .then((value) {
@@ -313,7 +316,10 @@ class _FileListView extends State<FileListView> {
   IconButton _editTitleIconButton(int index) {
     String text = widget.viewModel.folderItems[index].title;
     return IconButton(
-      icon: const Icon(Icons.edit),
+      icon: Icon(
+        Icons.edit,
+        color: Theme.of(context).textTheme.bodyText1!.color,
+      ),
       onPressed: () async {
         String title = await showInputTitleDialog(
             context: context,
@@ -348,7 +354,10 @@ class _FileListView extends State<FileListView> {
 
   IconButton _deleteIconButton(int index) {
     return IconButton(
-      icon: const Icon(Icons.delete),
+      icon: Icon(
+        Icons.delete,
+        color: Theme.of(context).textTheme.bodyText1!.color,
+      ),
       onPressed: () async {
         if (await confirm(
           context,
@@ -373,7 +382,10 @@ class _FileListView extends State<FileListView> {
       index: index,
       child: Container(
         padding: const EdgeInsets.all(10),
-        child: const Icon(Icons.drag_handle_rounded),
+        child: Icon(
+          Icons.drag_handle_rounded,
+          color: Theme.of(context).textTheme.bodyText1!.color,
+        ),
       ),
     );
   }

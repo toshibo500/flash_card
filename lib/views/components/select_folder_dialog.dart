@@ -98,13 +98,18 @@ class _SelectFolderDialog extends State<SelectFolderDialog> {
 
   Widget _buildListTile(FolderModel item, int index) {
     String text = item.title;
-    Icon icon = item.id == item.parentId
+    Icon folderIcon = item.id == item.parentId
         // 戻る用のフォルダ
         ? const Icon(Icons.arrow_upward_rounded, color: Colors.grey)
-        // 選択済みかどうか
-        : item.id == _selectedFolderId
-            ? const Icon(Icons.check_rounded) // チェックアイコン
-            : Globals().folderIcon; // フォルダアイコン
+        // フォルダアイコン
+        : Globals().folderIcon;
+
+    // 選択済みかどうか
+    Icon selectedIcon = item.id == _selectedFolderId
+        ? const Icon(
+            Icons.check_rounded,
+          ) // チェックアイコン
+        : folderIcon;
 
     return SizedBox(
         height: 45,
@@ -112,7 +117,9 @@ class _SelectFolderDialog extends State<SelectFolderDialog> {
           dense: true,
           selected: false,
           title: Row(children: [
-            icon,
+            Stack(
+              children: [folderIcon, selectedIcon],
+            ),
             const SizedBox(
               width: 10,
             ),
