@@ -1,4 +1,6 @@
-class QuizModel {
+import 'package:flash_card/models/model.dart';
+
+class QuizModel implements Model {
   static const String tableName = 'quizzes';
   static const String colId = 'id';
   static const String colFolderId = 'folderId';
@@ -31,10 +33,34 @@ class QuizModel {
   }
 
   @override
+  factory QuizModel.fromList(List<dynamic> list) {
+    return QuizModel(
+        list[0] as String,
+        list[1] as String,
+        DateTime.parse(list[2] as String).toLocal(),
+        list[3] != '' ? DateTime.parse(list[3]).toLocal() : null,
+        list[4] != '' ? int.parse(list[4]) : 0,
+        list[5] != '' ? int.parse(list[5]) : 0);
+  }
+
+  @override
   String toString() {
     return '{$id, $folderId, $colStartedAt, $colEndedAt, $colQuizNum, $colCorrectNum}';
   }
 
+  @override
+  List<dynamic> toList() {
+    return [
+      id,
+      folderId,
+      startedAt.toUtc().toIso8601String(),
+      endedAt?.toUtc().toIso8601String() ?? '',
+      quizNum,
+      correctNum
+    ];
+  }
+
+  @override
   Map<String, dynamic> toJson() => {
         colId: id,
         colFolderId: folderId,

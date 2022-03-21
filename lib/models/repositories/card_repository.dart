@@ -77,6 +77,15 @@ class CardRepository {
     return rows.map((json) => CardModel.fromJson(json)).toList();
   }
 
+  static Future<List<CardModel>> getAllByFolderIds(
+      List<String> folderIds) async {
+    final Database db = await instance.database;
+    final rows = await db.query(CardModel.tableName,
+        where: '${CardModel.colFolderId} IN ("${folderIds.join('","')}")');
+    if (rows.isEmpty) return [];
+    return rows.map((json) => CardModel.fromJson(json)).toList();
+  }
+
   static Future<List<CardModel>> getList(
       {String folderId = '',
       String orderBy = 'RANDOM()',
@@ -101,5 +110,30 @@ class CardRepository {
         'SELECT * FROM ${CardModel.tableName} $where ORDER BY RANDOM() LIMIT $limit');
     if (rows.isEmpty) return [];
     return rows.map((json) => CardModel.fromJson(json)).toList();
+  }
+
+  static Future<int> restore(List<CardModel> rows) async {
+    final db = await instance.database;
+    int cnt = 0;
+    await db.transaction((txn) async {
+      await txn.rawDelete('DELETE FROM ${CardModel.tableName}');
+      for (CardModel row in rows) {
+        cnt += await txn.insert(CardModel.tableName, row.toJson());
+      }
+    });
+    return cnt;
+  }
+
+  static Future<int> import(List<CardModel> rows) async {
+    final db = await instance.database;
+    int cnt = 0;
+    await db.transaction((txn) async {
+      for (CardModel row in rows) {
+        await txn.delete(CardModel.tableName,
+            where: '${CardModel.colId} = ?', whereArgs: [row.id]);
+        cnt += await txn.insert(CardModel.tableName, row.toJson());
+      }
+    });
+    return cnt;
   }
 }

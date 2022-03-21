@@ -47,5 +47,20 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+	<!-- バックグラウンドでデータを落としてきたりするのに必要 -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+   		<string>remote-notification</string>
+	</array>
+
+	<!-- 音楽ファイルにアクセスするために必要 -->
+	<key>NSAppleMusicUsageDescription</key>
+	<string>ここに何に使うのかの理由を書く</string>
+
+	<!-- 写真ファイルにアクセスするために必要 -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ここに何に使うのかの理由を書く</string>
+
 </dict>
 </plist>
