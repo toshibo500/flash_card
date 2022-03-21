@@ -6,10 +6,16 @@ import 'package:flash_card/globals.dart';
 
 class SelectFolderDialog extends StatefulWidget {
   const SelectFolderDialog(
-      {Key? key, required this.parentFolderId, this.selectedFolderId = ''})
+      {Key? key,
+      required this.parentFolderId,
+      this.selectedFolderId = '',
+      this.isParentSelectable = false,
+      this.text = ''})
       : super(key: key);
   final String parentFolderId;
   final String? selectedFolderId;
+  final bool isParentSelectable;
+  final String text;
   @override
   _SelectFolderDialog createState() => _SelectFolderDialog();
 }
@@ -55,16 +61,31 @@ class _SelectFolderDialog extends State<SelectFolderDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
         contentPadding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-        content: SingleChildScrollView(
-            child: SizedBox(
-          height: 350,
+        content: SizedBox(
+          height: 450,
           width: 450,
-          child: ListView.builder(
-              itemCount: _folderList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return _buildCard(_folderList[index], index);
-              }),
-        )),
+          child: Column(
+            children: [
+              Visibility(
+                visible: widget.text.isNotEmpty,
+                child: Container(
+                    height: 50,
+                    margin: const EdgeInsets.fromLTRB(5, 5, 5, 0),
+                    child: Text(widget.text)),
+              ),
+              SingleChildScrollView(
+                  child: SizedBox(
+                height: widget.text.isNotEmpty ? 380 : 450,
+                width: 450,
+                child: ListView.builder(
+                    itemCount: _folderList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return _buildCard(_folderList[index], index);
+                    }),
+              )),
+            ],
+          ),
+        ),
         actions: [
           TextButton(
             child: Text(L10n.of(context)!.cancel),
@@ -72,9 +93,11 @@ class _SelectFolderDialog extends State<SelectFolderDialog> {
           ),
           TextButton(
               child: Text(L10n.of(context)!.ok),
-              onPressed: () {
-                Navigator.pop<String>(context, _selectedFolderId);
-              }),
+              onPressed: _selectedFolderId.isEmpty
+                  ? null
+                  : () {
+                      Navigator.pop<String>(context, _selectedFolderId);
+                    }),
         ]);
   }
 
@@ -105,7 +128,8 @@ class _SelectFolderDialog extends State<SelectFolderDialog> {
         : Globals().folderIcon;
 
     // 選択済みかどうか
-    Icon selectedIcon = item.id == _selectedFolderId
+    bool selected = item.id == _selectedFolderId;
+    Icon selectedIcon = selected
         ? const Icon(
             Icons.check_rounded,
           ) // チェックアイコン
@@ -125,10 +149,24 @@ class _SelectFolderDialog extends State<SelectFolderDialog> {
             ),
             Text(text)
           ]),
+          onLongPress: () {
+            if (item.hasChild!) {
+              // 子供がいる場合はドリルダウン
+              getFolders(item.id);
+            }
+          },
           onTap: () {
             setState(() {
-              // 子供がいる場合はドリルダウン
-              if (item.hasChild!) {
+              // 戻るアイコン押下
+              if (item.id == item.parentId) {
+                getFolders(item.id);
+              } else if (widget.isParentSelectable &&
+                  selected &&
+                  item.hasChild!) {
+                // 親フォルダも選択可能、すでに選択済み且つ子供がいる場合はドリルダウン
+                getFolders(item.id);
+              } else if (!widget.isParentSelectable && item.hasChild!) {
+                // 親フォルダは選択不可、子供がいる場合はドリルダウン
                 getFolders(item.id);
               } else {
                 // いない場合は選択済に
@@ -144,9 +182,15 @@ Future showSelectFolderDialog(
     {required BuildContext context,
     TransitionBuilder? builder,
     required String parentFolderId,
-    String selectedFolderId = ""}) {
+    String selectedFolderId = "",
+    bool isParentSelectable = false,
+    String text = ''}) {
   Widget dialog = SelectFolderDialog(
-      parentFolderId: parentFolderId, selectedFolderId: selectedFolderId);
+    parentFolderId: parentFolderId,
+    selectedFolderId: selectedFolderId,
+    isParentSelectable: isParentSelectable,
+    text: text,
+  );
   return showDialog(
     context: context,
     builder: (BuildContext context) {

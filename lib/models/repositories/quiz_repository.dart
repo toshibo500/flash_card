@@ -62,4 +62,16 @@ class QuizRepository {
     if (rows.isEmpty) return [];
     return rows.map((json) => QuizModel.fromJson(json)).toList();
   }
+
+  static Future<int> restore(List<QuizModel> rows) async {
+    final db = await instance.database;
+    int cnt = 0;
+    await db.transaction((txn) async {
+      await txn.rawDelete('DELETE FROM ${QuizModel.tableName}');
+      for (QuizModel row in rows) {
+        cnt += await txn.insert(QuizModel.tableName, row.toJson());
+      }
+    });
+    return cnt;
+  }
 }

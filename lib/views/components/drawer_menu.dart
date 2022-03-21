@@ -41,6 +41,19 @@ class _SideDrawer extends StatelessWidget {
                     ),
                   )),
               ListTile(
+                enabled: true,
+                leading: const Icon(
+                  Icons.share_rounded,
+                  color: Globals.iconColor3,
+                ),
+                title: Text(L10n.of(context)!.share),
+                onTap: () {
+                  // Drawerを閉じてから設定を開く
+                  Navigator.pop(context);
+                  Navigator.of(context).pushNamed('/sharePage');
+                },
+              ),
+              ListTile(
                 leading: const Icon(
                   Icons.settings_rounded,
                   color: Globals.iconColor1,

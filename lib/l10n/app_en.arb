@@ -63,5 +63,16 @@
   },
   "createCardFrontHint": "Input front side word/phrase",
   "createCardBackHint": "Input back side word/phrase",
-  "correctPopUpText": "Correct!"
+  "correctPopUpText": "Correct!",
+  "share": "Share",
+  "shareAllData": "Share all folders",
+  "shareFolder": "Share selected folder",
+"errorDialogTitle": "Error",
+  "importData": "Import data",
+  "importDone": "the process is successfully completed.",
+  "shareConfirmation": "Would you like to share all folders?",
+  "folderNotFound": "Folder not found",
+  "chooseFolderToShare": "Choose folder to share",
+  "wrongFile": "File is wrong"
+
 }

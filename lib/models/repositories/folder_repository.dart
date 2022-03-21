@@ -82,7 +82,57 @@ class FolderRepository {
     return await get(parentId: parentId);
   }
 
+  static Future<List<FolderModel>> getByIdRecursively(String id) async {
+    List<FolderModel> list = await get(id: id);
+    if (list.isEmpty) {
+      return [];
+    }
+    List<FolderModel> children = await getByParentIdRecursively(list[0].id);
+    if (children.isNotEmpty) {
+      list += children;
+    }
+    return list;
+  }
+
+  static Future<List<FolderModel>> getByParentIdRecursively(
+      String parentId) async {
+    List<FolderModel> children = await get(parentId: parentId);
+    List<FolderModel> grandchildren;
+    for (var child in children) {
+      grandchildren = await get(parentId: child.id);
+      if (grandchildren.isNotEmpty) {
+        children += grandchildren;
+      }
+    }
+    return children;
+  }
+
   static Future<List<FolderModel>> getAll() async {
     return await get();
+  }
+
+  static Future<int> restore(List<FolderModel> rows) async {
+    final db = await instance.database;
+    int cnt = 0;
+    await db.transaction((txn) async {
+      await txn.rawDelete('DELETE FROM ${FolderModel.tableName}');
+      for (FolderModel row in rows) {
+        cnt += await txn.insert(FolderModel.tableName, row.toJson());
+      }
+    });
+    return cnt;
+  }
+
+  static Future<int> import(List<FolderModel> rows) async {
+    final db = await instance.database;
+    int cnt = 0;
+    await db.transaction((txn) async {
+      for (FolderModel row in rows) {
+        await txn.delete(FolderModel.tableName,
+            where: '${FolderModel.colId} = ?', whereArgs: [row.id]);
+        cnt += await txn.insert(FolderModel.tableName, row.toJson());
+      }
+    });
+    return cnt;
   }
 }

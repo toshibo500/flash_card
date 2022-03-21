@@ -11,6 +11,7 @@ import 'package:flash_card/views/settings_page.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flash_card/globals.dart';
+import 'package:flash_card/views/share_page.dart';
 
 void main() {
   //向き指定
@@ -75,6 +76,10 @@ class MyApp extends StatelessWidget {
         if (settings.name == '/settingsPage') {
           return MaterialPageRoute(builder: (context) => const SettingsPage());
         }
+        if (settings.name == '/sharePage') {
+          return MaterialPageRoute(builder: (context) => const SharePage());
+        }
+
         return null;
       },
     );

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:keyboard_actions/keyboard_actions.dart';
-
 import '../models/folder_model.dart';
 import '../models/repositories/folder_repository.dart';
 import 'components/select_bottom_sheet.dart';
@@ -220,10 +219,10 @@ class _InputCardPage extends State<InputCardPage> {
           ]),
           onTap: () async {
             String folderId = await showSelectFolderDialog(
-              context: context,
-              parentFolderId: folder.parentId,
-              selectedFolderId: folder.id,
-            );
+                context: context,
+                parentFolderId: folder.parentId,
+                selectedFolderId: folder.id,
+                isParentSelectable: false);
             if (folderId.isNotEmpty) {
               getFolder(folderId);
               widget.card.folderId = folderId;

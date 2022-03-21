@@ -1,6 +1,7 @@
 import 'package:flash_card/models/card_model.dart';
+import 'package:flash_card/models/model.dart';
 
-class FolderModel {
+class FolderModel implements Model {
   static const String tableName = 'folders';
   static const String colId = 'id';
   static const String colParentId = 'parentId';
@@ -40,6 +41,31 @@ class FolderModel {
     return '{$id, $parentId, $title, $summary, $sequence, $quizedAt}';
   }
 
+  @override
+  List<dynamic> toList() {
+    return [
+      id,
+      parentId,
+      title,
+      summary,
+      sequence,
+      quizedAt?.toUtc().toIso8601String() ?? ''
+    ];
+  }
+
+  @override
+  factory FolderModel.fromList(List<dynamic> list) {
+    return FolderModel(
+      list[0] as String,
+      (list[1] ?? '') as String,
+      list[2] as String,
+      list[3] as String,
+      list[4] != '' ? int.parse(list[4]) : 0,
+      list[5] != '' ? DateTime.parse(list[5]).toLocal() : null,
+    );
+  }
+
+  @override
   Map<String, dynamic> toJson() => {
         colId: id,
         colParentId: parentId,

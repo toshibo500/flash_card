@@ -53,5 +53,15 @@
     "quizOrderMethodItems": "{key, plural, =0 {昇順} other {降順}}",
     "createCardFrontHint": "表面を入力してください",
     "createCardBackHint": "裏面を入力してください",
-    "correctPopUpText": "Correct!"
+    "correctPopUpText": "Correct!",
+    "share": "シェア",
+    "shareAllData": "全てのデータをシェア",
+    "shareFolder": "フォルダを選択してシェア",
+    "errorDialogTitle": "エラー",
+    "importData": "データをインポート",
+    "importDone": "インポートが完了しました",
+    "shareConfirmation": "全てのデータをシャアしますか?",
+    "folderNotFound": "対象のフォルダがありません",
+    "chooseFolderToShare": "フォルダを選択してください",
+    "wrongFile": "ファイルが不正です"
     }

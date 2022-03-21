@@ -12,6 +12,13 @@ class Globals {
   // rootフォルダid
   static const String rootFolderId = '00000000000000000';
 
+  // バックアップファイル名
+  static const String backupFileName = 'flash_card_data.zip';
+  // バックアップ暗号化ファイル名
+  static const String backupCryptFileName = 'flash_card_data.aes';
+  // 暗号化キー
+  static const String encryptionKey = 'eCV!cBsG/YQ+nahMwTb9rsp~3.fC2#cP';
+
   // カードの表裏マスタ
   static const int cardFrontKey = 0;
   static const int cardBackKey = 1;
@@ -117,6 +124,9 @@ class Globals {
   static const Color iconColor2 = Colors.lightBlue;
   // アイコン色 3
   static const Color iconColor3 = Color(0xFFBCAAA4);
+  // アイコン色 エラー
+  static const Color iconColorError = Colors.red;
+
   // ボタン色 1
   static const Color buttonColor1 = Colors.lightBlue;
   // ボタン色 2
