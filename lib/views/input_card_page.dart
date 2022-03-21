@@ -219,10 +219,12 @@ class _InputCardPage extends State<InputCardPage> {
           ]),
           onTap: () async {
             String folderId = await showSelectFolderDialog(
-                context: context,
-                parentFolderId: folder.parentId,
-                selectedFolderId: folder.id,
-                isParentSelectable: false);
+              context: context,
+              parentFolderId: folder.parentId,
+              selectedFolderId: folder.id,
+              isParentSelectable: false,
+              text: L10n.of(context)!.chooseFolderToMove,
+            );
             if (folderId.isNotEmpty) {
               getFolder(folderId);
               widget.card.folderId = folderId;

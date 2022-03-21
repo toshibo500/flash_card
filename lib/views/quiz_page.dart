@@ -54,7 +54,6 @@ class _QuizPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     QuizViewModel _quizViweModel = Provider.of<QuizViewModel>(context);
-    _textCtr.clear();
     _tts.initTts();
 
     // キーボードアクション
@@ -367,6 +366,7 @@ class _QuizPage extends StatelessWidget {
         CorrectPopupDialog().popup(context);
         _scrollToIndex(viewmodel.index);
       }
+      _textCtr.clear();
     }
   }
 

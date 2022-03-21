@@ -63,5 +63,6 @@
     "shareConfirmation": "全てのデータをシャアしますか?",
     "folderNotFound": "対象のフォルダがありません",
     "chooseFolderToShare": "フォルダを選択してください",
+    "chooseFolderToMove": "フォルダを選択してください",
     "wrongFile": "ファイルが不正です"
     }

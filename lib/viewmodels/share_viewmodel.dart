@@ -1,13 +1,11 @@
 import 'dart:io';
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/model.dart';
-import 'package:flash_card/models/quiz_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flash_card/models/folder_model.dart';
 import 'package:csv/csv.dart';
 import 'package:flash_card/models/repositories/folder_repository.dart';
 import 'package:flash_card/models/repositories/card_repository.dart';
-import 'package:flash_card/models/repositories/quiz_repository.dart';
 import 'package:flash_card/utilities/file_util.dart';
 import 'package:flutter/services.dart';
 import 'package:flash_card/globals.dart';
@@ -54,7 +52,11 @@ class ShareViewModel extends ChangeNotifier {
     // ファイルを読み込む
     String csv = await csvFile.readAsString();
     // CSV to List
-    return const CsvToListConverter().convert(csv);
+    List<List> listlist = const CsvToListConverter().convert(csv);
+    listlist = listlist
+        .map((e) => e.map((e) => e == 'null' ? null : e).toList())
+        .toList();
+    return listlist;
   }
 
   // deleteDumpFiles

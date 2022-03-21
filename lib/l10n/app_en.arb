@@ -73,6 +73,7 @@
   "shareConfirmation": "Would you like to share all folders?",
   "folderNotFound": "Folder not found",
   "chooseFolderToShare": "Choose folder to share",
+  "chooseFolderToMove": "Choose folder to move",
   "wrongFile": "File is wrong"
 
 }

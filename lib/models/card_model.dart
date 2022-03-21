@@ -61,8 +61,8 @@ class CardModel implements Model {
       list[5] != '' ? int.parse(list[5]) : 0,
       list[6] != '' ? int.parse(list[6]) : 0,
       list[7] != '' ? DateTime.parse(list[7]).toLocal() : null,
-      list[8] as String,
-      list[9] as String,
+      list[8] as String?,
+      list[9] as String?,
     );
   }
 
