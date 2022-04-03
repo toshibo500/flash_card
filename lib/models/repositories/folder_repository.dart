@@ -5,7 +5,7 @@ import 'package:flash_card/models/folder_model.dart';
 class FolderRepository {
   static DbProvider instance = DbProvider.instance;
 
-  static Future<FolderModel?> create(
+  Future<FolderModel?> create(
       String parentId, String title, String summary, int sequence) async {
     final row = FolderModel(DateTime.now().millisecondsSinceEpoch.toString(),
         parentId, title, summary, sequence);
@@ -14,8 +14,8 @@ class FolderRepository {
     return res > 0 ? row : null;
   }
 
-  static Future<int> update(String id, String parentId, String title,
-      String summary, int sequence) async {
+  Future<int> update(String id, String parentId, String title, String summary,
+      int sequence) async {
     final db = await instance.database;
     return await db.rawUpdate(
         'UPDATE ${FolderModel.tableName} SET '
@@ -27,13 +27,13 @@ class FolderRepository {
         [parentId, title, summary, sequence, id]);
   }
 
-  static Future<int> updateWithModel(FolderModel row) async {
+  Future<int> updateWithModel(FolderModel row) async {
     final db = await instance.database;
     return await db.update(FolderModel.tableName, row.toJson(),
         where: "id = ?", whereArgs: [row.id]);
   }
 
-  static Future<int> bulkUpdate(List<FolderModel> rows) async {
+  Future<int> bulkUpdate(List<FolderModel> rows) async {
     final db = await instance.database;
     int cnt = 0;
     db.transaction((txn) async {
@@ -51,14 +51,13 @@ class FolderRepository {
     return cnt;
   }
 
-  static Future<int> delete(String id) async {
+  Future<int> delete(String id) async {
     final db = await instance.database;
     return await db
         .rawDelete('DELETE FROM ${FolderModel.tableName} WHERE id = ?', [id]);
   }
 
-  static Future<List<FolderModel>> get(
-      {String id = '', String parentId = ''}) async {
+  Future<List<FolderModel>> get({String id = '', String parentId = ''}) async {
     final Database db = await instance.database;
     String where = "WHERE 1=1";
     if (id.isNotEmpty) where += " AND ${FolderModel.colId} = '$id'";
@@ -73,16 +72,16 @@ class FolderRepository {
     return list;
   }
 
-  static Future<FolderModel?> getById(String id) async {
+  Future<FolderModel?> getById(String id) async {
     List<FolderModel> list = await get(id: id);
     return list.isEmpty ? null : list[0];
   }
 
-  static Future<List<FolderModel>> getByParentId(String parentId) async {
+  Future<List<FolderModel>> getByParentId(String parentId) async {
     return await get(parentId: parentId);
   }
 
-  static Future<List<FolderModel>> getByIdRecursively(String id) async {
+  Future<List<FolderModel>> getByIdRecursively(String id) async {
     List<FolderModel> list = await get(id: id);
     if (list.isEmpty) {
       return [];
@@ -94,8 +93,7 @@ class FolderRepository {
     return list;
   }
 
-  static Future<List<FolderModel>> getByParentIdRecursively(
-      String parentId) async {
+  Future<List<FolderModel>> getByParentIdRecursively(String parentId) async {
     List<FolderModel> children = await get(parentId: parentId);
     List<FolderModel> grandchildren;
     for (var child in children) {
@@ -107,11 +105,11 @@ class FolderRepository {
     return children;
   }
 
-  static Future<List<FolderModel>> getAll() async {
+  Future<List<FolderModel>> getAll() async {
     return await get();
   }
 
-  static Future<int> restore(List<FolderModel> rows) async {
+  Future<int> restore(List<FolderModel> rows) async {
     final db = await instance.database;
     int cnt = 0;
     await db.transaction((txn) async {
@@ -123,7 +121,7 @@ class FolderRepository {
     return cnt;
   }
 
-  static Future<int> import(List<FolderModel> rows) async {
+  Future<int> import(List<FolderModel> rows) async {
     final db = await instance.database;
     int cnt = 0;
     await db.transaction((txn) async {

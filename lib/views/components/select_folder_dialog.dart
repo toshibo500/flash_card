@@ -33,16 +33,17 @@ class _SelectFolderDialog extends State<SelectFolderDialog> {
   List<FolderModel> _folderList = [];
   void getFolders(String parentId) {
     // フォルダを取得
-    FolderRepository.getByParentId(parentId).then((value) async {
+    FolderRepository().getByParentId(parentId).then((value) async {
       // 子供がいるか確認
       for (FolderModel item in value) {
-        List<FolderModel> list = await FolderRepository.getByParentId(item.id);
+        List<FolderModel> list =
+            await FolderRepository().getByParentId(item.id);
         item.hasChild = list.isNotEmpty;
       }
       // 親がいる場合は戻るようのフォルダ作成
       FolderModel? parent;
       if (parentId != Globals.rootFolderId) {
-        parent = await FolderRepository.getById(parentId);
+        parent = await FolderRepository().getById(parentId);
         if (parent != null) {
           value = [
                 FolderModel(

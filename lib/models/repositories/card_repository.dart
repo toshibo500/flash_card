@@ -5,7 +5,7 @@ import 'package:flash_card/models/card_model.dart';
 class CardRepository {
   static DbProvider instance = DbProvider.instance;
 
-  static Future<CardModel?> create(
+  Future<CardModel?> create(
       String folderId, String front, String back, int sequence,
       {int? quizNum,
       int? correctNum,
@@ -29,13 +29,13 @@ class CardRepository {
     return res > 0 ? row : null;
   }
 
-  static Future<int> update(CardModel row) async {
+  Future<int> update(CardModel row) async {
     final db = await instance.database;
     return await db.update(CardModel.tableName, row.toJson(),
         where: "id = ?", whereArgs: [row.id]);
   }
 
-  static Future<int> bulkUpdate(List<CardModel> rows) async {
+  Future<int> bulkUpdate(List<CardModel> rows) async {
     final db = await instance.database;
     int cnt = 0;
     db.transaction((txn) async {
@@ -53,20 +53,20 @@ class CardRepository {
     return cnt;
   }
 
-  static Future<int> delete(String id) async {
+  Future<int> delete(String id) async {
     final db = await instance.database;
     return await db
         .rawDelete('DELETE FROM ${CardModel.tableName} WHERE id = ?', [id]);
   }
 
-  static Future<int> deleteByFolderId(String folderId) async {
+  Future<int> deleteByFolderId(String folderId) async {
     final db = await instance.database;
     return await db.rawDelete(
         'DELETE FROM ${CardModel.tableName} WHERE ${CardModel.colFolderId} = ?',
         [folderId]);
   }
 
-  static Future<List<CardModel>> getAll([String folderId = '']) async {
+  Future<List<CardModel>> getAll([String folderId = '']) async {
     final Database db = await instance.database;
     String where = folderId.isNotEmpty
         ? "WHERE ${CardModel.colFolderId} = '$folderId'"
@@ -77,8 +77,7 @@ class CardRepository {
     return rows.map((json) => CardModel.fromJson(json)).toList();
   }
 
-  static Future<List<CardModel>> getAllByFolderIds(
-      List<String> folderIds) async {
+  Future<List<CardModel>> getAllByFolderIds(List<String> folderIds) async {
     final Database db = await instance.database;
     final rows = await db.query(CardModel.tableName,
         where: '${CardModel.colFolderId} IN ("${folderIds.join('","')}")');
@@ -86,7 +85,7 @@ class CardRepository {
     return rows.map((json) => CardModel.fromJson(json)).toList();
   }
 
-  static Future<List<CardModel>> getList(
+  Future<List<CardModel>> getList(
       {String folderId = '',
       String orderBy = 'RANDOM()',
       String orderMethod = 'ASC',
@@ -101,7 +100,7 @@ class CardRepository {
     return rows.map((json) => CardModel.fromJson(json)).toList();
   }
 
-  static Future<List<CardModel>> getListRandom(
+  Future<List<CardModel>> getListRandom(
       [String folderId = '', int limit = 50]) async {
     final Database db = await instance.database;
     String where =
@@ -112,7 +111,7 @@ class CardRepository {
     return rows.map((json) => CardModel.fromJson(json)).toList();
   }
 
-  static Future<int> restore(List<CardModel> rows) async {
+  Future<int> restore(List<CardModel> rows) async {
     final db = await instance.database;
     int cnt = 0;
     await db.transaction((txn) async {
@@ -124,7 +123,7 @@ class CardRepository {
     return cnt;
   }
 
-  static Future<int> import(List<CardModel> rows) async {
+  Future<int> import(List<CardModel> rows) async {
     final db = await instance.database;
     int cnt = 0;
     await db.transaction((txn) async {

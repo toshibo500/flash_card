@@ -20,9 +20,9 @@ class QuizResultViewModel extends ChangeNotifier {
   }
 
   void _getResult() async {
-    _quiz = (await QuizRepository.get(_id))!;
-    _folder = (await FolderRepository.getById(_quiz.folderId))!;
-    _quizList = await QuizRepository.getList(_quiz.folderId, 5, 'DESC');
+    _quiz = (await QuizRepository().get(_id))!;
+    _folder = (await FolderRepository().getById(_quiz.folderId))!;
+    _quizList = await QuizRepository().getList(_quiz.folderId, 5, 'DESC');
     // 最新5件を取得し、古いものから表示したいので反転
     _quizList = _quizList.reversed.toList();
     notifyListeners();

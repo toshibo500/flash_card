@@ -1,5 +1,9 @@
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/folder_model.dart';
+import 'package:flash_card/models/repositories/card_repository.dart';
+import 'package:flash_card/models/repositories/folder_repository.dart';
+import 'package:flash_card/models/repositories/preference_repository.dart';
+import 'package:flash_card/models/repositories/quiz_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/views/components/input_title_dialog.dart';
@@ -16,10 +20,20 @@ class FolderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FolderRepository folderRepository = FolderRepository();
+    CardRepository cardRepository = CardRepository();
+    PreferenceRepository prefRepository = PreferenceRepository();
+    QuizRepository quizRepository = QuizRepository();
+
     return ChangeNotifierProvider(
-      create: (context) => FolderViewModel(folder),
+      create: (context) => FolderViewModel(
+          folderRepository: folderRepository,
+          cardRepository: cardRepository,
+          prefRepository: prefRepository,
+          quizRepository: quizRepository,
+          selectedFolder: folder),
       child: Scaffold(
-        body: _FolderPage(pageTitle: folder.title),
+        body: FolderPageBody(pageTitle: folder.title),
       ),
     );
   }
@@ -27,8 +41,8 @@ class FolderPage extends StatelessWidget {
 
 enum MenuCommand { folder, card }
 
-class _FolderPage extends StatelessWidget {
-  const _FolderPage({Key? key, required this.pageTitle}) : super(key: key);
+class FolderPageBody extends StatelessWidget {
+  const FolderPageBody({Key? key, required this.pageTitle}) : super(key: key);
   final String pageTitle;
 
   @override

@@ -5,7 +5,7 @@ import 'package:flash_card/models/quiz_model.dart';
 class QuizRepository {
   static DbProvider instance = DbProvider.instance;
 
-  static Future<QuizModel?> create(String folderId, DateTime startedAt,
+  Future<QuizModel?> create(String folderId, DateTime startedAt,
       [DateTime? endedAt, int? quizNum, int? correctNum]) async {
     final row = QuizModel(DateTime.now().millisecondsSinceEpoch.toString(),
         folderId, startedAt, endedAt, quizNum ?? 0, correctNum ?? 0);
@@ -14,26 +14,26 @@ class QuizRepository {
     return res > 0 ? row : null;
   }
 
-  static Future<int> update(QuizModel row) async {
+  Future<int> update(QuizModel row) async {
     final db = await instance.database;
     return await db.update(QuizModel.tableName, row.toJson(),
         where: "id = ?", whereArgs: [row.id]);
   }
 
-  static Future<int> delete(String id) async {
+  Future<int> delete(String id) async {
     final db = await instance.database;
     return await db
         .rawDelete('DELETE FROM ${QuizModel.tableName} WHERE id = ?', [id]);
   }
 
-  static Future<int> deleteByFolderId(String folderId) async {
+  Future<int> deleteByFolderId(String folderId) async {
     final db = await instance.database;
     return await db.rawDelete(
         'DELETE FROM ${QuizModel.tableName} WHERE ${QuizModel.colFolderId} = ?',
         [folderId]);
   }
 
-  static Future<QuizModel?> get(String id) async {
+  Future<QuizModel?> get(String id) async {
     final Database db = await instance.database;
     String where = "WHERE ${QuizModel.colId} = '$id'";
     final rows =
@@ -44,11 +44,11 @@ class QuizRepository {
     return list[0];
   }
 
-  static Future<List<QuizModel>> getAll([String folderId = '']) async {
+  Future<List<QuizModel>> getAll([String folderId = '']) async {
     return await getList(folderId);
   }
 
-  static Future<List<QuizModel>> getList(
+  Future<List<QuizModel>> getList(
       [String folderId = '', int rowCount = -1, String orderBy = 'ASC']) async {
     final Database db = await instance.database;
     String where = "WHERE ${QuizModel.colQuizNum} != 0";
@@ -63,7 +63,7 @@ class QuizRepository {
     return rows.map((json) => QuizModel.fromJson(json)).toList();
   }
 
-  static Future<int> restore(List<QuizModel> rows) async {
+  Future<int> restore(List<QuizModel> rows) async {
     final db = await instance.database;
     int cnt = 0;
     await db.transaction((txn) async {

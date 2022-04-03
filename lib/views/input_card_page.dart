@@ -51,7 +51,7 @@ class _InputCardPage extends State<InputCardPage> {
   }
 
   void initPreference() async {
-    PreferenceRepository.get().then((value) {
+    PreferenceRepository().get().then((value) {
       setState(() {
         _langIds[0] = value.frontSideLang ?? '';
         _langIds[1] = value.backSideLang ?? '';
@@ -62,7 +62,7 @@ class _InputCardPage extends State<InputCardPage> {
   late FolderModel _folder = FolderModel('', '', '', '', 0);
   void getFolder(String folderId) {
     // フォルダを取得
-    FolderRepository.getById(folderId).then((value) {
+    FolderRepository().getById(folderId).then((value) {
       setState(() {
         _folder = value!;
       });

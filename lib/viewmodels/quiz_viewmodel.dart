@@ -34,7 +34,7 @@ class QuizViewModel extends ChangeNotifier {
 
   PreferenceModel get preference => _preference;
   Future<void> getPreference() async {
-    _preference = await PreferenceRepository.get();
+    _preference = await PreferenceRepository().get();
   }
 
   get selectedFolder => _selectedFolder;
@@ -101,7 +101,7 @@ class QuizViewModel extends ChangeNotifier {
     String? orderMethod =
         Globals().quizOrderMethodItems[_preference.quizOrderMethod];
 
-    _cardList = await CardRepository.getList(
+    _cardList = await CardRepository().getList(
         folderId: _selectedFolder.id,
         orderBy: orderBy!,
         orderMethod: _preference.quizOrder == Globals.quizOrderRandom
@@ -111,7 +111,7 @@ class QuizViewModel extends ChangeNotifier {
   }
 
   void startQuiz() {
-    QuizRepository.create(_selectedFolder.id, DateTime.now()).then((value) {
+    QuizRepository().create(_selectedFolder.id, DateTime.now()).then((value) {
       _quiz = value!;
     });
     _getCardList(_quizNum).then((value) {
@@ -127,7 +127,7 @@ class QuizViewModel extends ChangeNotifier {
     _quiz.quizNum++;
     DateTime dt = DateTime.now();
     _quiz.endedAt = dt;
-    QuizRepository.update(_quiz);
+    QuizRepository().update(_quiz);
     updateFolder(dt);
 
     _index++;
@@ -145,7 +145,7 @@ class QuizViewModel extends ChangeNotifier {
     _item.correctNum++;
     DateTime dt = DateTime.now();
     _item.quizedAt = dt;
-    await CardRepository.update(_item);
+    await CardRepository().update(_item);
   }
 
   void wrongAnswer() async {
@@ -153,11 +153,11 @@ class QuizViewModel extends ChangeNotifier {
     _item.quizedAt = DateTime.now();
     DateTime dt = DateTime.now();
     _item.quizedAt = dt;
-    await CardRepository.update(_item);
+    await CardRepository().update(_item);
   }
 
   void updateFolder(DateTime time) {
     _selectedFolder.quizedAt = time;
-    FolderRepository.updateWithModel(_selectedFolder);
+    FolderRepository().updateWithModel(_selectedFolder);
   }
 }

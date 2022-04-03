@@ -83,10 +83,10 @@ class ShareViewModel extends ChangeNotifier {
       // フォルダオブジェクト
       List<FolderModel> folders;
       if (folderId == null) {
-        folders = await FolderRepository.getByParentIdRecursively(
-            Globals.rootFolderId);
+        folders = await FolderRepository()
+            .getByParentIdRecursively(Globals.rootFolderId);
       } else {
-        folders = await FolderRepository.getByIdRecursively(folderId);
+        folders = await FolderRepository().getByIdRecursively(folderId);
       }
       // フォルダがないと押せないのでありえないはず
       if (folders.isEmpty) {
@@ -99,8 +99,8 @@ class ShareViewModel extends ChangeNotifier {
       // ignore: avoid_print
       // print('created folder csv');
       // カードオブジェクト
-      List<CardModel> cards = await CardRepository.getAllByFolderIds(
-          folders.map((e) => e.id).toList());
+      List<CardModel> cards = await CardRepository()
+          .getAllByFolderIds(folders.map((e) => e.id).toList());
       await createCsv('${dir.path}/$_cardsCsvName', cards);
       // 圧縮
       File zipFile =
@@ -158,11 +158,11 @@ class ShareViewModel extends ChangeNotifier {
           await readCsv('$_path/$_dumpDirName/$_folderCsvName');
       List<FolderModel> folders =
           _lsit.map((e) => FolderModel.fromList(e)).toList();
-      await FolderRepository.import(folders);
+      await FolderRepository().import(folders);
       // カードオブジェクト
       _lsit = await readCsv('$_path/$_dumpDirName/$_cardsCsvName');
       List<CardModel> cards = _lsit.map((e) => CardModel.fromList(e)).toList();
-      await CardRepository.import(cards);
+      await CardRepository().import(cards);
     } on PlatformException catch (e) {
       if (kDebugMode) {
         print(e.message);
