@@ -1,4 +1,8 @@
 import 'package:flash_card/models/folder_model.dart';
+import 'package:flash_card/models/repositories/card_repository.dart';
+import 'package:flash_card/models/repositories/folder_repository.dart';
+import 'package:flash_card/models/repositories/preference_repository.dart';
+import 'package:flash_card/models/repositories/quiz_repository.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +28,19 @@ class QuizPage extends StatelessWidget {
   final QuizPageParameters param;
   @override
   Widget build(BuildContext context) {
+    FolderRepository folderRepository = FolderRepository();
+    CardRepository cardRepository = CardRepository();
+    PreferenceRepository prefRepository = PreferenceRepository();
+    QuizRepository quizRepository = QuizRepository();
+
     return ChangeNotifierProvider(
-      create: (context) => QuizViewModel(param.folder, param.quizNum),
+      create: (context) => QuizViewModel(
+          folderRepository: folderRepository,
+          cardRepository: cardRepository,
+          prefRepository: prefRepository,
+          quizRepository: quizRepository,
+          selectedFolder: param.folder,
+          quizNum: param.quizNum),
       child: Scaffold(body: _QuizPage(param: param)),
     );
   }

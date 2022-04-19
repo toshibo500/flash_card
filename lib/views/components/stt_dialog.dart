@@ -5,9 +5,17 @@ import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+class SttDialogReturnValues {
+  SttDialogReturnValues({this.lastwords = '', this.saveNext = false});
+  late String lastwords;
+  late bool saveNext;
+}
+
 class SttDialog extends StatefulWidget {
-  const SttDialog({Key? key, this.localeId}) : super(key: key);
+  const SttDialog({Key? key, this.localeId, this.saveNextBtnVisible = false})
+      : super(key: key);
   final String? localeId;
+  final bool saveNextBtnVisible;
   @override
   _SttDialog createState() => _SttDialog();
 }
@@ -138,25 +146,52 @@ class _SttDialog extends State<SttDialog> {
           _buildMicIcon(),
           _buildConvertIcon()
         ])),
-        actionsAlignment: MainAxisAlignment.spaceAround,
         actions: [
-          TextButton(
-            child: Text(L10n.of(context)!.retry),
-            onPressed: () => reStartListening(),
-          ),
-          TextButton(
-            child: Text(L10n.of(context)!.cancel),
-            onPressed: () {
-              stopListening();
-              Navigator.pop<String>(context, '');
-            },
-          ),
-          TextButton(
-              child: Text(L10n.of(context)!.ok),
-              onPressed: () {
-                stopListening();
-                Navigator.pop<String>(context, _lastwords);
-              }),
+          SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        TextButton(
+                          child: Text(L10n.of(context)!.retry),
+                          onPressed: () => reStartListening(),
+                        ),
+                        TextButton(
+                          child: Text(L10n.of(context)!.cancel),
+                          onPressed: () {
+                            stopListening();
+                            Navigator.pop<SttDialogReturnValues>(
+                                context, SttDialogReturnValues());
+                          },
+                        ),
+                        TextButton(
+                            child: Text(L10n.of(context)!.ok),
+                            onPressed: () {
+                              stopListening();
+                              Navigator.pop<SttDialogReturnValues>(context,
+                                  SttDialogReturnValues(lastwords: _lastwords));
+                            }),
+                      ]),
+                  Visibility(
+                      visible: widget.saveNextBtnVisible,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            TextButton(
+                                child: Text(L10n.of(context)!.next),
+                                onPressed: () {
+                                  stopListening();
+                                  Navigator.pop<SttDialogReturnValues>(
+                                      context,
+                                      SttDialogReturnValues(
+                                          lastwords: _lastwords,
+                                          saveNext: true));
+                                }),
+                          ]))
+                ],
+              ))
         ]);
   }
 
@@ -224,8 +259,12 @@ class _SttDialog extends State<SttDialog> {
 Future showSttDialog(
     {required BuildContext context,
     TransitionBuilder? builder,
-    String? localeId}) {
-  Widget dialog = SttDialog(localeId: localeId!);
+    String? localeId,
+    bool saveNextBtnVisible = false}) {
+  Widget dialog = SttDialog(
+    localeId: localeId!,
+    saveNextBtnVisible: saveNextBtnVisible,
+  );
   return showDialog(
     context: context,
     builder: (BuildContext context) {

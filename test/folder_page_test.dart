@@ -36,9 +36,9 @@ void main() {
       DateTime(2021, 12, 28, 13, 00, 00), false);
   FolderModel _folder2 = FolderModel('00003', '00001', 'Day2', '', 3,
       DateTime(2021, 12, 31, 13, 00, 00), false);
-  CardModel _card1 = CardModel('00001', '00001', 'hello', 'こんにちわ', 0, 0, 0,
+  CardModel _card1 = CardModel('00001', '00002', 'hello', 'こんにちわ', 0, 0, 0,
       DateTime.now(), 'en-US', 'jp-JP');
-  CardModel _card2 = CardModel('00002', '00001', 'see ya', 'じゃ', 0, 0, 0,
+  CardModel _card2 = CardModel('00002', '00002', 'see ya', 'じゃ', 0, 0, 0,
       DateTime.now(), 'en-US', 'jp-JP');
 
   void setUpPage({bool folderMode = true, bool editMode = false}) {
@@ -51,6 +51,8 @@ void main() {
     List<FolderModel> folderList = [_folder1, _folder2];
     when(model.folderItems).thenReturn(folderList);
     when(model.isEmptyFolder).thenReturn(false);
+    when(model.selectedFolder).thenReturn(_folder1);
+    when(model.cardItems).thenReturn(_folder1.cards);
 
     app = createFolderPage(model);
   }
@@ -91,23 +93,126 @@ void main() {
     // dump
     debugDumpApp();
   });
+  testWidgets('FolderPage delete folder', (WidgetTester tester) async {
+    // act
+    setUpPage(editMode: true);
+    await tester.pumpWidget(app!);
+    await tester.tap(find.byIcon(Icons.delete).last);
+    await tester.pumpAndSettle();
+
+    // assert
+    expect(find.text('OK'), findsOneWidget);
+    expect(find.text('Cancel'), findsOneWidget);
+    // act
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    // assert
+    expect(find.text('OK'), findsNothing);
+    expect(find.text('Cancel'), findsNothing);
+
+    // dump
+    debugDumpApp();
+  });
 
   testWidgets('FolderPage add folder', (WidgetTester tester) async {
     // act
     setUpPage(editMode: false);
     await tester.pumpWidget(app!);
     await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.pumpAndSettle();
     // assert
     expect(find.text('Folder'), findsOneWidget);
     // act
     await tester.tap(find.text('Folder'));
-    await tester.pump();
+    await tester.pumpAndSettle();
     // assert
-//    expect(find.text('Folder Name'), findsOneWidget);
-//    expect(find.text('OK'), findsOneWidget);
-//    expect(find.text('Cancel'), findsOneWidget);
+    expect(find.text('Folder Name'), findsOneWidget);
+    expect(find.text('OK'), findsOneWidget);
+    expect(find.text('Cancel'), findsOneWidget);
+    // act
+    await tester.enterText(find.byType(TextField), 'TestFolderName');
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
 
+    // dump
+    debugDumpApp();
+  });
+
+  testWidgets('FolderPage drawer', (WidgetTester tester) async {
+    // act
+    setUpPage(editMode: false);
+    await tester.pumpWidget(app!);
+    await tester.tap(find.byIcon(Icons.menu));
+    await tester.pumpAndSettle();
+    // assert
+    expect(find.text('Share'), findsOneWidget);
+    expect(find.text('Settings'), findsOneWidget);
+    expect(find.text('Privacy Policy'), findsOneWidget);
+    expect(find.text('About this app'), findsOneWidget);
+
+    // dump
+    debugDumpApp();
+  });
+
+  testWidgets('CardPage initializing', (WidgetTester tester) async {
+    // act
+    setUpPage(editMode: false, folderMode: false);
+    await tester.pumpWidget(app!);
+    // assert
+    expect(find.text('hello'), findsOneWidget);
+    expect(find.text('see ya'), findsOneWidget);
+    // dump
+    debugDumpApp();
+  });
+
+  testWidgets('CardPage edit mode', (WidgetTester tester) async {
+    // act
+    setUpPage(editMode: true, folderMode: false);
+    await tester.pumpWidget(app!);
+    // assert
+    expect(find.text('hello'), findsOneWidget);
+    expect(find.text('see ya'), findsOneWidget);
+
+    expect(find.byIcon(Icons.done), findsOneWidget);
+    expect(find.byIcon(Icons.edit), findsWidgets);
+    expect(find.byIcon(Icons.delete), findsWidgets);
+    expect(find.byIcon(Icons.drag_handle_rounded), findsWidgets);
+
+    // dump
+    debugDumpApp();
+  });
+
+  testWidgets('CardPage delete card', (WidgetTester tester) async {
+    // act
+    setUpPage(editMode: true, folderMode: false);
+    await tester.pumpWidget(app!);
+    await tester.tap(find.byIcon(Icons.delete).last);
+    await tester.pumpAndSettle();
+
+    // assert
+    expect(find.text('OK'), findsOneWidget);
+    expect(find.text('Cancel'), findsOneWidget);
+    // act
+    await tester.tap(find.text('OK'));
+    await tester.pumpAndSettle();
+
+    // assert
+    expect(find.text('OK'), findsNothing);
+    expect(find.text('Cancel'), findsNothing);
+
+    // dump
+    debugDumpApp();
+  });
+
+  testWidgets('CardPage add card', (WidgetTester tester) async {
+    // act
+    setUpPage(editMode: false, folderMode: false);
+    await tester.pumpWidget(app!);
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pumpAndSettle();
+    // assert
+    expect(find.text('Card'), findsOneWidget);
     // dump
     debugDumpApp();
   });

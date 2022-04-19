@@ -22,7 +22,7 @@
     "bookName": "単語帳名",
     "ok": "OK",
     "cancel": "キャンセル",
-    "next": "保存&新規",
+    "next": "保存&次へ",
     "save": "保存",
     "retry": "やり直す",
     "correct": "正解",
@@ -64,5 +64,6 @@
     "folderNotFound": "対象のフォルダがありません",
     "chooseFolderToShare": "フォルダを選択してください",
     "chooseFolderToMove": "フォルダを選択してください",
-    "wrongFile": "ファイルが不正です"
+    "wrongFile": "ファイルが不正です",
+    "saved": "保存しました"
     }

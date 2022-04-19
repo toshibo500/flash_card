@@ -1,4 +1,3 @@
-import 'package:flash_card/models/card_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/models/folder_model.dart';
 import 'package:flash_card/views/folder_page.dart';
@@ -48,8 +47,8 @@ class MyApp extends StatelessWidget {
         }
         if (settings.name == '/inputCardPage') {
           return MaterialPageRoute(
-            builder: (context) =>
-                InputCardPage(card: settings.arguments as CardModel),
+            builder: (context) => InputCardPage(
+                params: settings.arguments as InputCardPageParameters),
           );
         }
         if (settings.name == '/quizPage') {

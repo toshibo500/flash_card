@@ -7,8 +7,6 @@ import 'package:flash_card/models/repositories/card_repository.dart';
 import 'package:flash_card/models/preference_model.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
 
-class FolderViewModelParams {}
-
 class FolderViewModel extends ChangeNotifier {
   FolderRepository folderRepository;
   CardRepository cardRepository;
@@ -71,9 +69,6 @@ class FolderViewModel extends ChangeNotifier {
     List<FolderModel> subFolders =
         await folderRepository.getByParentId(folderId);
     for (var subFolder in subFolders) {
-      // 配下のCard, Quizを削除
-      await cardRepository.deleteByFolderId(subFolder.id);
-      await quizRepository.deleteByFolderId(subFolder.id);
       await _removeFolder(subFolder.id);
     }
     // 配下のCard, Quizを削除

@@ -4,7 +4,9 @@ import 'package:flash_card/models/repositories/card_repository.dart';
 import 'package:flash_card/models/repositories/folder_repository.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
 import 'package:flash_card/models/repositories/quiz_repository.dart';
+import 'package:flash_card/views/input_card_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/views/components/input_title_dialog.dart';
 import 'package:flash_card/views/components/file_list_view.dart';
@@ -127,19 +129,27 @@ class FolderPageBody extends StatelessWidget {
                       context: context,
                       dialogTitle: L10n.of(context)!.folderName);
                   if (title.isNotEmpty) {
-                    _folderViweModel.addFolder(title, '');
+                    _folderViweModel.addFolder(title, '').then((value) =>
+                        Fluttertoast.showToast(msg: L10n.of(context)!.saved));
                   }
                 } else {
                   FolderModel folder = _folderViweModel.selectedFolder;
                   bool next = true;
+                  InputCardPageParameters params = InputCardPageParameters(
+                    card: CardModel('', folder.id, '', '', 0),
+                  );
                   while (next) {
-                    CardModel card = CardModel('', folder.id, '', '', 0);
+                    params.card = CardModel('', folder.id, '', '', 0);
                     next = await Navigator.of(context)
-                        .pushNamed('/inputCardPage', arguments: card) as bool;
-                    if (card.front != '' && card.back != '') {
-                      _folderViweModel.addCard(
-                          card.front, card.back, card.frontLang, card.backLang);
+                        .pushNamed('/inputCardPage', arguments: params) as bool;
+                    if (params.card.front != '' && params.card.back != '') {
+                      _folderViweModel
+                          .addCard(params.card.front, params.card.back,
+                              params.card.frontLang, params.card.backLang)
+                          .then((value) => Fluttertoast.showToast(
+                              msg: L10n.of(context)!.saved));
                     }
+                    await Future.delayed(const Duration(milliseconds: 500));
                   }
                 }
               },

@@ -74,6 +74,7 @@
   "folderNotFound": "Folder not found",
   "chooseFolderToShare": "Choose folder to share",
   "chooseFolderToMove": "Choose folder to move",
-  "wrongFile": "File is wrong"
+  "wrongFile": "File is wrong",
+  "saved": "Saved"
 
 }

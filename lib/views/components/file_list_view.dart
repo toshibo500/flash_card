@@ -347,6 +347,7 @@ class _FileListView extends State<FileListView> {
             as bool;
         if (card.front != '' && card.back != '') {
           widget.viewModel.updateCard(index: index, card: card);
+          Fluttertoast.showToast(msg: L10n.of(context)!.saved);
         }
       },
     );
