@@ -153,13 +153,19 @@ class _InputCardPage extends State<InputCardPage> {
 
   bool _validation() {
     if (_textCtl[0].text.isEmpty) {
-      _textNode1.requestFocus();
-      if (widget.params.showVoiceInput) showVoiceInputDialog(0);
+      if (widget.params.showVoiceInput) {
+        showVoiceInputDialog(0);
+      } else {
+        _textNode1.requestFocus();
+      }
       return false;
     }
     if (_textCtl[1].text.isEmpty) {
-      _textNode2.requestFocus();
-      if (widget.params.showVoiceInput) showVoiceInputDialog(1);
+      if (widget.params.showVoiceInput) {
+        showVoiceInputDialog(1);
+      } else {
+        _textNode2.requestFocus();
+      }
       return false;
     }
     return true;
