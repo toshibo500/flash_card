@@ -7,7 +7,7 @@ import 'package:flash_card/globals.dart';
 
 class DbProvider {
   static const _dbFileName = 'flashcard.db';
-  static const _dbCurrentVersion = 3;
+  static const _dbCurrentVersion = 4;
 
   DbProvider._();
   static final DbProvider instance = DbProvider._();
@@ -185,6 +185,12 @@ class DbProvider {
           "ADD ${CardModel.colFrontLang} TEXT;",
       "ALTER TABLE ${CardModel.tableName} "
           "ADD ${CardModel.colBackLang} TEXT;"
+    ],
+    4: [
+      "ALTER TABLE ${CardModel.tableName} "
+          "ADD ${CardModel.colBookmark} INTEGER;",
+      "ALTER TABLE ${CardModel.tableName} "
+          "ADD ${CardModel.colBookmarkedAt} TEXT;"
     ]
   };
 

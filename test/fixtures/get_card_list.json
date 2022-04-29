@@ -1,0 +1,24 @@
+[
+  {
+    "id": "00001",
+    "folderId": "00001",
+    "front": "hello",
+    "back": "こんにちわ",
+    "sequence": 0,
+    "correctNum": 0,
+    "wrongNum": 0,
+    "frontLang": "en-US",
+    "backLang": "jp-JP"
+  },
+  {
+    "id": "00002",
+    "folderId": "00001",
+    "front": "see ya",
+    "back": "じゃ",
+    "sequence": 0,
+    "correctNum": 0,
+    "wrongNum": 0,
+    "frontLang": "en-US",
+    "backLang": "jp-JP"
+  }
+]

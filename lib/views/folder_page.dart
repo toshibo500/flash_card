@@ -82,6 +82,7 @@ class FolderPageBody extends StatelessWidget {
                         folder: _folderViweModel.selectedFolder,
                         quizNum: _folderViweModel.preference.quizNum!,
                         quizMode: _folderViweModel.preference.quizMode!));
+                _folderViweModel.getAllCard(_folderViweModel.selectedFolder.id);
               },
             ),
           ),

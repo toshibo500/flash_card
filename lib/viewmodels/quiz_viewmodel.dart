@@ -165,4 +165,18 @@ class QuizViewModel extends ChangeNotifier {
     selectedFolder.quizedAt = time;
     folderRepository.updateWithModel(selectedFolder);
   }
+
+  bool isBookmarked(int index) {
+    return _cardList[index].bookmark!;
+  }
+
+  Future<void> updateBookmark() async {
+    CardModel card = _cardList[_index];
+    card.bookmark = card.bookmark == true ? false : true;
+    int res = await cardRepository.update(card);
+    if (res > 0) {
+      _cardList[_index] = card;
+      notifyListeners();
+    }
+  }
 }

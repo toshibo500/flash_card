@@ -26,6 +26,8 @@
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>this app uses the microphone to help you enter words or phrases you want to learn.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app may access your photo library to share your card data.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>this app uses uses speech recognition to help you enter words or phrases you want to learn.</string>
 	<key>UIBackgroundModes</key>
@@ -54,7 +56,5 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app may access your photo library to share your card data.</string>
 </dict>
 </plist>

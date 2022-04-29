@@ -1,5 +1,6 @@
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/viewmodels/folder_viewmodel.dart';
+import 'package:flash_card/views/input_card_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
@@ -103,24 +104,59 @@ class _FileListView extends State<FileListView> {
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
         color: color,
       ),
-      height: 100,
+      height: 120,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Flexible(
               child: Column(
             children: [
-              Container(
-                  alignment: Alignment.topLeft,
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                  height: widget.viewModel.editMode ? 80 : 68,
-                  child: SingleChildScrollView(
-                      child: Text(text,
-                          style: widget.viewModel.editMode
-                              ? Globals().cardTextStyeEditMode
-                              : Globals().cardTextStye,
-                          overflow: TextOverflow.clip))),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                      child: Container(
+                    alignment: Alignment.topLeft,
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    height: widget.viewModel.editMode ? 100 : 88,
+                    child: SingleChildScrollView(
+                        child: Text(text,
+                            style: widget.viewModel.editMode
+                                ? Globals().cardTextStyeEditMode
+                                : Globals().cardTextStye,
+                            overflow: TextOverflow.clip)),
+                  )),
+                  Container(
+                      width: 24,
+                      alignment: Alignment.topRight,
+                      margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            IconButton(
+                              iconSize: 24,
+                              alignment: Alignment.topRight,
+                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              color: card.bookmark == true
+                                  ? Globals.bookmarkColor1
+                                  : Globals
+                                      .bookmarkColor2, // Globals.iconColor2,
+                              icon: const Icon(Icons.bookmark_rounded),
+                              onPressed: () {
+                                card.bookmark =
+                                    card.bookmark == true ? false : true;
+                                if (card.bookmark!) {
+                                  card.bookmarkedAt = DateTime.now();
+                                }
+                                widget.viewModel
+                                    .updateCard(index: index, card: card);
+                              },
+                            ),
+                          ]))
+                ],
+              ),
               Visibility(
                   visible: !widget.viewModel.editMode,
                   child: SizedBox(
@@ -339,14 +375,17 @@ class _FileListView extends State<FileListView> {
   }
 
   IconButton _editCardIconButton(int index) {
-    CardModel card = widget.viewModel.cardItems[index];
     return IconButton(
       icon: const Icon(Icons.edit),
       onPressed: () async {
-        await Navigator.of(context).pushNamed('/inputCardPage', arguments: card)
-            as bool;
-        if (card.front != '' && card.back != '') {
-          widget.viewModel.updateCard(index: index, card: card);
+        CardModel card = widget.viewModel.cardItems[index];
+        InputCardPageParameters params = InputCardPageParameters(
+          card: card,
+        );
+        await Navigator.of(context)
+            .pushNamed('/inputCardPage', arguments: params) as bool;
+        if (params.card.front != '' && params.card.back != '') {
+          widget.viewModel.updateCard(index: index, card: params.card);
           Fluttertoast.showToast(msg: L10n.of(context)!.saved);
         }
       },
