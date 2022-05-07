@@ -25,7 +25,8 @@ class _SttDialog extends State<SttDialog> {
   String _lastwords = '';
   double _level = 0.0;
   Color _micColor = Colors.black;
-  bool restart = false;
+  bool _restart = false;
+  bool _reOpen = false;
   double _withOpacity = 0.05;
 
   @override
@@ -50,15 +51,23 @@ class _SttDialog extends State<SttDialog> {
       print(
           'Received listener status: $status, listening: ${_stt.isListening}');
     }
+    if (status == 'done' && !_stt.isListening) {
+      if (_restart) {
+        startListening();
+        _restart = false;
+        return;
+      } else if (_reOpen) {
+        Navigator.pop<SttDialogReturnValues>(context,
+            SttDialogReturnValues(lastwords: _lastwords, saveNext: true));
+        _restart = false;
+        return;
+      }
+    }
     setState(() {
       if (status == 'done' && !_stt.isListening) {
         _level = 0.0;
         _withOpacity = .0;
         _micColor = Theme.of(context).disabledColor;
-        if (restart) {
-          startListening();
-          restart = false;
-        }
       } else {
         _withOpacity = .05;
         _micColor = Theme.of(context).textTheme.bodyText1!.color!;
@@ -81,6 +90,9 @@ class _SttDialog extends State<SttDialog> {
   void startListening() async {
     await _stt.initSpeechState(onError: onSttError, onStatus: onSttStatus);
     if (_stt.hasSpeech) {
+      if (kDebugMode) {
+        print('Start listening with: ${widget.localeId}');
+      }
       await _stt.startListening(
           onResult: resultListener,
           onSoundLevelChange: soundLevelListener,
@@ -97,7 +109,7 @@ class _SttDialog extends State<SttDialog> {
       _level = level;
     });
     if (kDebugMode) {
-      print('sound level $_level');
+      // print('sound level $_level');
     }
   }
 
@@ -109,7 +121,7 @@ class _SttDialog extends State<SttDialog> {
   void reStartListening() {
     // _animationControler.stop();
     if (_stt.isListening && _lastwords != '') {
-      restart = true;
+      _restart = true;
       stopListening();
     } else {
       startListening();
@@ -182,12 +194,16 @@ class _SttDialog extends State<SttDialog> {
                             TextButton(
                                 child: Text(L10n.of(context)!.next),
                                 onPressed: () {
-                                  stopListening();
-                                  Navigator.pop<SttDialogReturnValues>(
-                                      context,
-                                      SttDialogReturnValues(
-                                          lastwords: _lastwords,
-                                          saveNext: true));
+                                  if (_stt.isListening) {
+                                    _reOpen = true;
+                                    stopListening();
+                                  } else {
+                                    Navigator.pop<SttDialogReturnValues>(
+                                        context,
+                                        SttDialogReturnValues(
+                                            lastwords: _lastwords,
+                                            saveNext: true));
+                                  }
                                 }),
                           ]))
                 ],

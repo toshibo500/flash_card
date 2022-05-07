@@ -127,34 +127,37 @@ class _FileListView extends State<FileListView> {
                                 : Globals().cardTextStye,
                             overflow: TextOverflow.clip)),
                   )),
-                  Container(
-                      width: 24,
-                      alignment: Alignment.topRight,
-                      margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            IconButton(
-                              iconSize: 24,
-                              alignment: Alignment.topRight,
-                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                              color: card.bookmark == true
-                                  ? Globals.bookmarkColor1
-                                  : Globals
-                                      .bookmarkColor2, // Globals.iconColor2,
-                              icon: const Icon(Icons.bookmark_rounded),
-                              onPressed: () {
-                                card.bookmark =
-                                    card.bookmark == true ? false : true;
-                                if (card.bookmark!) {
-                                  card.bookmarkedAt = DateTime.now();
-                                }
-                                widget.viewModel
-                                    .updateCard(index: index, card: card);
-                              },
-                            ),
-                          ]))
+                  Visibility(
+                      visible: !widget.viewModel.editMode,
+                      child: Container(
+                          width: 24,
+                          alignment: Alignment.topRight,
+                          margin: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                IconButton(
+                                  iconSize: 24,
+                                  alignment: Alignment.topRight,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                  color: card.bookmark == true
+                                      ? Globals.bookmarkColor1
+                                      : Globals
+                                          .bookmarkColor2, // Globals.iconColor2,
+                                  icon: const Icon(Icons.bookmark_rounded),
+                                  onPressed: () {
+                                    card.bookmark =
+                                        card.bookmark == true ? false : true;
+                                    if (card.bookmark!) {
+                                      card.bookmarkedAt = DateTime.now();
+                                    }
+                                    widget.viewModel
+                                        .updateCard(index: index, card: card);
+                                  },
+                                ),
+                              ])))
                 ],
               ),
               Visibility(

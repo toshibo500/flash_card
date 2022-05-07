@@ -72,16 +72,17 @@ class CardModel implements Model {
       list[7] != '' ? DateTime.parse(list[7]).toLocal() : null,
       list[8] as String?,
       list[9] as String?,
-      list[10] != '' ? true : false,
+      list[10] == '1' ? true : false,
       list[11] != '' ? DateTime.parse(list[11]).toLocal() : null,
     );
   }
 
   @override
   String toString() {
-    return '{$id, $folderId, $front, $back, $sequence,'
+    String ret = '{$id, $folderId, $front, $back, $sequence,'
         ' $correctNum, $wrongNum, $quizedAt,'
         ' $frontLang, $backLang, $bookmark, $bookmarkedAt}';
+    return ret;
   }
 
   @override
@@ -97,7 +98,7 @@ class CardModel implements Model {
       quizedAt?.toUtc().toIso8601String() ?? '',
       frontLang,
       backLang,
-      bookmark,
+      bookmark == true ? 1 : 0,
       bookmarkedAt?.toUtc().toIso8601String() ?? ''
     ];
   }

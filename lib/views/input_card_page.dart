@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flash_card/globals.dart';
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/preference_model.dart';
@@ -51,7 +53,7 @@ class _InputCardPage extends State<InputCardPage> {
     if (widget.params.showVoiceInput) {
       // build 完了後のコールバック
       WidgetsBinding.instance?.addPostFrameCallback((_) {
-        showVoiceInputDialog(0);
+        _getVoiceIpnut(0);
       });
     }
   }
@@ -153,32 +155,42 @@ class _InputCardPage extends State<InputCardPage> {
 
   bool _validation() {
     if (_textCtl[0].text.isEmpty) {
-      if (widget.params.showVoiceInput) {
-        showVoiceInputDialog(0);
-      } else {
-        _textNode1.requestFocus();
-      }
+      _textNode1.requestFocus();
       return false;
     }
     if (_textCtl[1].text.isEmpty) {
-      if (widget.params.showVoiceInput) {
-        showVoiceInputDialog(1);
-      } else {
-        _textNode2.requestFocus();
-      }
+      _textNode2.requestFocus();
       return false;
     }
     return true;
   }
 
+  // 音声から入力
+  Future<void> _getVoiceIpnut(int index) async {
+    bool next = true;
+    while (next) {
+      await showVoiceInputDialog(index);
+      if (widget.params.showVoiceInput) {
+        if (_nextOnPressd()) {
+          next = false;
+        } else {
+          index = _textNode1.hasFocus ? 0 : 1;
+        }
+      } else {
+        next = false;
+      }
+    }
+  }
+
   // nextボタン押下時
-  Future<void> _nextOnPressd() async {
+  _nextOnPressd() {
     if (!_validation()) {
-      return;
+      return false;
     }
     widget.params.card.front = _textCtl[0].text;
     widget.params.card.back = _textCtl[1].text;
     Navigator.pop<bool>(context, true);
+    return true;
   }
 
   // Cancelボタン押下時
@@ -322,8 +334,8 @@ class _InputCardPage extends State<InputCardPage> {
   IconButton _buildMicIcon(int index,
       [double iconSize = 32, Color color = Colors.blue]) {
     return IconButton(
-      onPressed: () async {
-        await showVoiceInputDialog(index);
+      onPressed: () {
+        _getVoiceIpnut(index);
       },
       iconSize: iconSize,
       icon: const Icon(Icons.mic_rounded),
@@ -333,11 +345,10 @@ class _InputCardPage extends State<InputCardPage> {
 
   Future<void> showVoiceInputDialog(int index) async {
     int p = _textCtl[index].selection.start;
-    widget.params.showVoiceInput = false;
     SttDialogReturnValues values = await showSttDialog(
         context: context,
         localeId: _langIds[index],
-        saveNextBtnVisible: _isNew);
+        saveNextBtnVisible: false); //_isNew);
     setState(() {
       if (p >= 0) {
         _textCtl[index].text = _textCtl[index].text.substring(0, p) +
@@ -347,10 +358,7 @@ class _InputCardPage extends State<InputCardPage> {
         _textCtl[index].text += values.lastwords;
       }
     });
-    if (values.saveNext) {
-      widget.params.showVoiceInput = true;
-      _nextOnPressd();
-    }
+    widget.params.showVoiceInput = values.saveNext;
   }
 
   Column _buildTextField(int index, String title, String hintText) {

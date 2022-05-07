@@ -140,7 +140,17 @@ class FolderPageBody extends StatelessWidget {
                     card: CardModel('', folder.id, '', '', 0),
                   );
                   while (next) {
-                    params.card = CardModel('', folder.id, '', '', 0);
+                    params.card = CardModel(
+                        '',
+                        folder.id,
+                        '',
+                        '',
+                        0,
+                        0,
+                        0,
+                        null,
+                        _folderViweModel.preference.frontSideLang,
+                        _folderViweModel.preference.backSideLang);
                     next = await Navigator.of(context)
                         .pushNamed('/inputCardPage', arguments: params) as bool;
                     if (params.card.front != '' && params.card.back != '') {
