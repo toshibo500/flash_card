@@ -1,0 +1,13 @@
+{
+  "id": 1,
+  "title": "First task",
+  "frontSideLang": "en-US",
+  "backSideLang": "jp-JP",
+  "frontSideLangName": "English",
+  "backSideLangName": "Japanese",
+  "question": 0,
+  "quizMode": 1,
+  "quizNum": 3,
+  "quizOrder": 0,
+  "quizOrderMethod": 0
+}

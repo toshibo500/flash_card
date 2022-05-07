@@ -10,7 +10,12 @@ import 'package:flash_card/globals.dart';
 import 'package:flash_card/models/repositories/folder_repository.dart';
 
 class QuizViewModel extends ChangeNotifier {
-  FolderModel _selectedFolder = FolderModel('', '', '', '', 0);
+  FolderRepository folderRepository;
+  CardRepository cardRepository;
+  PreferenceRepository prefRepository;
+  QuizRepository quizRepository;
+
+  FolderModel selectedFolder = FolderModel('', '', '', '', 0);
   late List<CardModel> _cardList = [];
   int _index = 0;
   late CardModel _item = CardModel('', '', '', '', 0);
@@ -18,8 +23,13 @@ class QuizViewModel extends ChangeNotifier {
   late QuizModel _quiz;
   PreferenceModel _preference = PreferenceModel();
 
-  QuizViewModel(FolderModel selectedFolder, int quizNum) {
-    this.selectedFolder = selectedFolder;
+  QuizViewModel(
+      {required this.folderRepository,
+      required this.cardRepository,
+      required this.prefRepository,
+      required this.quizRepository,
+      required this.selectedFolder,
+      required int quizNum}) {
     _quizNum = quizNum;
     getPreference().then((value) {
       startQuiz();
@@ -34,12 +44,7 @@ class QuizViewModel extends ChangeNotifier {
 
   PreferenceModel get preference => _preference;
   Future<void> getPreference() async {
-    _preference = await PreferenceRepository.get();
-  }
-
-  get selectedFolder => _selectedFolder;
-  set selectedFolder(folder) {
-    _selectedFolder = folder;
+    _preference = await prefRepository.get();
   }
 
   String get question {
@@ -101,8 +106,8 @@ class QuizViewModel extends ChangeNotifier {
     String? orderMethod =
         Globals().quizOrderMethodItems[_preference.quizOrderMethod];
 
-    _cardList = await CardRepository.getList(
-        folderId: _selectedFolder.id,
+    _cardList = await cardRepository.getList(
+        folderId: selectedFolder.id,
         orderBy: orderBy!,
         orderMethod: _preference.quizOrder == Globals.quizOrderRandom
             ? ''
@@ -111,7 +116,7 @@ class QuizViewModel extends ChangeNotifier {
   }
 
   void startQuiz() {
-    QuizRepository.create(_selectedFolder.id, DateTime.now()).then((value) {
+    quizRepository.create(selectedFolder.id, DateTime.now()).then((value) {
       _quiz = value!;
     });
     _getCardList(_quizNum).then((value) {
@@ -127,7 +132,7 @@ class QuizViewModel extends ChangeNotifier {
     _quiz.quizNum++;
     DateTime dt = DateTime.now();
     _quiz.endedAt = dt;
-    QuizRepository.update(_quiz);
+    quizRepository.update(_quiz);
     updateFolder(dt);
 
     _index++;
@@ -145,7 +150,7 @@ class QuizViewModel extends ChangeNotifier {
     _item.correctNum++;
     DateTime dt = DateTime.now();
     _item.quizedAt = dt;
-    await CardRepository.update(_item);
+    await cardRepository.update(_item);
   }
 
   void wrongAnswer() async {
@@ -153,11 +158,25 @@ class QuizViewModel extends ChangeNotifier {
     _item.quizedAt = DateTime.now();
     DateTime dt = DateTime.now();
     _item.quizedAt = dt;
-    await CardRepository.update(_item);
+    await cardRepository.update(_item);
   }
 
   void updateFolder(DateTime time) {
-    _selectedFolder.quizedAt = time;
-    FolderRepository.updateWithModel(_selectedFolder);
+    selectedFolder.quizedAt = time;
+    folderRepository.updateWithModel(selectedFolder);
+  }
+
+  bool isBookmarked(int index) {
+    return _cardList[index].bookmark!;
+  }
+
+  Future<void> updateBookmark() async {
+    CardModel card = _cardList[_index];
+    card.bookmark = card.bookmark == true ? false : true;
+    int res = await cardRepository.update(card);
+    if (res > 0) {
+      _cardList[_index] = card;
+      notifyListeners();
+    }
   }
 }

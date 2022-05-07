@@ -139,6 +139,11 @@ class Globals {
   static const Color panelBtnForeColor2 = Colors.lightBlue;
   static const Color panelBtnForeColor3 = Colors.white;
 
+  // ブックマーク有効
+  static const Color bookmarkColor1 = Color.fromARGB(203, 241, 152, 19);
+  // ブックマーク無効
+  static const Color bookmarkColor2 = Color.fromARGB(56, 158, 158, 158);
+
   // カード裏色
   late Color cardBackSideColor;
 

@@ -1,6 +1,12 @@
 import 'package:flash_card/models/card_model.dart';
 import 'package:flash_card/models/folder_model.dart';
+import 'package:flash_card/models/repositories/card_repository.dart';
+import 'package:flash_card/models/repositories/folder_repository.dart';
+import 'package:flash_card/models/repositories/preference_repository.dart';
+import 'package:flash_card/models/repositories/quiz_repository.dart';
+import 'package:flash_card/views/input_card_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:flash_card/views/components/input_title_dialog.dart';
 import 'package:flash_card/views/components/file_list_view.dart';
@@ -16,10 +22,20 @@ class FolderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FolderRepository folderRepository = FolderRepository();
+    CardRepository cardRepository = CardRepository();
+    PreferenceRepository prefRepository = PreferenceRepository();
+    QuizRepository quizRepository = QuizRepository();
+
     return ChangeNotifierProvider(
-      create: (context) => FolderViewModel(folder),
+      create: (context) => FolderViewModel(
+          folderRepository: folderRepository,
+          cardRepository: cardRepository,
+          prefRepository: prefRepository,
+          quizRepository: quizRepository,
+          selectedFolder: folder),
       child: Scaffold(
-        body: _FolderPage(pageTitle: folder.title),
+        body: FolderPageBody(pageTitle: folder.title),
       ),
     );
   }
@@ -27,8 +43,8 @@ class FolderPage extends StatelessWidget {
 
 enum MenuCommand { folder, card }
 
-class _FolderPage extends StatelessWidget {
-  const _FolderPage({Key? key, required this.pageTitle}) : super(key: key);
+class FolderPageBody extends StatelessWidget {
+  const FolderPageBody({Key? key, required this.pageTitle}) : super(key: key);
   final String pageTitle;
 
   @override
@@ -66,6 +82,7 @@ class _FolderPage extends StatelessWidget {
                         folder: _folderViweModel.selectedFolder,
                         quizNum: _folderViweModel.preference.quizNum!,
                         quizMode: _folderViweModel.preference.quizMode!));
+                _folderViweModel.getAllCard(_folderViweModel.selectedFolder.id);
               },
             ),
           ),
@@ -113,19 +130,37 @@ class _FolderPage extends StatelessWidget {
                       context: context,
                       dialogTitle: L10n.of(context)!.folderName);
                   if (title.isNotEmpty) {
-                    _folderViweModel.addFolder(title, '');
+                    _folderViweModel.addFolder(title, '').then((value) =>
+                        Fluttertoast.showToast(msg: L10n.of(context)!.saved));
                   }
                 } else {
                   FolderModel folder = _folderViweModel.selectedFolder;
                   bool next = true;
+                  InputCardPageParameters params = InputCardPageParameters(
+                    card: CardModel('', folder.id, '', '', 0),
+                  );
                   while (next) {
-                    CardModel card = CardModel('', folder.id, '', '', 0);
+                    params.card = CardModel(
+                        '',
+                        folder.id,
+                        '',
+                        '',
+                        0,
+                        0,
+                        0,
+                        null,
+                        _folderViweModel.preference.frontSideLang,
+                        _folderViweModel.preference.backSideLang);
                     next = await Navigator.of(context)
-                        .pushNamed('/inputCardPage', arguments: card) as bool;
-                    if (card.front != '' && card.back != '') {
-                      _folderViweModel.addCard(
-                          card.front, card.back, card.frontLang, card.backLang);
+                        .pushNamed('/inputCardPage', arguments: params) as bool;
+                    if (params.card.front != '' && params.card.back != '') {
+                      _folderViweModel
+                          .addCard(params.card.front, params.card.back,
+                              params.card.frontLang, params.card.backLang)
+                          .then((value) => Fluttertoast.showToast(
+                              msg: L10n.of(context)!.saved));
                     }
+                    await Future.delayed(const Duration(milliseconds: 500));
                   }
                 }
               },

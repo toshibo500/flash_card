@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flash_card/globals.dart';
 import 'package:flash_card/models/card_model.dart';
+import 'package:flash_card/models/preference_model.dart';
 import 'package:flash_card/views/components/stt_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
@@ -10,9 +13,15 @@ import '../models/repositories/folder_repository.dart';
 import 'components/select_bottom_sheet.dart';
 import 'components/select_folder_dialog.dart';
 
+class InputCardPageParameters {
+  late CardModel card;
+  late bool showVoiceInput;
+  InputCardPageParameters({required this.card, this.showVoiceInput = false});
+}
+
 class InputCardPage extends StatefulWidget {
-  const InputCardPage({Key? key, required this.card}) : super(key: key);
-  final CardModel card;
+  const InputCardPage({Key? key, required this.params}) : super(key: key);
+  final InputCardPageParameters params;
   @override
   _InputCardPage createState() => _InputCardPage();
 }
@@ -30,17 +39,23 @@ class _InputCardPage extends State<InputCardPage> {
   @override
   void initState() {
     super.initState();
-    _isNew = widget.card.id == '' ? true : false;
-    _textCtl[0].text = widget.card.front;
-    _textCtl[1].text = widget.card.back;
-    _langIds[0] = widget.card.frontLang ?? '';
-    _langIds[1] = widget.card.backLang ?? '';
+    _isNew = widget.params.card.id == '' ? true : false;
+    _textCtl[0].text = widget.params.card.front;
+    _textCtl[1].text = widget.params.card.back;
+    _langIds[0] = widget.params.card.frontLang ?? '';
+    _langIds[1] = widget.params.card.backLang ?? '';
     if (_langIds[0].isEmpty || _langIds[1].isEmpty) {
       initPreference();
     }
     _textNode1 = FocusNode();
     _textNode2 = FocusNode();
-    getFolder(widget.card.folderId);
+    getFolder(widget.params.card.folderId);
+    if (widget.params.showVoiceInput) {
+      // build 完了後のコールバック
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        _getVoiceIpnut(0);
+      });
+    }
   }
 
   @override
@@ -50,19 +65,16 @@ class _InputCardPage extends State<InputCardPage> {
     super.dispose();
   }
 
-  void initPreference() async {
-    PreferenceRepository.get().then((value) {
-      setState(() {
-        _langIds[0] = value.frontSideLang ?? '';
-        _langIds[1] = value.backSideLang ?? '';
-      });
-    });
+  Future<void> initPreference() async {
+    PreferenceModel value = await PreferenceRepository().get();
+    _langIds[0] = value.frontSideLang ?? '';
+    _langIds[1] = value.backSideLang ?? '';
   }
 
   late FolderModel _folder = FolderModel('', '', '', '', 0);
   void getFolder(String folderId) {
     // フォルダを取得
-    FolderRepository.getById(folderId).then((value) {
+    FolderRepository().getById(folderId).then((value) {
       setState(() {
         _folder = value!;
       });
@@ -153,12 +165,32 @@ class _InputCardPage extends State<InputCardPage> {
     return true;
   }
 
+  // 音声から入力
+  Future<void> _getVoiceIpnut(int index) async {
+    bool next = true;
+    while (next) {
+      await showVoiceInputDialog(index);
+      if (widget.params.showVoiceInput) {
+        if (_nextOnPressd()) {
+          next = false;
+        } else {
+          index = _textNode1.hasFocus ? 0 : 1;
+        }
+      } else {
+        next = false;
+      }
+    }
+  }
+
   // nextボタン押下時
-  void _nextOnPressd() {
-    if (!_validation()) return;
-    widget.card.front = _textCtl[0].text;
-    widget.card.back = _textCtl[1].text;
+  _nextOnPressd() {
+    if (!_validation()) {
+      return false;
+    }
+    widget.params.card.front = _textCtl[0].text;
+    widget.params.card.back = _textCtl[1].text;
     Navigator.pop<bool>(context, true);
+    return true;
   }
 
   // Cancelボタン押下時
@@ -167,10 +199,10 @@ class _InputCardPage extends State<InputCardPage> {
   // saveボタン押下時
   void _saveOnPressd() {
     if (!_validation()) return;
-    widget.card.front = _textCtl[0].text;
-    widget.card.back = _textCtl[1].text;
-    widget.card.frontLang = _langIds[0];
-    widget.card.backLang = _langIds[1];
+    widget.params.card.front = _textCtl[0].text;
+    widget.params.card.back = _textCtl[1].text;
+    widget.params.card.frontLang = _langIds[0];
+    widget.params.card.backLang = _langIds[1];
     Navigator.pop<bool>(context, false);
   }
 
@@ -227,7 +259,7 @@ class _InputCardPage extends State<InputCardPage> {
             );
             if (folderId.isNotEmpty) {
               getFolder(folderId);
-              widget.card.folderId = folderId;
+              widget.params.card.folderId = folderId;
             }
           },
         ));
@@ -302,24 +334,31 @@ class _InputCardPage extends State<InputCardPage> {
   IconButton _buildMicIcon(int index,
       [double iconSize = 32, Color color = Colors.blue]) {
     return IconButton(
-      onPressed: () async {
-        int p = _textCtl[index].selection.start;
-        String txt =
-            await showSttDialog(context: context, localeId: _langIds[index]);
-        setState(() {
-          if (p >= 0) {
-            _textCtl[index].text = _textCtl[index].text.substring(0, p) +
-                txt +
-                _textCtl[index].text.substring(p);
-          } else {
-            _textCtl[index].text += txt;
-          }
-        });
+      onPressed: () {
+        _getVoiceIpnut(index);
       },
       iconSize: iconSize,
       icon: const Icon(Icons.mic_rounded),
       color: color,
     );
+  }
+
+  Future<void> showVoiceInputDialog(int index) async {
+    int p = _textCtl[index].selection.start;
+    SttDialogReturnValues values = await showSttDialog(
+        context: context,
+        localeId: _langIds[index],
+        saveNextBtnVisible: false); //_isNew);
+    setState(() {
+      if (p >= 0) {
+        _textCtl[index].text = _textCtl[index].text.substring(0, p) +
+            values.lastwords +
+            _textCtl[index].text.substring(p);
+      } else {
+        _textCtl[index].text += values.lastwords;
+      }
+    });
+    widget.params.showVoiceInput = values.saveNext;
   }
 
   Column _buildTextField(int index, String title, String hintText) {

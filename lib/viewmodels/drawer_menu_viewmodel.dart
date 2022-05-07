@@ -12,13 +12,13 @@ class DrawerMenuViewModel extends ChangeNotifier {
   PreferenceModel get preference => _preference;
 
   void update(PreferenceModel pref) {
-    PreferenceRepository.update(pref).then((value) {
+    PreferenceRepository().update(pref).then((value) {
       notifyListeners();
     });
   }
 
   void get() {
-    PreferenceRepository.get().then((value) {
+    PreferenceRepository().get().then((value) {
       _preference = value;
       notifyListeners();
     });

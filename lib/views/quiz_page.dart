@@ -1,4 +1,8 @@
 import 'package:flash_card/models/folder_model.dart';
+import 'package:flash_card/models/repositories/card_repository.dart';
+import 'package:flash_card/models/repositories/folder_repository.dart';
+import 'package:flash_card/models/repositories/preference_repository.dart';
+import 'package:flash_card/models/repositories/quiz_repository.dart';
 import 'package:flip_card/flip_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,8 +28,19 @@ class QuizPage extends StatelessWidget {
   final QuizPageParameters param;
   @override
   Widget build(BuildContext context) {
+    FolderRepository folderRepository = FolderRepository();
+    CardRepository cardRepository = CardRepository();
+    PreferenceRepository prefRepository = PreferenceRepository();
+    QuizRepository quizRepository = QuizRepository();
+
     return ChangeNotifierProvider(
-      create: (context) => QuizViewModel(param.folder, param.quizNum),
+      create: (context) => QuizViewModel(
+          folderRepository: folderRepository,
+          cardRepository: cardRepository,
+          prefRepository: prefRepository,
+          quizRepository: quizRepository,
+          selectedFolder: param.folder,
+          quizNum: param.quizNum),
       child: Scaffold(body: _QuizPage(param: param)),
     );
   }
@@ -131,12 +146,7 @@ class _QuizPage extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         itemCount: _quizViweModel.items.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return _buildFlipCard(
-                              _quizViweModel.getQuestionByIndex(index),
-                              _quizViweModel.getQuestionLangByIndex(index),
-                              _quizViweModel.getAnswerByIndex(index),
-                              _quizViweModel.getAnswerLangByIndex(index),
-                              _quizViweModel.index);
+                          return _buildFlipCard(index, _quizViweModel);
                         },
                       )),
                   _buildAnswerArea(context, _quizViweModel, param.quizMode),
@@ -145,8 +155,7 @@ class _QuizPage extends StatelessWidget {
             )));
   }
 
-  Widget _buildFlipCard(String front, String frontLocale, String back,
-      String backLocal, int index) {
+  Widget _buildFlipCard(int index, QuizViewModel _quizViweModel) {
     return SizedBox(
         width: Globals().screenSizeWidth,
         child: Card(
@@ -161,18 +170,25 @@ class _QuizPage extends StatelessWidget {
               // print(status);
             },
             front: _buildFlipCardContent(
-              front,
-              frontLocale,
-            ),
+                _quizViweModel.getQuestionByIndex(index),
+                _quizViweModel.getQuestionLangByIndex(index),
+                index,
+                _quizViweModel),
             back: _buildFlipCardContent(
-                back, backLocal, Globals().cardBackSideColor),
+                _quizViweModel.getAnswerByIndex(index),
+                _quizViweModel.getAnswerLangByIndex(index),
+                index,
+                _quizViweModel,
+                Globals().cardBackSideColor),
           ),
         ));
   }
 
-  Container _buildFlipCardContent(String text, String locale, [Color? color]) {
+  Container _buildFlipCardContent(
+      String text, String locale, int index, QuizViewModel _quizViweModel,
+      [Color? color]) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
+      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey, width: 1.5),
         borderRadius: const BorderRadius.all(Radius.circular(8.0)),
@@ -187,7 +203,7 @@ class _QuizPage extends StatelessWidget {
           Expanded(
               child: Container(
                   alignment: Alignment.topLeft,
-                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                   height: 168,
                   child: SingleChildScrollView(
                       child: Text(text,
@@ -197,19 +213,31 @@ class _QuizPage extends StatelessWidget {
               width: 35,
               alignment: Alignment.topLeft,
               margin: EdgeInsets.zero,
-              child:
-                  Column(mainAxisAlignment: MainAxisAlignment.end, children: [
-                IconButton(
-                    iconSize: 32,
-                    onPressed: () async {
-                      await _tts.setLanguage(locale);
-                      await _tts.speak(text);
-                    },
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                    color: Globals.buttonColor1, // Globals.iconColor2,
-                    icon: const Icon(Icons.volume_up_rounded)),
-              ]))
+              padding: EdgeInsets.zero,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      iconSize: 32,
+                      alignment: Alignment.topRight,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                      onPressed: () => _quizViweModel.updateBookmark(),
+                      color: _quizViweModel.isBookmarked(index)
+                          ? Globals.bookmarkColor1
+                          : Globals.bookmarkColor2,
+                      icon: const Icon(Icons.bookmark_rounded),
+                    ),
+                    IconButton(
+                        iconSize: 32,
+                        onPressed: () async {
+                          await _tts.setLanguage(locale);
+                          await _tts.speak(text);
+                        },
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                        color: Globals.buttonColor1, // Globals.iconColor2,
+                        icon: const Icon(Icons.volume_up_rounded)),
+                  ]))
         ],
       ),
     );
@@ -338,13 +366,14 @@ class _QuizPage extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
       onPressed: () async {
         int p = _textCtr.selection.start;
-        String txt = await showSttDialog(
+        SttDialogReturnValues values = await showSttDialog(
             context: context, localeId: viewmodel.answerLang);
         if (p >= 0) {
-          _textCtr.text =
-              _textCtr.text.substring(0, p) + txt + _textCtr.text.substring(p);
+          _textCtr.text = _textCtr.text.substring(0, p) +
+              values.lastwords +
+              _textCtr.text.substring(p);
         } else {
-          _textCtr.text += txt;
+          _textCtr.text += values.lastwords;
         }
         mark(context, viewmodel, _textCtr.text);
       },

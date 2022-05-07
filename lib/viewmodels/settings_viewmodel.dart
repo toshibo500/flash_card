@@ -32,13 +32,13 @@ class SettingsViewModel extends ChangeNotifier {
 
   void update(PreferenceModel pref) {
     _isRandom = pref.quizOrder == Globals.quizOrderRandom;
-    PreferenceRepository.update(pref).then((value) {
+    PreferenceRepository().update(pref).then((value) {
       notifyListeners();
     });
   }
 
   void get() {
-    PreferenceRepository.get().then((value) {
+    PreferenceRepository().get().then((value) {
       _preference = value;
       _isRandom = value.quizOrder == Globals.quizOrderRandom;
       notifyListeners();

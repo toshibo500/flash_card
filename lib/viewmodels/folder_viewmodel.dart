@@ -8,10 +8,15 @@ import 'package:flash_card/models/preference_model.dart';
 import 'package:flash_card/models/repositories/preference_repository.dart';
 
 class FolderViewModel extends ChangeNotifier {
+  FolderRepository folderRepository;
+  CardRepository cardRepository;
+  PreferenceRepository prefRepository;
+  QuizRepository quizRepository;
+
   bool _editMode = false;
   List<FolderModel> _folderList = [];
   List<FolderModel> get folderItems => _folderList;
-  FolderModel _selectedFolder = FolderModel('', '', '', '', 0);
+  FolderModel selectedFolder;
 
   List<CardModel> _cardList = [];
   List<CardModel> get cardItems => _cardList;
@@ -19,10 +24,14 @@ class FolderViewModel extends ChangeNotifier {
   PreferenceModel _preference = PreferenceModel();
   PreferenceModel get preference => _preference;
 
-  FolderViewModel(FolderModel selectedFolder) {
-    this.selectedFolder = selectedFolder;
-    getAllFolder(_selectedFolder.id);
-    getAllCard(_selectedFolder.id);
+  FolderViewModel(
+      {required this.folderRepository,
+      required this.cardRepository,
+      required this.prefRepository,
+      required this.quizRepository,
+      required this.selectedFolder}) {
+    getAllFolder(selectedFolder.id);
+    getAllCard(selectedFolder.id);
     getPreference();
   }
 
@@ -36,13 +45,8 @@ class FolderViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  get selectedFolder => _selectedFolder;
-  set selectedFolder(folder) {
-    _selectedFolder = folder;
-  }
-
-  void addFolder(String title, String summary) async {
-    FolderModel? item = await FolderRepository.create(
+  Future<void> addFolder(String title, String summary) async {
+    FolderModel? item = await folderRepository.create(
         selectedFolder.id, title, summary, _folderList.length + 1);
     if (item != null) {
       _folderList.add(item);
@@ -50,7 +54,7 @@ class FolderViewModel extends ChangeNotifier {
     }
   }
 
-  void removeFolder(int index) async {
+  Future<void> removeFolder(int index) async {
     // folder id
     String folderId = _folderList[index].id;
     int res = await _removeFolder(folderId);
@@ -63,21 +67,18 @@ class FolderViewModel extends ChangeNotifier {
   Future<int> _removeFolder(String folderId) async {
     // 再帰的にサブフォルダを削除
     List<FolderModel> subFolders =
-        await FolderRepository.getByParentId(folderId);
+        await folderRepository.getByParentId(folderId);
     for (var subFolder in subFolders) {
-      // 配下のCard, Quizを削除
-      await CardRepository.deleteByFolderId(subFolder.id);
-      await QuizRepository.deleteByFolderId(subFolder.id);
       await _removeFolder(subFolder.id);
     }
     // 配下のCard, Quizを削除
-    await CardRepository.deleteByFolderId(folderId);
-    await QuizRepository.deleteByFolderId(folderId);
+    await cardRepository.deleteByFolderId(folderId);
+    await quizRepository.deleteByFolderId(folderId);
     // Folderを削除
-    return await FolderRepository.delete(folderId);
+    return await folderRepository.delete(folderId);
   }
 
-  void updateFolder(
+  Future<void> updateFolder(
       {required int index,
       String? parentId,
       required String title,
@@ -86,7 +87,7 @@ class FolderViewModel extends ChangeNotifier {
     String _id = _folderList[index].id;
     String _parentId = parentId ?? _folderList[index].parentId;
     int res =
-        await FolderRepository.update(_id, _parentId, title, summary, sequence);
+        await folderRepository.update(_id, _parentId, title, summary, sequence);
     if (res > 0) {
       _folderList[index] =
           FolderModel(_id, _parentId, title, summary, sequence);
@@ -95,36 +96,36 @@ class FolderViewModel extends ChangeNotifier {
   }
 
   void getAllFolder(String parentId) async {
-    _folderList = await FolderRepository.getByParentId(parentId);
+    _folderList = await folderRepository.getByParentId(parentId);
     for (var item in _folderList) {
-      item.cards = await CardRepository.getAll(item.id);
+      item.cards = await cardRepository.getAll(item.id);
     }
     notifyListeners();
   }
 
-  void reorderFolder(int oldIndex, int newIndex) async {
+  Future<void> reorderFolder(int oldIndex, int newIndex) async {
     final FolderModel item = _folderList.removeAt(oldIndex);
     _folderList.insert(newIndex, item);
-    await FolderRepository.bulkUpdate(_folderList);
+    await folderRepository.bulkUpdate(_folderList);
     notifyListeners();
   }
 
   void getPreference() {
-    PreferenceRepository.get().then((value) {
+    prefRepository.get().then((value) {
       _preference = value;
     });
     notifyListeners();
   }
 
   void getAllCard(String folderId) async {
-    _cardList = await CardRepository.getAll(folderId);
+    _cardList = await cardRepository.getAll(folderId);
     notifyListeners();
   }
 
-  void addCard(
+  Future<void> addCard(
       String front, String back, String? frontLang, String? backLang) async {
-    CardModel? item = await CardRepository.create(
-        _selectedFolder.id, front, back, _cardList.length + 1,
+    CardModel? item = await cardRepository.create(
+        selectedFolder.id, front, back, _cardList.length + 1,
         frontLang: frontLang, backLang: backLang);
     if (item != null) {
       _cardList.add(item);
@@ -132,26 +133,26 @@ class FolderViewModel extends ChangeNotifier {
     }
   }
 
-  void removeCard(int index) async {
-    int res = await CardRepository.delete(_cardList[index].id);
+  Future<void> removeCard(int index) async {
+    int res = await cardRepository.delete(_cardList[index].id);
     if (res > 0) {
       _cardList.removeAt(index);
       notifyListeners();
     }
   }
 
-  void updateCard({required int index, required CardModel card}) async {
-    int res = await CardRepository.update(card);
+  Future<void> updateCard({required int index, required CardModel card}) async {
+    int res = await cardRepository.update(card);
     if (res > 0) {
       _cardList[index] = card;
       notifyListeners();
     }
   }
 
-  void reorderCard(int oldIndex, int newIndex) async {
+  Future<void> reorderCard(int oldIndex, int newIndex) async {
     final CardModel item = _cardList.removeAt(oldIndex);
     _cardList.insert(newIndex, item);
-    await CardRepository.bulkUpdate(_cardList);
+    await cardRepository.bulkUpdate(_cardList);
     notifyListeners();
   }
 }

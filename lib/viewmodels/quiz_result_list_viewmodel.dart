@@ -18,14 +18,14 @@ class QuizResultListViewModel extends ChangeNotifier {
   }
 
   void _getResult() async {
-    _folder = (await FolderRepository.getById(_folderId))!;
-    _quizList = await QuizRepository.getList(_folderId, 100);
+    _folder = (await FolderRepository().getById(_folderId))!;
+    _quizList = await QuizRepository().getList(_folderId, 100);
     notifyListeners();
   }
 
   void deleteByFolderId() async {
     if (_folderId != '') {
-      QuizRepository.deleteByFolderId(_folderId);
+      QuizRepository().deleteByFolderId(_folderId);
       _getResult();
     }
   }
